@@ -10,7 +10,7 @@ public:
         int manager_id, int department_id, int management_experience,
         const std::string& project_title)
         : Employee(id, firstname, lastname, dob, mobile, email, address, gender, doj, salary,
-            w_location_id, manager_id, department_id),
+             manager_id, department_id),
         management_experience(management_experience), project_title(project_title) {}
 
     int getManagementExperience() const { return management_experience; }

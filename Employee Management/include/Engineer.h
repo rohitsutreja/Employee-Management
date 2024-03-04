@@ -9,7 +9,7 @@ public:
         int manager_id, int department_id, const std::string& programming_language,
         const std::string& specialization)
         : Employee(id, firstname, lastname, dob, mobile, email, address, gender, doj, salary,
-            w_location_id, manager_id, department_id),
+            manager_id, department_id),
         programming_language(programming_language), specialization(specialization) {}
 
 

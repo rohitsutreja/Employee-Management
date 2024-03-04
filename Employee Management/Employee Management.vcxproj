@@ -138,6 +138,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sqlite\shell.c" />
     <ClCompile Include="sqlite\sqlite3.c" />
+    <ClCompile Include="src\Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\DB.h" />
@@ -146,6 +147,8 @@
     <ClInclude Include="include\Engineer.h" />
     <ClInclude Include="include\Salary.h" />
     <ClInclude Include="include\Manager.h" />
+    <ClInclude Include="sqlite\sqlite3.h" />
+    <ClInclude Include="sqlite\sqlite3ext.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
