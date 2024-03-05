@@ -6,13 +6,13 @@
 
 class DB
 {
-
-    sqlite3* db = nullptr;
-    char* errMsg = 0;
-    int rc;
-
-
 public:
+    sqlite3* db{};
+    char* errMsg{};
+    int rc{};
+
+
+
     bool open(const char* str) {
         rc = sqlite3_open(str, &db);
         if (rc)
@@ -23,9 +23,12 @@ public:
         else
         {
             std::cout << "Opened database successfully" << std::endl;
-
+            return true;
         }
 
+    }
+
+    bool createTables() {
 
         const char* sql = "CREATE TABLE IF NOT EXISTS Employee ("
             "id INTEGER PRIMARY KEY,"
@@ -104,10 +107,9 @@ public:
 
 
         return true;
-
     }
 
-    bool executeQuery(const char* sql)
+    bool executeQuery(const char* sql, std::string_view msg = "Query executed successfully")
     {
         rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 
@@ -119,7 +121,23 @@ public:
         }
         else
         {
-            std::cout << "Query executed successfully" << std::endl;
+            std::cout << msg << std::endl;
+            return true;
+        }
+    }
+
+    bool executeSelectQuery(const char* selectQuery, int(*selectCallback)(void* , int , char**, char**), void* data , std::string_view msg = "Selection Successful") {
+       
+
+        rc = sqlite3_exec(db, selectQuery, selectCallback, data, nullptr);
+
+        if (rc != SQLITE_OK) {
+            std::cerr << "Error executing query: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_close(db);
+            return false; 
+        }
+        else {
+            std::cout << msg;
             return true;
         }
     }
@@ -129,10 +147,6 @@ public:
     {
         sqlite3_close(db);
     }
-
-
-
-
 };
 
 #endif

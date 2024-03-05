@@ -112,6 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +146,8 @@
     <ClInclude Include="include\Department.h" />
     <ClInclude Include="include\Employee.h" />
     <ClInclude Include="include\Engineer.h" />
+    <ClInclude Include="include\Helper.h" />
+    <ClInclude Include="include\Regex.h" />
     <ClInclude Include="include\Salary.h" />
     <ClInclude Include="include\Manager.h" />
     <ClInclude Include="sqlite\sqlite3.h" />
