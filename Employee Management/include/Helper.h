@@ -7,15 +7,20 @@
 std::regex rg{ ".*" };
 
 inline std::string input(const std::string& prompt, std::regex r = rg) {
-	std::string temp;
+	std::string ip;
 
 	while (1) {
 
 		std::cout << prompt;
-		std::cin >> temp;
 
-		if(std::regex_match(temp, r)) {
-			return temp;
+		std::getline(std::cin, ip);
+		
+
+
+		if (ip == "#") { return "#"; }
+
+		if(std::regex_match(ip, r)) {
+			return ip;
 		}
 		
 		std::cout << "Please Enter Valid Input\n";

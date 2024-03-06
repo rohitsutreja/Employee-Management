@@ -22,7 +22,7 @@ public:
         }
         else
         {
-            std::cout << "Opened database successfully" << std::endl;
+            //std::cout << "Opened database successfully" << std::endl;
             return true;
         }
 
@@ -109,7 +109,7 @@ public:
         return true;
     }
 
-    bool executeQuery(const char* sql, std::string_view msg = "Query executed successfully")
+    bool executeQuery(const char* sql, std::string_view msg = "Query executed successfully\n")
     {
         rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 
@@ -126,7 +126,7 @@ public:
         }
     }
 
-    bool executeSelectQuery(const char* selectQuery, int(*selectCallback)(void* , int , char**, char**), void* data , std::string_view msg = "Selection Successful") {
+    bool executeSelectQuery(const char* selectQuery, int(*selectCallback)(void* , int , char**, char**), void* data , std::string_view msg = "Selection Successful\n") {
        
 
         rc = sqlite3_exec(db, selectQuery, selectCallback, data, nullptr);
