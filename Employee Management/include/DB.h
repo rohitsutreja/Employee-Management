@@ -11,8 +11,6 @@ public:
     char* errMsg{};
     int rc{};
 
-
-
     bool open(const char* str) {
         rc = sqlite3_open(str, &db);
         if (rc)
@@ -141,7 +139,6 @@ public:
             return true;
         }
     }
-
 
     ~DB()
     {

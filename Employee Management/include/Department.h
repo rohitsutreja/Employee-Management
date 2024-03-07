@@ -4,6 +4,10 @@
 #include "Regex.h"
 #include "Helper.h"
 #include "DB.h"
+#include "Employee.h"
+
+
+
 class Department {
 public:
 
@@ -25,8 +29,8 @@ public:
 
     void display() const {
 
-        Employee e = Employee::getEmployeeById(manager_id);
-        std::string managerName = e.getFirstname() + e.getLastname() + " - ID:(" + std::to_string(manager_id) + ")";
+        auto e = Employee::getEmployeeById(manager_id);
+        std::string managerName = e.value().getFirstname() + " " + e.value().getLastname() + " - ID:(" + std::to_string(manager_id) + ")";
 
         std::cout << "+------------------+----------------------------------------+" << std::endl;
         std::cout << "|\033[32m ID\033[0m               | " << std::setw(38) << std::left << id << " |" << std::endl;

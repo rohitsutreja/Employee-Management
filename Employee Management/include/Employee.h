@@ -1,9 +1,16 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include"DB.h"
 #include "Helper.h"
 #include "Regex.h"
 #include<iomanip>
+#include <typeinfo>
+#include<optional>
+
+
+
 
 enum class Gender { Male, Female, Other };
 
@@ -87,9 +94,34 @@ public:
         std::cout << "| Address          | " << std::setw(38) << std::left << address << " |" << std::endl;
         std::cout << "| Gender           | " << std::setw(38) << std::left << genderToString(gender) << " |" << std::endl;
         std::cout << "| Date of Joining  | " << std::setw(38) << std::left << doj << " |" << std::endl;
-        std::cout << "| Manager ID       | " << std::setw(38) << std::left << manager_id << " |" << std::endl;
-        std::cout << "| Department ID    | " << std::setw(38) << std::left << department_id << " |" << std::endl;
-        std::cout << "+------------------+----------------------------------------+" << std::endl;
+
+        auto e = Employee::getEmployeeById(manager_id);
+
+        std::string m_name;
+
+        if (e.has_value()) {
+            m_name = e.value().firstname + e.value().lastname;
+        }
+        else {
+            m_name = "";
+        }
+
+        /*auto d = Department::getDepartment(department_id);
+
+        std::string d_name = d.getName();*/
+
+        std::cout << "| Manager ID       | " << std::setw(38) << std::left << (std::to_string(manager_id) + " (" + m_name + ")") << " |" << std::endl;
+        std::cout << "| Department ID    | " << std::setw(38) << std::left << (std::to_string(department_id) + " (" + ")") << " |" << std::endl;
+
+        if (getClassName() == "Emp") {
+            std::cout << "+------------------+----------------------------------------+" << std::endl;
+        }
+        
+    }
+
+
+    virtual const char* getClassName() const {
+        return "Emp";
     }
 
     void getUserInput(){
@@ -145,7 +177,7 @@ public:
     }
 
 
-    static Employee getEmployeeById(int id) {
+    static std::optional<Employee> getEmployeeById(int id) {
         DB dbI;
         dbI.open("Rohit.db");
 
@@ -166,12 +198,19 @@ public:
             emp->setDoj(argv[8]);
             emp->setManagerId(std::stoi(argv[9]));
             emp->setDepartmentId(std::stoi(argv[10]));
+
+            
             return 0;
         };
 
 
         std::string selectQuery = "SELECT * FROM Employee WHERE id = " + std::to_string(id) + ";";
         dbI.executeSelectQuery(selectQuery.c_str(), callback, &emp, "");
+
+        
+        if (emp.getId() == 0) {
+            return std::nullopt;
+        }
         return emp;
     }
 
@@ -221,6 +260,11 @@ public:
 
         dbI.executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp,"");
 
+        int change = sqlite3_changes(dbI.db);
+
+        if (change == 0) {
+
+        }
         return vecOfEmp;
     }
 
@@ -287,7 +331,7 @@ public:
     }
 
 private:
-    int id;
+    int id{};
     std::string firstname;
     std::string lastname;
     std::string dob;
@@ -296,6 +340,6 @@ private:
     std::string address;
     Gender gender;
     std::string doj;
-    int manager_id;
-    int department_id;
+    int manager_id{};
+    int department_id{};
 };
