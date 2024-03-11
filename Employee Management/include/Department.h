@@ -29,9 +29,9 @@ public:
 
     void display() const {
 
-        auto e = Employee::getEmployeeById(manager_id);
-        std::string managerName = e.value().getFirstname() + " " + e.value().getLastname() + " - ID:(" + std::to_string(manager_id) + ")";
-
+     //   auto e = Employee::getEmployeeById(manager_id);
+       // std::string managerName = e.value().getFirstname() + " " + e.value().getLastname() + " - ID:(" + std::to_string(manager_id) + ")";
+        auto managerName = "";
         std::cout << "+------------------+----------------------------------------+" << std::endl;
         std::cout << "|\033[32m ID\033[0m               | " << std::setw(38) << std::left << id << " |" << std::endl;
         std::cout << "| Department Name  | " << std::setw(38) << std::left << name        << " |" << std::endl;
@@ -80,7 +80,7 @@ public:
     }
 
 
-    static Department getDepartment(int id) {
+    static std::optional<Department> getDepartment(int id) {
         DB dbI;
         dbI.open("Rohit.db");
 
@@ -98,8 +98,11 @@ public:
             return 0;
             };
 
-        dbI.executeSelectQuery(selectQuery.c_str(),callback , &dpt);
+        dbI.executeSelectQuery(selectQuery.c_str(),callback , &dpt, "");
 
+        if (dpt.getId() == 0) {
+            return std::nullopt;
+        }
         return dpt;
     }
 
@@ -179,9 +182,9 @@ public:
 
 private:
 
-    int id;
+    int id{};
     std::string name;
-    int manager_id;
+    int manager_id{};
     std::string description;
 
 };

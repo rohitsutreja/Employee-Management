@@ -4,11 +4,11 @@ class Engineer : public Employee {
 public:
     Engineer() = default;
 
-    Engineer(int id, const std::string& firstname, const std::string& lastname, const std::string& dob,
-        const std::string& mobile, const std::string& email, const std::string& address,
-        Gender gender, const std::string& doj, float salary, int w_location_id,
-        int manager_id, int department_id, const std::string& programming_language,
-        const std::string& specialization)
+    Engineer(int id, std::string_view firstname, std::string_view lastname, std::string_view dob,
+        std::string_view mobile, std::string_view email, std::string_view address,
+        Gender gender, std::string_view doj, float salary, int w_location_id,
+        int manager_id, int department_id, std::string_view programming_language,
+        std::string_view specialization)
         : Employee(id, firstname, lastname, dob, mobile, email, address, gender, doj, salary,
             manager_id, department_id),
         programming_language(programming_language), specialization(specialization) {}
@@ -17,10 +17,10 @@ public:
     std::string getProgrammingLanguage() const { return programming_language; }
     std::string getSpecialization() const { return specialization; }
 
-    void setProgrammingLanguage(const std::string& programming_language) {
+    void setProgrammingLanguage(std::string_view programming_language) {
         this->programming_language = programming_language;
     }
-    void setSpecialization(const std::string& specialization) {
+    void setSpecialization(std::string_view specialization) {
         this->specialization = specialization;
     }
 

@@ -152,11 +152,16 @@ void runEmployeeMenu() {
 		int id = stoi(input("Please enter Id of the employee: ", idRegex));
 		auto e = Employee::getEmployeeById(id);
 		if (e.has_value()) {
-			e.value().deleteThis();
-			std::cout << "Employee Deleted\n";
+			if (e.value().deleteThis()) {
+				std::cout << "Employee Deleted\n";
+			}
+			else {
+				std::cout << "Problem in delete";
+			}
+			
 		}
 		else {
-			std::cout << "No EMployee exist with this ID\n";
+			std::cout << "No Employee exist with this ID\n";
 		}
 
 	
@@ -245,7 +250,7 @@ void runEngineerMenu(){
 			std::cout << "Employee with id: " << queryField << '\n';
 			e.display();
 			std::cout << '\n';
-			break;
+			break; 
 		}
 		case 2: {
 			queryField = input("Please enter fisrt name: ");
@@ -302,7 +307,6 @@ void runEngineerMenu(){
 			break;
 		}
 		}
-
 		break;
 	}
 
@@ -494,9 +498,16 @@ void runDepartmentMenu(){
 	case 2:
 	{
 		int id = stoi(input("Please enter Id of the Department: ", idRegex));
-		Department d = Department::getDepartment(id);
-		d.getUserInputForUpdate();
-		d.update();
+		auto d = Department::getDepartment(id);
+		if (d.has_value()) {
+			d.value().getUserInputForUpdate();
+			d.value().update();
+		}
+		else {
+			std::cout << "No Department with ID " + std::to_string(id) + " exists";
+		}
+		std::cout << '\n';
+		
 		break;
 	}
 
@@ -533,7 +544,13 @@ void runDepartmentMenu(){
 			queryField = input("Please enter ID: ", idRegex);
 			auto d = Department::getDepartment(stoi(queryField));
 			std::cout << "Department with id: " << queryField << '\n';
-			d.display();
+
+			if (d.has_value()) {
+				d.value().display();
+			}
+			else {
+				std::cout << "No Department with ID " + queryField + "exists";
+			}
 			std::cout << '\n';
 			break;
 		}
@@ -586,8 +603,15 @@ void runDepartmentMenu(){
 	case 4:
 	{
 		int id = stoi(input("Please enter Id of the Department: ", idRegex));
-		Department d = Department::getDepartment(id);
-		d.deleteThis();
+		auto d = Department::getDepartment(id);
+		if (d.has_value()) {
+			d.value().deleteThis();
+		}
+		else {
+			std::cout << "No Department wiht ID " + std::to_string(id) + " exists";
+		}
+		std::cout << '\n';
+		
 		break;
 	}
 
@@ -604,6 +628,12 @@ int main()
 
 
 	std::cout << "\n<--------------------------------------------> EMPLOYEE MANAGEMENT SYSTEM <-------------------------------------------->\n";
+
+	DB dbI;
+	dbI.open("Rohit.db");
+
+	std::string pragmaQuery = { "PRAGMA foreign_keys = ON;" };
+	dbI.executeQuery(pragmaQuery.c_str());
 
 
 	int choice{};

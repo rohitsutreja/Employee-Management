@@ -96,7 +96,7 @@ public:
             "amount INTEGER,"
             "base_salary INTEGER,"
             "bonus INTEGER,"
-            "FOREIGN KEY (id) REFERENCES Employee(id))";
+            "FOREIGN KEY (id) REFERENCES Employee(id) ON DELETE CASCADE)";
 
         if (!executeQuery(sql5))
         {

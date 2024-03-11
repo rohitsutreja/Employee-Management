@@ -2,12 +2,14 @@
 
 #include <iostream>
 #include <string>
+#include <typeinfo>
+#include<optional>
+#include<iomanip>
 #include"DB.h"
 #include "Helper.h"
 #include "Regex.h"
-#include<iomanip>
-#include <typeinfo>
-#include<optional>
+#include"Department.h"
+#include"Salary.h"
 
 
 
@@ -25,7 +27,7 @@ std::string genderToString(Gender g) {
     case Gender::Other:
         return "Other";
     }
-    return "Male";
+    return "Other";
 }
 
 
@@ -48,9 +50,9 @@ class Employee {
 public:
     Employee() = default;
 
-    Employee(int id, const std::string& firstname, const std::string& lastname, const std::string& dob,
-        const std::string& mobile, const std::string& email, const std::string& address,
-        Gender gender, const std::string& doj, int w_location_id,
+    Employee(int id, std::string_view firstname, std::string_view lastname, std::string_view,
+        std::string_view mobile, std::string_view email, std::string_view address,
+        Gender gender, std::string_view doj, int w_location_id,
         int manager_id, int department_id)
         : id(id), firstname(firstname), lastname(lastname), dob(dob), mobile(mobile), email(email),
         address(address), gender(gender), doj(doj),
@@ -70,14 +72,14 @@ public:
 
 
     void setId(int id) { this->id = id; }
-    void setFirstname(const std::string& firstname) { this->firstname = firstname; }
-    void setLastname(const std::string& lastname) { this->lastname = lastname; }
-    void setDob(const std::string& dob) { this->dob = dob; }
-    void setMobile(const std::string& mobile) { this->mobile = mobile; }
-    void setEmail(const std::string& email) { this->email = email; }
-    void setAddress(const std::string& address) { this->address = address; }
+    void setFirstname(std::string_view firstname) { this->firstname = firstname; }
+    void setLastname(std::string_view lastname) { this->lastname = lastname; }
+    void setDob(std::string_view dob) { this->dob = dob; }
+    void setMobile(std::string_view mobile) { this->mobile = mobile; }
+    void setEmail(std::string_view email) { this->email = email; }
+    void setAddress(std::string_view address) { this->address = address; }
     void setGender(Gender g) { this->gender = g; }
-    void setDoj(const std::string& doj) { this->doj = doj; }
+    void setDoj(std::string_view doj) { this->doj = doj; }
     void setManagerId(int manager_id) { this->manager_id = manager_id; }
     void setDepartmentId(int department_id) { this->department_id = department_id; }
 
@@ -100,25 +102,31 @@ public:
         std::string m_name;
 
         if (e.has_value()) {
-            m_name = e.value().firstname + e.value().lastname;
+            m_name = e.value().getFirstname() + " " + e.value().getLastname() + " (ID - " + std::to_string(manager_id) + ")";
         }
         else {
             m_name = "";
         }
 
-        /*auto d = Department::getDepartment(department_id);
+        auto d = Department::getDepartment(department_id);
 
-        std::string d_name = d.getName();*/
+        std::string d_name;
+        if (d.has_value()) {
+            d_name = d.value().getName() + " (ID - " + std::to_string(department_id) + ")";
+        }
+        else {
+            d_name = "";
+        }
+       
 
-        std::cout << "| Manager ID       | " << std::setw(38) << std::left << (std::to_string(manager_id) + " (" + m_name + ")") << " |" << std::endl;
-        std::cout << "| Department ID    | " << std::setw(38) << std::left << (std::to_string(department_id) + " (" + ")") << " |" << std::endl;
+        std::cout << "| Manager ID       | " << std::setw(38) << std::left <<  m_name  << " |" << std::endl;
+        std::cout << "| Department ID    | " << std::setw(38) << std::left <<  d_name  << " |" << std::endl;
 
         if (getClassName() == "Emp") {
             std::cout << "+------------------+----------------------------------------+" << std::endl;
         }
         
     }
-
 
     virtual const char* getClassName() const {
         return "Emp";
@@ -136,7 +144,9 @@ public:
          setDoj(input("Enter DOJ (dd-mm-yyyy): ", dateRegex));
          setManagerId(stoi(input("Enter Manager Id: ")));
          setDepartmentId(stoi(input("Enter Department Id: ")));
-        
+
+         salary.setID(id);
+         salary.getUserInput();
     }
 
     void getUserInputForUpdate() {
@@ -174,6 +184,9 @@ public:
 
         auto did{ input("Enter Department Id: ") };
         if (!(did == "#")) setDepartmentId(stoi(did));
+
+        salary.setID(getId());
+        salary.getUserInputForUpdate();
     }
 
 
@@ -182,8 +195,7 @@ public:
         dbI.open("Rohit.db");
 
         Employee emp;
-        
-
+       
         auto callback = [](void* data, int argc, char** argv, char** azColName) {
             Employee* emp = static_cast<Employee*>(data);
 
@@ -206,7 +218,7 @@ public:
 
         std::string selectQuery = "SELECT * FROM Employee WHERE id = " + std::to_string(id) + ";";
         dbI.executeSelectQuery(selectQuery.c_str(), callback, &emp, "");
-
+        
         
         if (emp.getId() == 0) {
             return std::nullopt;
@@ -289,7 +301,11 @@ public:
             "'," + std::to_string(manager_id) + 
             "," + std::to_string(department_id) + ");";
 
-        if (!dbI.executeQuery(insertQuery.c_str(), "")) { return false; }
+        if (!dbI.executeQuery(insertQuery.c_str(), "")) { 
+            return false; 
+        }
+
+        salary.save();
 
         return true;
     }
@@ -327,6 +343,8 @@ public:
 
         if (!dbI.executeQuery(updateQuery.c_str(), "")) return false;
 
+        salary.update();
+
         return true;
     }
 
@@ -342,4 +360,5 @@ private:
     std::string doj;
     int manager_id{};
     int department_id{};
+    Salary salary;
 };

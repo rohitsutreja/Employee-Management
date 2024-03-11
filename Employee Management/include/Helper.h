@@ -15,8 +15,6 @@ inline std::string input(const std::string& prompt, std::regex r = rg) {
 
 		std::getline(std::cin, ip);
 		
-
-
 		if (ip == "#") { return "#"; }
 
 		if(std::regex_match(ip, r)) {
