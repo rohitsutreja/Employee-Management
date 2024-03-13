@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include "Regex.h"
-#include "Helper.h"
+#include "Util.h"
 #include "DB.h"
 #include "Employee.h"
 
@@ -28,10 +28,27 @@ public:
 
 
     void display() const {
+        auto dbI = DB::getDB();
 
-     //   auto e = Employee::getEmployeeById(manager_id);
+        std::string managerName = "";
+        std::string selectQuery = "SELECT firstname, lastname FROM EMPLOYEE WHERE id = " + std::to_string(manager_id) + ";";
+        dbI->executeSelectQuery(selectQuery.c_str(), [](void* data, int argc, char** argv , char** aZcolname) {
+            auto m = static_cast<std::string*>(data);
+
+            *m += argv[0];
+            *m += " ";
+            *m += argv[1];
+
+            return 0;
+            }, &managerName, "");
+
+        managerName += " ( ID - ";
+        managerName += std::to_string(manager_id) + ")";
+
+
+       //auto e = Employee::getEmployeeById(manager_id);
        // std::string managerName = e.value().getFirstname() + " " + e.value().getLastname() + " - ID:(" + std::to_string(manager_id) + ")";
-        auto managerName = "";
+
         std::cout << "+------------------+----------------------------------------+" << std::endl;
         std::cout << "|\033[32m ID\033[0m               | " << std::setw(38) << std::left << id << " |" << std::endl;
         std::cout << "| Department Name  | " << std::setw(38) << std::left << name        << " |" << std::endl;
@@ -49,22 +66,21 @@ public:
 
     void getUserInputForUpdate() {
         auto id{ input("Enter Department ID: ",idRegex) };
-        if (!(id != "#")) { setId(stoi(id)); }
+        if ((id != "#")) { setId(stoi(id)); }
 
         auto name{ input("Enter Department Name: ") };
-        if (!(name != "#")) { setName(name); }
+        if ((name != "#")) { setName(name); }
 
         auto mid{ input("Enter Manager ID: ", idRegex) };
-        if (!(mid != "#")) { setManagerId(manager_id); }
+        if ((mid != "#")) { setManagerId(manager_id); }
 
         auto desc{ input("Enter brief Description: ") };
-        if (!(desc != "#")) { setDescription(desc); }
+        if ((desc != "#")) { setDescription(desc); }
     }
 
 
     bool save() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
 
         std::string  insertQuery = "INSERT INTO Department "
             "(id, name, manager_id, description) VALUES (";
@@ -74,15 +90,15 @@ public:
             "'," + std::to_string(manager_id) +
             ",'" + description + "');";
 
-        if (!dbI.executeQuery(insertQuery.c_str(), "Inserted Successfully\n")) { return false; }
+        if (!dbI->executeQuery(insertQuery.c_str(), "Inserted Successfully\n")) { return false; }
 
         return true;
     }
 
 
     static std::optional<Department> getDepartment(int id) {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         Department dpt;
 
@@ -98,7 +114,7 @@ public:
             return 0;
             };
 
-        dbI.executeSelectQuery(selectQuery.c_str(),callback , &dpt, "");
+        dbI->executeSelectQuery(selectQuery.c_str(),callback , &dpt, "");
 
         if (dpt.getId() == 0) {
             return std::nullopt;
@@ -108,8 +124,8 @@ public:
 
 
     static std::vector<Department> getMultipleDepartment(const std::string& queryField = "", const std::string& queryValue = "") {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::vector<Department> vecOfDep;
 
@@ -142,7 +158,7 @@ public:
             return 0;
         };
 
-        dbI.executeSelectQuery(selectQuery.c_str(), callback, &vecOfDep, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfDep, "");
 
         return vecOfDep;
           
@@ -150,20 +166,20 @@ public:
 
 
     bool deleteThis() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::string deleteQuery = "DELETE FROM Department WHERE id = ";
         deleteQuery += std::to_string(id);
 
-        if (!dbI.executeQuery(deleteQuery.c_str(), "Deleted Successfully\n")) { return false; }
+        if (!dbI->executeQuery(deleteQuery.c_str(), "Deleted Successfully\n")) { return false; }
 
         return true;
     }
 
     bool update() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::string updateQuery = "UPDATE Department SET ";
         updateQuery +=
@@ -173,7 +189,7 @@ public:
             "' WHERE id = " + std::to_string(id) + ";";
 
 
-        if (!dbI.executeQuery(updateQuery.c_str(), "Department Updated Successfully\n")) return false;
+        if (!dbI->executeQuery(updateQuery.c_str(), "Department Updated Successfully\n")) return false;
 
         return true;
     }

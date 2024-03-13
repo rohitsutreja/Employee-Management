@@ -24,7 +24,25 @@
     <ClCompile Include="sqlite\sqlite3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Source.cpp">
+    <ClCompile Include="src\Employee.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Department.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engineer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Salary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,10 +71,16 @@
     <ClInclude Include="sqlite\sqlite3ext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Helper.h">
+    <ClInclude Include="include\Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Regex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Logger\Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Logger\MyLogger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,7 +6,7 @@
 #include<optional>
 #include<iomanip>
 #include"DB.h"
-#include "Helper.h"
+#include "Util.h"
 #include "Regex.h"
 #include"Department.h"
 #include"Salary.h"
@@ -52,7 +52,7 @@ public:
 
     Employee(int id, std::string_view firstname, std::string_view lastname, std::string_view,
         std::string_view mobile, std::string_view email, std::string_view address,
-        Gender gender, std::string_view doj, int w_location_id,
+        Gender gender, std::string_view doj,
         int manager_id, int department_id)
         : id(id), firstname(firstname), lastname(lastname), dob(dob), mobile(mobile), email(email),
         address(address), gender(gender), doj(doj),
@@ -82,6 +82,7 @@ public:
     void setDoj(std::string_view doj) { this->doj = doj; }
     void setManagerId(int manager_id) { this->manager_id = manager_id; }
     void setDepartmentId(int department_id) { this->department_id = department_id; }
+    void setSalary(const Salary& s) { this->salary = s; }
 
     void display() const {
 
@@ -96,6 +97,7 @@ public:
         std::cout << "| Address          | " << std::setw(38) << std::left << address << " |" << std::endl;
         std::cout << "| Gender           | " << std::setw(38) << std::left << genderToString(gender) << " |" << std::endl;
         std::cout << "| Date of Joining  | " << std::setw(38) << std::left << doj << " |" << std::endl;
+        std::cout << "| Salary           | " << std::setw(38) << std::left << salary.getAmount() << " |" << std::endl;
 
         auto e = Employee::getEmployeeById(manager_id);
 
@@ -105,7 +107,7 @@ public:
             m_name = e.value().getFirstname() + " " + e.value().getLastname() + " (ID - " + std::to_string(manager_id) + ")";
         }
         else {
-            m_name = "";
+            m_name = "-";
         }
 
         auto d = Department::getDepartment(department_id);
@@ -119,8 +121,8 @@ public:
         }
        
 
-        std::cout << "| Manager ID       | " << std::setw(38) << std::left <<  m_name  << " |" << std::endl;
-        std::cout << "| Department ID    | " << std::setw(38) << std::left <<  d_name  << " |" << std::endl;
+        std::cout << "| Manager          | " << std::setw(38) << std::left <<  m_name  << " |" << std::endl;
+        std::cout << "| Department       | " << std::setw(38) << std::left <<  d_name  << " |" << std::endl;
 
         if (getClassName() == "Emp") {
             std::cout << "+------------------+----------------------------------------+" << std::endl;
@@ -155,7 +157,7 @@ public:
         auto id{ input("Enter Id: ") };
         if (!(id == "#")) setId(stoi(id));
         
-        auto firstname{ input("Enter first name: ") };
+        auto firstname{ input("Enter first name: ")};
         if (!(firstname == "#")) setFirstname(firstname);
 
         auto lastname{ input("Enter last name: ") };
@@ -191,8 +193,8 @@ public:
 
 
     static std::optional<Employee> getEmployeeById(int id) {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+      
 
         Employee emp;
        
@@ -217,19 +219,20 @@ public:
 
 
         std::string selectQuery = "SELECT * FROM Employee WHERE id = " + std::to_string(id) + ";";
-        dbI.executeSelectQuery(selectQuery.c_str(), callback, &emp, "");
-        
-        
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &emp, "");
+       
         if (emp.getId() == 0) {
             return std::nullopt;
         }
+
+        emp.salary = Salary::getSalaryByID(id).value();
+
         return emp;
     }
 
 
     static std::vector<Employee> getMultipleEmployee(const std::string& queryField = "", const std::string& queryValue = "") {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
 
 
         std::vector<Employee> vecOfEmp;
@@ -265,26 +268,23 @@ public:
             emp.setDoj(argv[8]);
             emp.setManagerId(std::stoi(argv[9]));
             emp.setDepartmentId(std::stoi(argv[10]));
+            emp.setSalary((Salary::getSalaryByID(std::stoi(argv[0])).value()));
 
             vecOfEmp->push_back(std::move(emp));
             return 0;
             };
 
-        dbI.executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp,"");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp,"");
 
-        int change = sqlite3_changes(dbI.db);
-
-        if (change == 0) {
-
-        }
+     
         return vecOfEmp;
     }
 
 
 
     bool save() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::string  insertQuery = "INSERT INTO Employee "
                                     "(id, firstname, lastname, dob, mobile, email, address, gender, doj, manager_id, department_id) VALUES (";
@@ -301,7 +301,7 @@ public:
             "'," + std::to_string(manager_id) + 
             "," + std::to_string(department_id) + ");";
 
-        if (!dbI.executeQuery(insertQuery.c_str(), "")) { 
+        if (!dbI->executeQuery(insertQuery.c_str(), "")) { 
             return false; 
         }
 
@@ -311,20 +311,18 @@ public:
     }
 
     bool deleteThis() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::string deleteQuery = "DELETE FROM Employee WHERE id = ";
         deleteQuery += std::to_string(id);
 
-        if (!dbI.executeQuery(deleteQuery.c_str(), "")) { return false; }
-
-        return true;
+        return dbI->executeQuery(deleteQuery.c_str(),"") && salary.deleteThis();
     }
 
     bool update() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::string updateQuery = "UPDATE Employee SET ";
         updateQuery +=
@@ -341,7 +339,7 @@ public:
                     " WHERE id = " + std::to_string(id) + ";";
        
 
-        if (!dbI.executeQuery(updateQuery.c_str(), "")) return false;
+        if (!dbI->executeQuery(updateQuery.c_str(), "")) return false;
 
         salary.update();
 
@@ -356,7 +354,7 @@ private:
     std::string mobile;
     std::string email;
     std::string address;
-    Gender gender;
+    Gender gender{Gender::Other};
     std::string doj;
     int manager_id{};
     int department_id{};

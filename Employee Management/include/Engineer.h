@@ -9,7 +9,7 @@ public:
         Gender gender, std::string_view doj, float salary, int w_location_id,
         int manager_id, int department_id, std::string_view programming_language,
         std::string_view specialization)
-        : Employee(id, firstname, lastname, dob, mobile, email, address, gender, doj, salary,
+        : Employee(id, firstname, lastname, dob, mobile, email, address, gender, doj, 
             manager_id, department_id),
         programming_language(programming_language), specialization(specialization) {}
 
@@ -55,34 +55,31 @@ public:
     }
 
     bool save(){
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
 
         Employee::save();
 
         std::string insertQuery = "INSERT INTO Engineer VALUES (" + std::to_string(Employee::getId()) + ",'" + programming_language + "', '" + specialization + "');";
 
-        if (!dbI.executeQuery(insertQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(insertQuery.c_str(), "")) { return false; }
         return true;
     }
 
     bool deleteThis() {
-        DB dbI;
-        dbI.open("Rohit.db");
-        
+        auto dbI = DB::getDB();
+
         Employee::deleteThis();
 
         std::string deleteQuery = "DELETE FROM Engineer WHERE id = ";
         deleteQuery += std::to_string(getId());
 
-        if (!dbI.executeQuery(deleteQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(deleteQuery.c_str(), "")) { return false; }
 
         return true;
     }
 
     bool update() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
 
         Employee::update();
 
@@ -90,17 +87,17 @@ public:
         updateQuery +=
             "programming_language='" + programming_language +
             "', specialization='" + specialization +
-            " WHERE id = " + std::to_string(getId()) + ";";
+            "' WHERE id = " + std::to_string(getId()) + ";";
 
 
-        if (!dbI.executeQuery(updateQuery.c_str(), "")) return false;
+        if (!dbI->executeQuery(updateQuery.c_str(), "")) return false;
 
         return true;
     }
 
     static Engineer getEngineerByID(int id) {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         Engineer e;
 
@@ -126,14 +123,19 @@ public:
             return 0;
         };
        
-        dbI.executeSelectQuery(selectQuery.c_str(), callback, &e, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &e, "");
+
+        if (e.getId() != 0) {
+            e.setSalary(Salary::getSalaryByID(id).value());
+        }
+      
        
         return e;
     }
 
     static std::vector<Engineer> getMultipleEngineers(const std::string& queryField = "", const std::string& queryValue = "") {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::vector<Engineer> vecOfEmp;
 
@@ -171,11 +173,13 @@ public:
             emp.setProgrammingLanguage(argv[12]);
             emp.setSpecialization(argv[13]);
 
+            emp.setSalary(Salary::getSalaryByID(std::stoi(argv[0])).value());
+
             vecOfEmp->push_back(std::move(emp));
             return 0;
             };
 
-        dbI.executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp, "");
 
         return vecOfEmp;
     }

@@ -1,6 +1,6 @@
 #include <iostream>
 #include<iomanip>
-#include"Helper.h"
+#include"Util.h"
 #include "Employee.h"
 
 
@@ -15,7 +15,7 @@ public:
 
     float getAmount() const { return amount; }
     float getBaseSalary() const { return base_salary; }
-    int getBonus() const { return bonus; }
+    float getBonus() const { return bonus; }
 
     void setAmount(float amount) {
         this->amount = amount;
@@ -47,20 +47,29 @@ public:
     }
 
     void display() const {
+        auto dbI = DB::getDB();
 
-        //auto e = Employee::getEmployeeById(id);
 
-        //std::string name;
 
-        //if (e.has_value()) {
-        //    name = e.value().getFirstname() + " " + e.value().getLastname();
-        //}
-        //else {
-        //    name = "";
-        //}
+        std::string name = "";
+        std::string selectQuery = "SELECT firstname, lastname FROM EMPLOYEE WHERE id = " + std::to_string(id) + ";";
+        dbI->executeSelectQuery(selectQuery.c_str(), [](void* data, int argc, char** argv, char** aZcolname) {
+            auto m = static_cast<std::string*>(data);
+
+            *m += argv[0];
+            *m += " ";
+            *m += argv[1];
+
+            return 0;
+            }, & name, "");
+
+        name += " ( ID - ";
+        name += std::to_string(id) + ")";
+
+
         std::cout << "+------------------+----------------------------------------+" << std::endl;
         std::cout << "|\033[32m ID\033[0m               | " << std::setw(38) << std::left << id << " |" << std::endl;
-        //std::cout << "| Name             | " << std::setw(38) << std::left << name << " |" << std::endl;
+        std::cout << "| Name             | " << std::setw(38) << std::left << name << " |" << std::endl;
         std::cout << "| Base Salary      | " << std::setw(38) << std::left << base_salary << " |" << std::endl;
         std::cout << "| Bonus            | " << std::setw(38) << std::left << bonus << " |" << std::endl;
         std::cout << "| Total Salary     | " << std::setw(38) << std::left << amount << " |" << std::endl;
@@ -73,8 +82,8 @@ public:
     }
 
     static std::optional<Salary> getSalaryByID(int id) {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::string selectQuery = "SELECT * FROM SALARY WHERE id = " + std::to_string(id) + ";";
 
@@ -85,15 +94,15 @@ public:
             Salary* s = static_cast<Salary*>(data);
 
             s->setID(std::stoi(argv[0]));
-            s->setBaseSalary(std::stof(argv[1]));
-            s->setBonus(std::stof(argv[2]));
-            s->setAmount(std::stof(argv[1]) + std::stof(argv[2]));
+            s->setBaseSalary(std::stof(argv[2]));
+            s->setBonus(std::stof(argv[3]));
+            s->setAmount(std::stof(argv[2]) + std::stof(argv[3]));
 
 
             return 0;
         };
 
-        dbI.executeSelectQuery(selectQuery.c_str(), callback, &salary, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &salary, "");
 
         if (salary.getId() == 0) {
             return std::nullopt;
@@ -101,9 +110,50 @@ public:
         return salary;
     }
 
+    static std::vector<Salary> getMultipleSalary(const std::string& queryField = "", const std::string& queryValue = "") {
+        auto dbI = DB::getDB();
+
+
+
+        std::vector<Salary> vecOfSal;
+
+        std::string selectQuery;
+
+
+        if (queryField == "id" || queryField == "manager_id" || queryField == "department_id") {
+            selectQuery = "SELECT Salary.* FROM Employee JOIN Department ON Employee.department_id = Department.id JOIN Salary ON Employee.id = Salary.id WHERE " + queryField + " = " + queryValue + "; ";
+        }
+        else if (queryField == "" && queryValue == "") {
+            selectQuery = "SELECT Salary.* FROM Employee JOIN Department ON Employee.department_id = Department.id JOIN Salary ON Employee.id = Salary.id;";
+        }
+        else {
+            selectQuery = "SELECT Salary.* FROM Employee JOIN Department ON Employee.department_id = Department.id JOIN Salary ON Employee.id = Salary.id WHERE " + queryField + " = '" + queryValue + "';";
+        }
+
+
+        auto callback = [](void* data, int argc, char** argv, char** azColName) {
+            std::vector<Salary>* vecOfSal = static_cast<std::vector<Salary>*>(data);
+
+            Salary sal;
+
+            sal.setID(std::stoi(argv[0]));
+            sal.setBaseSalary(std::stof(argv[2]));
+            sal.setBonus(std::stof(argv[3]));
+            sal.setAmount(sal.getBaseSalary() + sal.getBonus());
+
+            vecOfSal->push_back(std::move(sal));
+            return 0;
+            };
+
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfSal, "");
+
+
+        return vecOfSal;
+    }
+
     bool save() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::string  insertQuery = "INSERT INTO Salary "
             "(id, base_salary, bonus) VALUES (";
@@ -113,14 +163,14 @@ public:
             ", " + std::to_string(bonus) +
                  + ");";
 
-        if (!dbI.executeQuery(insertQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(insertQuery.c_str(), "")) { return false; }
 
         return true;
     }
 
     bool update() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::string updateQuery = "UPDATE Salary SET ";
         updateQuery +=
@@ -129,11 +179,22 @@ public:
             " WHERE id = " + std::to_string(id) + ";";
 
 
-        if (!dbI.executeQuery(updateQuery.c_str(), "")) return false;
+        if (!dbI->executeQuery(updateQuery.c_str(), "")) return false;
 
         return true;
     }
 
+    bool deleteThis() {
+        auto dbI = DB::getDB();
+
+
+        std::string deleteQuery = "DELETE FROM Salary WHERE id = ";
+        deleteQuery += std::to_string(id);
+
+        if (!dbI->executeQuery(deleteQuery.c_str(), "")) { return false; }
+
+        return true;
+    }
 
 private:
     int id{};

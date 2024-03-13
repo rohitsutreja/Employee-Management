@@ -7,6 +7,7 @@
 #include "include/Department.h"
 #include "include/Engineer.h"
 #include "include/Manager.h"
+#include "include/Logger/MyLogger.h"
 
 
 
@@ -247,8 +248,14 @@ void runEngineerMenu(){
 		case 1: {
 			queryField = input("Please enter ID: ", idRegex);
 			auto e = Engineer::getEngineerByID(stoi(queryField));
-			std::cout << "Employee with id: " << queryField << '\n';
-			e.display();
+			if (e.getId() == 0) {
+				std::cout << "Enginner with id : " << queryField << " does not exist";
+			}
+			else {
+				std::cout << "Employee with id: " << queryField << '\n';
+				e.display();
+			}
+			
 			std::cout << '\n';
 			break; 
 		}
@@ -394,11 +401,16 @@ void runManagerMenu() {
 
 		system("CLS");
 		switch (choice) {
-		case 1: {
+		case 1: {	
 			queryField = input("Please enter ID: ", idRegex);
 			auto e = Manager::getManagerByID(stoi(queryField));
-			std::cout << "Manager with id: " << queryField << '\n';
-			e.display();
+			if (e.getId() == 0) {
+				std::cout << "Manager with id : " << queryField << " does not exist";
+			}
+			else {
+				std::cout << "Manager with id: " << queryField << '\n';
+				e.display();
+			}
 			std::cout << '\n';
 			break;
 		}
@@ -621,6 +633,141 @@ void runDepartmentMenu(){
 	}
 }
 
+void runSalaryMenu() {
+	auto choice{ 0 };
+
+	while (1) {
+		std::cout << "1. View Salary details of an Employee\n";
+		std::cout << "2. Update Salary details of an Employee\n";
+		std::cout << "3. Main menu\n";
+
+		choice = stoi(input("\nPlease select an option: "));
+
+		std::cout << '\n';
+
+		if (choice != 1 && choice != 2 && choice != 3) {
+			std::cout << "Please Enter a valid choice!\n";
+			continue;
+		}
+
+		break;
+	}
+	system("CLS");
+	switch (choice) {
+
+	case 1:
+	{
+		std::string queryField;
+		auto choice{ 0 };
+
+		while (1) {
+			std::cout << "1. View by ID\n";
+			std::cout << "2. View by first name\n";
+			std::cout << "3. View by last name\n";
+			std::cout << "4. View by Department\n";
+			std::cout << "5. View Salary details of all employees\n\n";
+
+			choice = stoi(input("Please Select an Option: "));
+
+			std::cout << '\n';
+
+			if (choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5) {
+				std::cout << "Please Enter a valid choice!\n";
+				continue;
+			}
+
+			break;
+
+
+		}
+
+		system("CLS");
+		switch (choice) {
+		case 1: {
+			queryField = input("Please enter ID: ", idRegex);
+			auto e = Salary::getSalaryByID(stoi(queryField));
+			std::cout << "Salary details of Employee with id: " << queryField << '\n';
+			if (e.has_value()) {
+				e.value().display();
+			}
+			else {
+				std::cout << "No Employee Exist with given ID";
+			}
+
+			std::cout << '\n';
+			break;
+		}
+		case 2: {
+			queryField = input("Please enter fisrt name: ");
+			auto vec = Salary::getMultipleSalary("firstname", queryField);
+
+			std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
+			for (auto e : vec) {
+				e.display();
+				std::cout << '\n';
+			}
+			break;
+		}
+		case 3: {
+			queryField = input("Please enter last name: ");
+			auto vec = Salary::getMultipleSalary("lastname", queryField);
+
+			std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
+			for (auto e : vec) {
+				e.display();
+				std::cout << '\n';
+			}
+			break;
+		}
+		case 4: {
+			queryField = input("Please enter department name: ");
+			auto vec = Salary::getMultipleSalary("department.name", queryField);
+			std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
+			for (auto e : vec) {
+				e.display();
+				std::cout << '\n';
+			}
+			break;
+		}
+		case 5: {
+
+
+			auto vec = Salary::getMultipleSalary();
+			std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
+			for (auto e : vec) {
+				e.display();
+				std::cout << '\n';
+			}
+			break;
+		}
+		}
+
+		break;
+	}
+
+	case 2:
+	{
+		auto id = stoi(input("Please enter Id of the employee: ", idRegex));
+		auto e = Salary::getSalaryByID(id);
+
+		if (e.has_value()) {
+			e.value().getUserInputForUpdate();
+			e.value().update();
+		}
+		else {
+			std::cout << "No Employee Exist with given ID\n";
+		}
+
+		break;
+	}
+
+	case 3: {
+		break;
+	}
+	}
+
+}
+
 
 
 int main()
@@ -629,11 +776,7 @@ int main()
 
 	std::cout << "\n<--------------------------------------------> EMPLOYEE MANAGEMENT SYSTEM <-------------------------------------------->\n";
 
-	DB dbI;
-	dbI.open("Rohit.db");
-
-	std::string pragmaQuery = { "PRAGMA foreign_keys = ON;" };
-	dbI.executeQuery(pragmaQuery.c_str());
+	auto dbI = DB::getDB();
 
 
 	int choice{};
@@ -643,7 +786,8 @@ int main()
 		std::cout << "2. Department Menu\n";
 		std::cout << "3. Engineer Menu\n";
 		std::cout << "4. Manager Menu\n";
-		std::cout << "5. Quit\n\n";
+		std::cout << "5. Salary Menu\n";
+		std::cout << "6. Quit\n\n";
 
 		choice = stoi(input("Please Select an Option: "));
 
@@ -665,6 +809,12 @@ int main()
 			runManagerMenu();
 		}
 		else if (choice == 5) {
+
+			system("CLS");
+			runSalaryMenu();
+			
+		}
+		else if (choice == 6) {
 			std::cout << "Thank You\n";
 			break;
 		}

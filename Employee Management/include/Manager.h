@@ -8,10 +8,10 @@ public:
 
     Manager(int id, std::string_view firstname, std::string_view lastname, std::string_view dob,
         std::string_view mobile, std::string_view email, std::string_view address,
-        Gender gender, std::string_view doj, float salary, int w_location_id,
+        Gender gender, std::string_view doj, int w_location_id,
         int manager_id, int department_id, int management_experience,
         std::string_view project_title)
-        : Employee(id, firstname, lastname, dob, mobile, email, address, gender, doj, salary,
+        : Employee(id, firstname, lastname, dob, mobile, email, address, gender, doj,
              manager_id, department_id),
         management_experience(management_experience), project_title(project_title) {}
 
@@ -57,34 +57,34 @@ public:
     }
 
     bool save() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         Employee::save();
 
         std::string insertQuery = "INSERT INTO Manager VALUES (" + std::to_string(Employee::getId()) + "," + std::to_string(management_experience) + ", '" + project_title + "');";
 
-        if (!dbI.executeQuery(insertQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(insertQuery.c_str(), "")) { return false; }
         return true;
     }
 
     bool deleteThis() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         Employee::deleteThis();
 
         std::string deleteQuery = "DELETE FROM Manager WHERE id = ";
         deleteQuery += std::to_string(getId());
 
-        if (!dbI.executeQuery(deleteQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(deleteQuery.c_str(), "")) { return false; }
 
         return true;
     }
 
     bool update() {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         Employee::update();
 
@@ -95,14 +95,14 @@ public:
             " WHERE id = " + std::to_string(getId()) + ";";
 
 
-        if (!dbI.executeQuery(updateQuery.c_str(), "")) return false;
+        if (!dbI->executeQuery(updateQuery.c_str(), "")) return false;
 
         return true;
     }
 
     static Manager getManagerByID(int id) {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         Manager m;
 
@@ -111,31 +111,35 @@ public:
         auto callback = [](void* data, int argc, char** argv, char** azColName) {
             Manager* emp = static_cast<Manager*>(data);
 
-            emp->setId(std::stoi(argv[0]));
-            emp->setFirstname(argv[1]);
-            emp->setLastname(argv[2]);
-            emp->setDob(argv[3]);
-            emp->setMobile(argv[4]);
-            emp->setEmail(argv[5]);
-            emp->setAddress(argv[6]);
-            emp->setGender(stringToGender(argv[7]));
-            emp->setDoj(argv[8]);
-            emp->setManagerId(std::stoi(argv[9]));
-            emp->setDepartmentId(std::stoi(argv[10]));
-            emp->setManagementExperience(std::stoi(argv[12]));
-            emp->setProjectTitle(argv[13]);
+
+          
+                emp->setId(std::stoi(argv[0]));
+                emp->setFirstname(argv[1]);
+                emp->setLastname(argv[2]);
+                emp->setDob(argv[3]);
+                emp->setMobile(argv[4]);
+                emp->setEmail(argv[5]);
+                emp->setAddress(argv[6]);
+                emp->setGender(stringToGender(argv[7]));
+                emp->setDoj(argv[8]);
+                emp->setManagerId(std::stoi(argv[9]));
+                emp->setDepartmentId(std::stoi(argv[10]));
+                emp->setManagementExperience(std::stoi(argv[12]));
+                emp->setProjectTitle(argv[13]);
+                emp->setSalary(Salary::getSalaryByID(std::stoi(argv[0])).value());
 
             return 0;
             };
 
-        dbI.executeSelectQuery(selectQuery.c_str(), callback, &m, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &m, "");
 
+      
         return m;
     }
 
     static std::vector<Manager> getMultipleManagers(const std::string& queryField = "", const std::string& queryValue = "") {
-        DB dbI;
-        dbI.open("Rohit.db");
+        auto dbI = DB::getDB();
+
 
         std::vector<Manager> vecOfEmp;
 
@@ -172,18 +176,19 @@ public:
             emp.setDepartmentId(std::stoi(argv[10]));
             emp.setManagementExperience(std::stoi(argv[12]));
             emp.setProjectTitle(argv[13]);
+            emp.setSalary(Salary::getSalaryByID(std::stoi(argv[0])).value());
 
             vecOfEmp->push_back(std::move(emp));
             return 0;
             };
 
-        dbI.executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp, "");
 
         return vecOfEmp;
     }
 
 private:
 
-    int management_experience;
+    int management_experience{};
     std::string project_title;
 };
