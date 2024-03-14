@@ -61,7 +61,7 @@ public:
             *m += argv[1];
 
             return 0;
-            }, & name, "");
+            }, & name, "Employee Selected to display salary.");
 
         name += " ( ID - ";
         name += std::to_string(id) + ")";
@@ -102,7 +102,7 @@ public:
             return 0;
         };
 
-        dbI->executeSelectQuery(selectQuery.c_str(), callback, &salary, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &salary, "Salary selected for Employee with ID " + std::to_string(id) + ".");
 
         if (salary.getId() == 0) {
             return std::nullopt;
@@ -145,7 +145,7 @@ public:
             return 0;
             };
 
-        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfSal, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfSal, "Salary of Multiple Employee selected.");
 
 
         return vecOfSal;
@@ -163,7 +163,7 @@ public:
             ", " + std::to_string(bonus) +
                  + ");";
 
-        if (!dbI->executeQuery(insertQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(insertQuery.c_str(), "Salary for an Employee Inserted with ID: " + std::to_string(id) + ".")) { return false; }
 
         return true;
     }
@@ -179,7 +179,7 @@ public:
             " WHERE id = " + std::to_string(id) + ";";
 
 
-        if (!dbI->executeQuery(updateQuery.c_str(), "")) return false;
+        if (!dbI->executeQuery(updateQuery.c_str(), "Salary Updated for EMployee with ID: " + std::to_string(id) + ".")) return false;
 
         return true;
     }
@@ -191,7 +191,7 @@ public:
         std::string deleteQuery = "DELETE FROM Salary WHERE id = ";
         deleteQuery += std::to_string(id);
 
-        if (!dbI->executeQuery(deleteQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(deleteQuery.c_str(), "Salary deleted for Employee with ID: " + std::to_string(id) + ".")) { return false; }
 
         return true;
     }

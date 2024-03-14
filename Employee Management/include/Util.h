@@ -12,6 +12,7 @@ namespace std {
 	_EXPORT_STD _NODISCARD inline string to_string(const string& s) {
 		return s;
 	}
+
 }
 
 
@@ -31,7 +32,7 @@ inline std::string getLogTimeString() {
 
 inline std::regex rg{ ".*" };
 
-inline std::string input(const std::string& prompt, std::regex r = rg) {
+inline std::string input(const std::string& prompt, std::regex r = rg, bool allowSkip = false) {
 	std::string ip;
 
 	while (1) {
@@ -39,17 +40,20 @@ inline std::string input(const std::string& prompt, std::regex r = rg) {
 		std::cout << prompt;
 
 		std::getline(std::cin, ip);
+		if (allowSkip) {
+			if (ip == "#") { return "#"; }
+		}
 		
-		if (ip == "#") { return "#"; }
-
 		if(std::regex_match(ip, r)) {
 			return ip;
 		}
 		
-		std::cout << "Please Enter Valid Input\n";
+		std::cout << "\033[31mInValid Input!!\033[0m\n";
 
 	}
 }
+
+
 std::string getLogTimeString();
 
 

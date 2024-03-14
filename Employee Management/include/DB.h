@@ -20,7 +20,6 @@ public:
         if (rc)
         {
             MyLogger::error("Can't open database: ", sqlite3_errmsg(db));
-            //  std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
         }
         else
         {
@@ -32,9 +31,9 @@ public:
 
     bool createTables();
 
-    bool executeQuery(const char* sql, std::string_view msg = "Query executed successfully\n");
+    bool executeQuery(const char* sql, const std::string&msg = "");
 
-    bool executeSelectQuery(const char* selectQuery, int(*selectCallback)(void*, int, char**, char**), void* data, std::string_view msg = "Selection Successful\n");
+    bool executeSelectQuery(const char* selectQuery, int(*selectCallback)(void*, int, char**, char**), void* data, const std::string& msg = "");
 
     static std::shared_ptr<DB> getDB() {
         static DB dbI = DB("Rohit.db");

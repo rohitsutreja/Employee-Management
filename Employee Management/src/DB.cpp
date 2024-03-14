@@ -34,8 +34,8 @@ bool DB::createTables() {
             "FOREIGN KEY (department_id) REFERENCES Department(id),"
             "FOREIGN KEY (manager_id) REFERENCES Employee(id));";
 
-        if (!executeQuery(sql))
-        {
+        if (!executeQuery(sql,"Employee Table Created Successfully\n"))
+        {   
             return false;
         }
 
@@ -47,7 +47,7 @@ bool DB::createTables() {
             "FOREIGN KEY (manager_id) REFERENCES Employee(id))";
 
 
-        if (!executeQuery(sql2))
+        if (!executeQuery(sql2,"Department Table Created Successfully\n"))
         {
             return false;
         }
@@ -61,7 +61,7 @@ bool DB::createTables() {
             "specialization VARCHAR,"
             "FOREIGN KEY (id) REFERENCES Employee(id))";
 
-        if (!executeQuery(sql3))
+        if (!executeQuery(sql3, "Engineer Table Created Successfully\n"))
         {
             return false;
         }
@@ -75,7 +75,7 @@ bool DB::createTables() {
             "FOREIGN KEY (id) REFERENCES Employee(id))";
 
 
-        if (!executeQuery(sql4))
+        if (!executeQuery(sql4, "Manager Table Created Successfully\n"))
         {
             return false;
         }
@@ -89,7 +89,7 @@ bool DB::createTables() {
             "bonus INTEGER,"
             "FOREIGN KEY (id) REFERENCES Employee(id))";
 
-        if (!executeQuery(sql5))
+        if (!executeQuery(sql5, "Salary Table Created Successfully\n"))
         {
             return false;
         }
@@ -98,35 +98,36 @@ bool DB::createTables() {
         return true;
     }
 
-bool DB::executeQuery(const char* sql, std::string_view msg)
+bool DB::executeQuery(const char* sql,const std::string& msg)
     {
         rc = sqlite3_exec(db, sql, 0, 0, &errMsg);
 
         if (rc != SQLITE_OK)
         {
-            std::cerr << "SQL error: " << errMsg << std::endl;
+            MyLogger::error("Error executing query: ", errMsg);
             sqlite3_free(errMsg);
             return false;
         }
         else
         {
-            std::cout << msg << std::endl;
+            MyLogger::info("Query executed successfully: " , msg);
             return true;
         }
     }
 
-    bool DB::executeSelectQuery(const char* selectQuery, int(*selectCallback)(void*, int, char**, char**), void* data, std::string_view msg) {
+bool DB::executeSelectQuery(const char* selectQuery, int(*selectCallback)(void*, int, char**, char**), void* data, const std::string& msg) {
 
 
-        rc = sqlite3_exec(db, selectQuery, selectCallback, data, nullptr);
+        rc = sqlite3_exec(db, selectQuery, selectCallback, data, &errMsg);
 
         if (rc != SQLITE_OK) {
-            std::cerr << "Error executing query: " << sqlite3_errmsg(db) << std::endl;
-           
+            MyLogger::error("Error executing query: ", errMsg);
             return false;
         }
         else {
-            std::cout << msg;
+            if (msg != "") {
+                MyLogger::info("Query executed successfully: ", msg);
+            }
             return true;
         }
     }

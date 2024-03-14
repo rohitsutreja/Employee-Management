@@ -64,7 +64,7 @@ public:
 
         std::string insertQuery = "INSERT INTO Manager VALUES (" + std::to_string(Employee::getId()) + "," + std::to_string(management_experience) + ", '" + project_title + "');";
 
-        if (!dbI->executeQuery(insertQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(insertQuery.c_str(), "Manager Inserted with ID : " + std::to_string(getId()) + ".")) { return false; }
         return true;
     }
 
@@ -77,7 +77,7 @@ public:
         std::string deleteQuery = "DELETE FROM Manager WHERE id = ";
         deleteQuery += std::to_string(getId());
 
-        if (!dbI->executeQuery(deleteQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(deleteQuery.c_str(), "Manager Deleted with ID: " + std::to_string(getId()) + ".")) { return false; }
 
         return true;
     }
@@ -95,12 +95,12 @@ public:
             " WHERE id = " + std::to_string(getId()) + ";";
 
 
-        if (!dbI->executeQuery(updateQuery.c_str(), "")) return false;
+        if (!dbI->executeQuery(updateQuery.c_str(), "Manager Updated with ID: " + std::to_string(getId()) + ".")) return false;
 
         return true;
     }
 
-    static Manager getManagerByID(int id) {
+    static std::optional<Manager> getManagerByID(int id) {
         auto dbI = DB::getDB();
 
 
@@ -109,12 +109,10 @@ public:
         std::string selectQuery = "SELECT * FROM Employee JOIN Manager ON Employee.id = Manager.id WHERE Employee.id = " + std::to_string(id) + ";";
 
         auto callback = [](void* data, int argc, char** argv, char** azColName) {
-            Manager* emp = static_cast<Manager*>(data);
+                Manager* emp = static_cast<Manager*>(data);
 
-
-          
-                emp->setId(std::stoi(argv[0]));
-                emp->setFirstname(argv[1]);
+                emp->setId(std::stoi(argv[0])); 
+                emp->setFirstname(argv[1]); 
                 emp->setLastname(argv[2]);
                 emp->setDob(argv[3]);
                 emp->setMobile(argv[4]);
@@ -131,10 +129,13 @@ public:
             return 0;
             };
 
-        dbI->executeSelectQuery(selectQuery.c_str(), callback, &m, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &m, "Engineer selected with ID " + std::to_string(id) + ".");
 
-      
-        return m;
+        if (m.getId() != 0) {
+            return m;
+        }
+
+        return {};
     }
 
     static std::vector<Manager> getMultipleManagers(const std::string& queryField = "", const std::string& queryValue = "") {
@@ -182,7 +183,7 @@ public:
             return 0;
             };
 
-        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp, "Multiple Managers salected.");
 
         return vecOfEmp;
     }

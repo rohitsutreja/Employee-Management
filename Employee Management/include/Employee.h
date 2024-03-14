@@ -117,7 +117,7 @@ public:
             d_name = d.value().getName() + " (ID - " + std::to_string(department_id) + ")";
         }
         else {
-            d_name = "";
+            d_name = "-";
         }
        
 
@@ -219,7 +219,7 @@ public:
 
 
         std::string selectQuery = "SELECT * FROM Employee WHERE id = " + std::to_string(id) + ";";
-        dbI->executeSelectQuery(selectQuery.c_str(), callback, &emp, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &emp, "Employee selected with ID " + std::to_string(id));
        
         if (emp.getId() == 0) {
             return std::nullopt;
@@ -245,7 +245,7 @@ public:
             
         }
         else if (queryField == "" && queryValue == "") {
-            selectQuery = "SELECT Employee.* FROM Employee JOIN Department ON Employee.department_id = Department.id ;";
+            selectQuery = "SELECT Employee.* FROM Employee LEFT JOIN Department ON Employee.department_id = Department.id ;";
         }
         else {
             selectQuery = "SELECT Employee.* FROM Employee JOIN Department ON Employee.department_id = Department.id WHERE " + queryField + " = '" + queryValue + "';";   
@@ -274,7 +274,7 @@ public:
             return 0;
             };
 
-        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp,"");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp,"Multiple Employee selected.");
 
      
         return vecOfEmp;
@@ -301,7 +301,7 @@ public:
             "'," + std::to_string(manager_id) + 
             "," + std::to_string(department_id) + ");";
 
-        if (!dbI->executeQuery(insertQuery.c_str(), "")) { 
+        if (!dbI->executeQuery(insertQuery.c_str(), "An Employee Inserted with ID: " + std::to_string(id))) {
             return false; 
         }
 
@@ -317,7 +317,7 @@ public:
         std::string deleteQuery = "DELETE FROM Employee WHERE id = ";
         deleteQuery += std::to_string(id);
 
-        return dbI->executeQuery(deleteQuery.c_str(),"") && salary.deleteThis();
+        return dbI->executeQuery(deleteQuery.c_str(),"Employee Deleted with ID: " + std::to_string(id)) && salary.deleteThis();
     }
 
     bool update() {
@@ -339,7 +339,7 @@ public:
                     " WHERE id = " + std::to_string(id) + ";";
        
 
-        if (!dbI->executeQuery(updateQuery.c_str(), "")) return false;
+        if (!dbI->executeQuery(updateQuery.c_str(), "Employee Updated with ID: " + std::to_string(id))) return false;
 
         salary.update();
 

@@ -59,9 +59,9 @@ public:
 
         Employee::save();
 
-        std::string insertQuery = "INSERT INTO Engineer VALUES (" + std::to_string(Employee::getId()) + ",'" + programming_language + "', '" + specialization + "');";
+        std::string insertQuery = "INSERT INTO Engineer VALUES (" + std::to_string(getId()) + ",'" + programming_language + "', '" + specialization + "');";
 
-        if (!dbI->executeQuery(insertQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(insertQuery.c_str(), "An Engineer Inserted with ID : " + std::to_string(getId()) + ".")) { return false; }
         return true;
     }
 
@@ -73,7 +73,7 @@ public:
         std::string deleteQuery = "DELETE FROM Engineer WHERE id = ";
         deleteQuery += std::to_string(getId());
 
-        if (!dbI->executeQuery(deleteQuery.c_str(), "")) { return false; }
+        if (!dbI->executeQuery(deleteQuery.c_str(), "Engineer Deleted with ID: " + std::to_string(getId()) + ".")) { return false; }
 
         return true;
     }
@@ -90,12 +90,12 @@ public:
             "' WHERE id = " + std::to_string(getId()) + ";";
 
 
-        if (!dbI->executeQuery(updateQuery.c_str(), "")) return false;
+        if (!dbI->executeQuery(updateQuery.c_str(), "Engineer Updated with ID: " + std::to_string(getId()) + ".")) return false;
 
         return true;
     }
 
-    static Engineer getEngineerByID(int id) {
+    static std::optional<Engineer> getEngineerByID(int id) {
         auto dbI = DB::getDB();
 
 
@@ -119,18 +119,20 @@ public:
             emp->setDepartmentId(std::stoi(argv[10]));
             emp->setProgrammingLanguage(argv[12]);
             emp->setSpecialization(argv[13]);
+            emp->setSalary(Salary::getSalaryByID(std::stoi(argv[0])).value());
 
             return 0;
         };
        
-        dbI->executeSelectQuery(selectQuery.c_str(), callback, &e, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &e, "Engineer selected with ID " + std::to_string(id) + ".");
 
         if (e.getId() != 0) {
-            e.setSalary(Salary::getSalaryByID(id).value());
+            
+            return e;
         }
       
        
-        return e;
+        return {};
     }
 
     static std::vector<Engineer> getMultipleEngineers(const std::string& queryField = "", const std::string& queryValue = "") {
@@ -179,7 +181,7 @@ public:
             return 0;
             };
 
-        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp, "Multiple Engineers salected.");
 
         return vecOfEmp;
     }

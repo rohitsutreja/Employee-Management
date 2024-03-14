@@ -62,8 +62,7 @@ void Log::logOnConsole(const std::string& msg) const {
 }
 
 void Log::logOnFile(const std::string& msg, const std::string& fileName) const {
-
-    std::ofstream ofs{ fileName ,std::ios::app };
+    std::ofstream ofs{ fileName ,std::ios::app};
     ofs << msg;
 
 }

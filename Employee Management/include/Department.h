@@ -40,14 +40,11 @@ public:
             *m += argv[1];
 
             return 0;
-            }, &managerName, "");
+            }, & managerName, "Employee name selected to display department");
 
         managerName += " ( ID - ";
         managerName += std::to_string(manager_id) + ")";
 
-
-       //auto e = Employee::getEmployeeById(manager_id);
-       // std::string managerName = e.value().getFirstname() + " " + e.value().getLastname() + " - ID:(" + std::to_string(manager_id) + ")";
 
         std::cout << "+------------------+----------------------------------------+" << std::endl;
         std::cout << "|\033[32m ID\033[0m               | " << std::setw(38) << std::left << id << " |" << std::endl;
@@ -90,7 +87,7 @@ public:
             "'," + std::to_string(manager_id) +
             ",'" + description + "');";
 
-        if (!dbI->executeQuery(insertQuery.c_str(), "Inserted Successfully\n")) { return false; }
+        if (!dbI->executeQuery(insertQuery.c_str(), "A Departement Inserted with ID: " + std::to_string(id) + "\n")) { return false; }
 
         return true;
     }
@@ -114,7 +111,7 @@ public:
             return 0;
             };
 
-        dbI->executeSelectQuery(selectQuery.c_str(),callback , &dpt, "");
+        dbI->executeSelectQuery(selectQuery.c_str(),callback , &dpt, "Department selected with ID " + std::to_string(id));
 
         if (dpt.getId() == 0) {
             return std::nullopt;
@@ -158,7 +155,7 @@ public:
             return 0;
         };
 
-        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfDep, "");
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfDep, "Multiple Department selected.");
 
         return vecOfDep;
           
@@ -172,7 +169,7 @@ public:
         std::string deleteQuery = "DELETE FROM Department WHERE id = ";
         deleteQuery += std::to_string(id);
 
-        if (!dbI->executeQuery(deleteQuery.c_str(), "Deleted Successfully\n")) { return false; }
+        if (!dbI->executeQuery(deleteQuery.c_str(), "Department Deleted with ID: " + std::to_string(id) + ".")) { return false; }
 
         return true;
     }
@@ -189,7 +186,7 @@ public:
             "' WHERE id = " + std::to_string(id) + ";";
 
 
-        if (!dbI->executeQuery(updateQuery.c_str(), "Department Updated Successfully\n")) return false;
+        if (!dbI->executeQuery(updateQuery.c_str(), "Department Updated with ID: " + std::to_string(id) + ".")) return false;
 
         return true;
     }

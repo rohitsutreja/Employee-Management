@@ -23,7 +23,7 @@ namespace MyLogger
     private:
         Level m_LogLevel;
         bool m_dumpInFile{ true };
-        std::string m_fPath{ ".\\logs\\logs.txt" };
+        std::string m_fPath{ "C:\\Users\\ZTI\\source\\repos\\Employee Management\\Employee Management\\logs\\logs.txt" };
         mutable std::string m_buffer{ };
         mutable int m_bufferCount{};
 
@@ -59,14 +59,14 @@ namespace MyLogger
                 std::string finalMessageForConsole = dateTimeString + " [" + getColoredLevelName(level) + "] " + messageString + "\n";
 
 
-              //  logOnConsole(finalMessageForConsole);
+                //logOnConsole(finalMessageForConsole);
 
                 if (m_dumpInFile == true)
                 {
                     std::string finalMessageForFile = dateTimeString + " [" + getLevelName(level) + "] " + messageString + "\n";
                     m_buffer.append(finalMessageForFile);
                     ++m_bufferCount;
-                    if (m_bufferCount >= 10) {
+                    if (m_bufferCount >= 1) {
 
                         flushOnFile();
 
