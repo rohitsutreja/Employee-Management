@@ -1,29 +1,22 @@
 #include <iostream>
-#include <stdlib.h>
 #include "sqlite/sqlite3.h"
-#include"include/Employee.h"
+#include "include/Employee.h"
 #include "include/DB.h"
 #include "include/Regex.h"
 #include "include/Department.h"
 #include "include/Engineer.h"
 #include "include/Manager.h"
 #include "include/Logger/MyLogger.h"
-
+#include "include/Util.h"
 
 void runEmployeeMenu() {
 	auto choice{0};
 	while (1) {
-		system("CLS");
-		std::cout << "1. Insert an Employee\n";
-		std::cout << "2. Update an Employee\n";
-		std::cout << "3. View an Employee\n";
-		std::cout << "4. Delete an Employee\n";
-		std::cout << "5. Main menu\n";
-
+		displayCRUDMenu("Employee");
 		choice = stoi(input("\nPlease select an option: ", std::regex("^[1-5]$")));
-		system("CLS");
 
-		//Quit
+		clearDisplay();
+
 		if (choice == 5) {
 			break;
 		}
@@ -35,16 +28,27 @@ void runEmployeeMenu() {
 				Employee e;
 				e.getUserInput();
 
-				system("CLS");
-				if (e.save()) {
+				auto d = Department::getDepartment(e.getDepartmentId());
+				auto m = Manager::getManagerByID(e.getManagerId());
+
+				clearDisplay();
+				if (!d) {
+					std::cout << "This department does not exist, Please try again with valid department id\n";
+					waitBeforeClear();
+					break;
+				}
+				if (e.getManagerId() != -1 && !m) {
+					std::cout << "This manager does not exist, Please try again with valid manager id or without manager\n";
+					waitBeforeClear();
+					break;
+				}
+			    if (e.save()) {
 					std::cout << "Insertion Successfull.\n";
 				}
 				else {
 					std::cout << "Insertion Failed.\n";
 				};
-
-				std::cout << "\nPress Enter to continue...\n";
-				std::cin.get();
+				waitBeforeClear();
 				break;
 			}
 
@@ -54,9 +58,35 @@ void runEmployeeMenu() {
 				auto id = stoi(input("Please enter id of the employee: ", idRegex));
 				auto e = Employee::getEmployeeById(id);
 
-				system("CLS");
+				
+				clearDisplay();
 				if (e.has_value()) {
+					auto oldMid = e->getManagerId();
+					auto oldDid = e->getDepartmentId();
+
 					e.value().getUserInputForUpdate();
+					clearDisplay();
+
+					auto newMid = e->getManagerId();
+					auto newDid = e->getDepartmentId();
+
+					if (oldDid != newDid) {
+						auto d = Department::getDepartment(e->getDepartmentId());
+						if (!d) {
+							std::cout << "This department does not exist, Please try again with valid department id\n";
+							waitBeforeClear();
+							break;
+						}
+					}
+					
+					if (oldMid != newMid) {
+						auto m = Manager::getManagerByID(e->getManagerId());
+						if (!m) {
+							std::cout << "This manager does not exist, Please try again with valid manager id\n";
+							waitBeforeClear();
+							break;
+						}
+					}
 					if (e.value().update()) {
 						std::cout << "Updation Successfull.\n";
 					}
@@ -67,9 +97,7 @@ void runEmployeeMenu() {
 				else {
 					std::cout << "No employee exist with id: " << id << "\n";
 				}
-
-				std::cout << "\nPress Enter to continue...\n";
-				std::cin.get();
+				waitBeforeClear();
 				break;
 			}
 
@@ -92,80 +120,48 @@ void runEmployeeMenu() {
 					break;
 				}
 
-				system("CLS");
+				clearDisplay();
 				switch (choice) {
-				case 1: {
-					queryField = input("Please enter id: ", idRegex);
-					auto e = Employee::getEmployeeById(stoi(queryField));
+					case 1: {
+						queryField = input("Please enter id: ", idRegex);
+						auto e = Employee::getEmployeeById(stoi(queryField));
 				
-					system("CLS");
-					if (e.has_value()) {
-						std::cout << "Employee with id: " << queryField << '\n';
-						e.value().display();
-					}
-					else {
-						std::cout << "No Employee exist with id: "  << queryField << "\n";
-					}
+						clearDisplay();
+						if (e.has_value()) {
+							std::cout << "Employee with id: " << queryField << '\n';
+							e.value().display();
+						}
+						else {
+							std::cout << "No Employee exist with id: "  << queryField << "\n";
+						}
 
-					std::cout << "\nPress Enter to continue...";
-					std::cin.get();
-					break;
-				}
-				case 2: {
-					queryField = input("Please enter fisrt name: ");
-					auto vec = Employee::getMultipleEmployee("firstname", queryField);
-
-					system("CLS");
-					std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-					for (auto e : vec) {
-						e.display();
-						std::cout << '\n';
+						waitBeforeClear();
+						break;
 					}
-					std::cout << "\nPress Enter to continue...";
-					std::cin.get();
-					break;
-				}
-				case 3: {
-					queryField = input("Please enter last name: ");
-					auto vec = Employee::getMultipleEmployee("lastname", queryField);
-
-					system("CLS");
-					std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-					for (auto e : vec) {
-						e.display();
-						std::cout << '\n';
+					case 2: {
+						queryField = input("Please enter fisrt name: ");
+						auto vec = Employee::getMultipleEmployee("firstname", queryField);
+						displayVector(vec);
+						break;
 					}
-					std::cout << "\nPress Enter to continue...";
-					std::cin.get();
-					break;
-				}
-				case 4: {
-					queryField = input("Please enter department name: ");
-					auto vec = Employee::getMultipleEmployee("department.name", queryField);
-
-					system("CLS");
-					std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-					for (auto e : vec) {
-						e.display();
-						std::cout << '\n';
+					case 3: {
+						queryField = input("Please enter last name: ");
+						auto vec = Employee::getMultipleEmployee("lastname", queryField);
+						displayVector(vec);
+						break;
 					}
-					std::cout << "\nPress Enter to continue...";
-					std::cin.get();
-					break;
-				}
-				case 5: {
+					case 4: {
+						queryField = input("Please enter department name: ");
+						auto vec = Employee::getMultipleEmployee("department.name", queryField);
+						displayVector(vec);
+						break;
+					}
+					case 5: {
 					auto vec = Employee::getMultipleEmployee();
-					std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-					for (auto e : vec) {
-						e.display();
-						std::cout << '\n';
-					}
-					std::cout << "\nPress Enter to continue...";
-					std::cin.get();
+					displayVector(vec);
 					break;
 				}
 				}
-
 				break;
 			}
 
@@ -187,8 +183,7 @@ void runEmployeeMenu() {
 					std::cout << "No Employee exist with id: " << id <<"\n";
 				}
 
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				waitBeforeClear();
 				break;
 			}
 		}
@@ -198,47 +193,94 @@ void runEmployeeMenu() {
 void runEngineerMenu(){
 	auto choice{ 0 };
 	while (1) {
-		system("CLS");
-		std::cout << "1. Insert an Engineer\n";
-		std::cout << "2. Update an Engineer\n";
-		std::cout << "3. View an Engineer\n";
-		std::cout << "4. Delete an Engineer\n";
-		std::cout << "5. Main menu\n";
+		displayCRUDMenu("Engineer");
 
 		choice = stoi(input("Please select an option: ", std::regex("^[1-5]$")));
-
-		
 
 		if (choice == 5) {
 			break;
 		}
 
-		system("CLS");
+		clearDisplay();
 		switch (choice) {
 		case 1:
 		{
 			Engineer e;
 			e.getUserInput();
 
-			system("CLS");
-			if (e.save()) {
-				std::cout << "Insertion Successfull.\n";
+			auto d = Department::getDepartment(e.getDepartmentId());
+			auto m = Manager::getManagerByID(e.getManagerId());
+			clearDisplay();
+			if (!d) {
+				std::cout << "This department does not exist, Please try again with valid department id\n";
 			}
 			else {
-				std::cout << "Insertion Failed.\n";
-			};
-
-			std::cout << "\nPress Enter to continue...\n";
-			std::cin.get();
+				if (e.getManagerId() != -1 && !m) {
+					std::cout << "This manager does not exist, Please try again with valid manager id or without manager\n";
+				}
+				else {
+					if (e.save()) {
+						std::cout << "Insertion Successfull.\n";
+					}
+					else {
+						std::cout << "Insertion Failed.\n";
+					};
+				}
+				
+			}
+			waitBeforeClear();
 			break;
 		}
 
 		case 2:
 		{
-			auto id = stoi(input("Please enter Id of the engineer: ", idRegex));
+
+			auto id = stoi(input("Please enter id of the engineer: ", idRegex));
 			auto e = Engineer::getEngineerByID(id);
 
-			system("CLS");
+			if (e.has_value()) {
+				auto oldMid = e->getManagerId();
+				auto oldDid = e->getDepartmentId();
+
+				e.value().getUserInputForUpdate();
+				
+				clearDisplay();
+
+				auto newMid = e->getManagerId();
+				auto newDid = e->getDepartmentId();
+
+				if (oldDid != newDid) {
+					auto d = Department::getDepartment(newDid);
+					if (!d) {
+						std::cout << "This department does not exist, Please try again with valid department id\n";
+						waitBeforeClear();
+						break;
+					}
+				}
+
+				if (oldMid != newMid) {
+					auto m = Manager::getManagerByID(newMid);
+					if (!m) {
+						std::cout << "This manager does not exist, Please try again with valid manager id\n";
+						waitBeforeClear();
+						break;
+					}
+				}
+				if (e.value().update()) {
+					std::cout << "Updation Successfull.\n";
+				}
+				else {
+					std::cout << "Updation Failed.\n";
+				}
+			}
+			else {
+				std::cout << "No engineer exist with id: " << id << "\n";
+			}
+			waitBeforeClear();
+			break;
+
+
+			clearDisplay();
 
 			if (e.has_value()) {
 				e.value().getUserInputForUpdate();
@@ -253,8 +295,7 @@ void runEngineerMenu(){
 				std::cout << "No engineer exist with id: " << id << "\n";
 			}
 
-			std::cout << "\nPress Enter to continue...\n";
-			std::cin.get();
+			waitBeforeClear();
 			break;
 		}
 
@@ -272,14 +313,14 @@ void runEngineerMenu(){
 
 			choice = stoi(input("Please Select an Option: ",std::regex("^[1-6]$")));
 
-			system("CLS");
+			clearDisplay();
 			switch (choice) {
 			case 1: {
 
 				queryField = input("Please enter id: ", idRegex);
 				auto e = Engineer::getEngineerByID(stoi(queryField));
 
-				system("CLS");
+				clearDisplay();
 				if (e.has_value()) {
 					std::cout << "Engineer with id: " << queryField << '\n';
 					e.value().display();
@@ -296,14 +337,7 @@ void runEngineerMenu(){
 				queryField = input("Please enter fisrt name: ");
 				auto vec = Engineer::getMultipleEngineers("firstname", queryField);
 
-				system("CLS");
-				std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-				for (auto e : vec) {
-					e.display();
-					std::cout << '\n';
-				}
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				displayVector(vec);
 				break;
 			}
 			case 3: {
@@ -311,55 +345,27 @@ void runEngineerMenu(){
 				auto vec = Engineer::getMultipleEngineers("lastname", queryField);
 				
 
-				system("CLS");
-				std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-				for (auto e : vec) {
-					e.display();
-					std::cout << '\n';
-				}
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				displayVector(vec);
 				break;
 			}
 			case 4: {
 				queryField = input("Please enter department name: ");
 				auto vec = Engineer::getMultipleEngineers("department.name", queryField);
 
-				system("CLS");
-				std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-				for (auto e : vec) {
-					e.display();
-					std::cout << '\n';
-				}
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				displayVector(vec);
 				break;
 			}
 			case 5: {
 				auto vec = Engineer::getMultipleEngineers();
 
-				system("CLS");
-				std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-				for (auto e : vec) {
-					e.display();
-					std::cout << '\n';
-				}
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				displayVector(vec);
 				break;
 			}
 			case 6: {
 				queryField = input("Please enter programming language: ");
 				auto vec = Engineer::getMultipleEngineers("programming_language", queryField);
 
-				system("CLS");
-				std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-				for (auto e : vec) {
-					e.display();
-					std::cout << '\n';
-				}
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				displayVector(vec);
 				break;
 			}
 			}
@@ -371,7 +377,7 @@ void runEngineerMenu(){
 			int id = stoi(input("Please enter id of the engineer: ", idRegex));
 			auto e = Engineer::getEngineerByID(id);
 
-			system("CLS");
+			clearDisplay();
 			if (e.has_value()) {
 				if (e.value().deleteThis()) {
 					std::cout << "Deletion Successfull.\n";
@@ -385,8 +391,7 @@ void runEngineerMenu(){
 				std::cout << "No engineer exist with id: " << id << "\n";
 			}
 
-			std::cout << "\nPress Enter to continue...";
-			std::cin.get();
+			waitBeforeClear();
 			break;
 		}
 		}	
@@ -396,12 +401,7 @@ void runEngineerMenu(){
 void runManagerMenu() {
 	auto choice{ 0 };
 	while (1) {
-		system("CLS");
-		std::cout << "1. Insert an Manager\n";
-		std::cout << "2. Update an Manager\n";
-		std::cout << "3. View an Manager\n";
-		std::cout << "4. Delete an Manager\n";
-		std::cout << "5. Main menu\n\n";
+		displayCRUDMenu("Manager");
 
 		choice = stoi(input("Please select an option: ", std::regex("^[1-5]$")));
 
@@ -409,7 +409,7 @@ void runManagerMenu() {
 			break;;
 		}
 
-		system("CLS");
+		clearDisplay();
 		switch (choice) {
 		case 1:
 		{
@@ -417,16 +417,27 @@ void runManagerMenu() {
 			Manager m;
 			m.getUserInput();
 
-			system("CLS");
-			if (m.save()) {
-				std::cout << "Insertion Successfull.\n";
+			auto d = Department::getDepartment(m.getDepartmentId());
+			auto mm = Manager::getManagerByID(m.getManagerId());
+			clearDisplay();
+			if (!d) {
+				std::cout << "This department does not exist, Please try again with valid department id\n";
 			}
 			else {
-				std::cout << "Insertion Failed.\n";
-			};
+				if (m.getManagerId() != -1 && !mm) {
+					std::cout << "This manager of manager does not exist, Please try again with valid manager id or without manager\n";
+				}
+				else {
+					if (m.save()) {
+						std::cout << "Insertion Successfull.\n";
+					}
+					else {
+						std::cout << "Insertion Failed.\n";
+					};
+				}
 
-			std::cout << "\nPress Enter to continue...\n";
-			std::cin.get();
+			}
+			waitBeforeClear();
 			break;
 		}
 
@@ -436,11 +447,36 @@ void runManagerMenu() {
 			auto id = stoi(input("Please enter Id of the Manager: ", idRegex));
 			auto m = Manager::getManagerByID(id);
 
-			system("CLS");
+			clearDisplay();
+			if (m) {
+				auto oldMid = m->getManagerId();
+				auto oldDid = m->getDepartmentId();
 
-			if (m.has_value()) {
-				m.value().getUserInputForUpdate();
-				if (m.value().update()) {
+				m->getUserInputForUpdate();
+
+				clearDisplay();
+
+				auto newMid = m->getManagerId();
+				auto newDid = m->getDepartmentId();
+
+				if (oldDid != newDid) {
+					auto d = Department::getDepartment(m->getDepartmentId());
+					if (!d) {
+						std::cout << "This department does not exist, Please try again with valid department id\n";
+						waitBeforeClear();
+						break;
+					}
+				}
+
+				if (oldMid != newMid) {
+					auto mm = Manager::getManagerByID(m->getManagerId());
+					if (!mm) {
+						std::cout << "This manager does not exist, Please try again with valid manager id\n";
+						waitBeforeClear();
+						break;
+					}
+				}
+				if (m->update()) {
 					std::cout << "Updation Successfull.\n";
 				}
 				else {
@@ -450,9 +486,7 @@ void runManagerMenu() {
 			else {
 				std::cout << "No manager exist with id: " << id << "\n";
 			}
-
-			std::cout << "\nPress Enter to continue...\n";
-			std::cin.get();
+			waitBeforeClear();
 			break;
 		}
 
@@ -469,14 +503,14 @@ void runManagerMenu() {
 
 			choice = stoi(input("Please Select an Option: ", std::regex("^[1-5]$")));
 
-			system("CLS");
+			clearDisplay();
 			switch (choice) {
 			case 1: {
 
 				queryField = input("Please enter ID: ", idRegex);
 				auto m = Manager::getManagerByID(stoi(queryField));
 
-				system("CLS");
+				clearDisplay();
 				if (m.has_value()) {
 					std::cout << "Manager with id: " << queryField << '\n';
 					m.value().display();
@@ -485,8 +519,7 @@ void runManagerMenu() {
 					std::cout << "No manager exist with id: " << queryField << "\n";
 				}
 
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				waitBeforeClear();
 				break;
 
 			}
@@ -494,55 +527,26 @@ void runManagerMenu() {
 				queryField = input("Please enter fisrt name: ");
 				auto vec = Manager::getMultipleManagers("firstname", queryField);
 
-				system("CLS");
-				std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-				for (auto e : vec) {
-					e.display();
-					std::cout << '\n';
-				}
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				displayVector(vec);
 				break;
 			}
 			case 3: {
 				queryField = input("Please enter last name: ");
 				auto vec = Manager::getMultipleManagers("lastname", queryField);
-
-				system("CLS");
-				std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-				for (auto e : vec) {
-					e.display();
-					std::cout << '\n';
-				}
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				displayVector(vec);
 				break;
 			}
 			case 4: {
 				queryField = input("Please enter department name: ");
 				auto vec = Manager::getMultipleManagers("department.name", queryField);
 
-				system("CLS");
-				std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-				for (auto e : vec) {
-					e.display();
-					std::cout << '\n';
-				}
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				displayVector(vec);
 				break;
 			}
 			case 5: {
 				auto vec = Manager::getMultipleManagers();
 
-				system("CLS");
-				std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-				for (auto e : vec) {
-					e.display();
-					std::cout << '\n';
-				}
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				displayVector(vec);
 				break;
 			}
 			}
@@ -554,7 +558,7 @@ void runManagerMenu() {
 			int id = stoi(input("Please enter Id of the Manager: ", idRegex));
 			auto m = Manager::getManagerByID(id);
 
-			system("CLS");
+			clearDisplay();
 			if (m.has_value()) {
 				if (m.value().deleteThis()) {
 					std::cout << "Deletion Successfull.\n";
@@ -568,8 +572,7 @@ void runManagerMenu() {
 				std::cout << "No manager exist with id: " << id << "\n";
 			}
 
-			std::cout << "\nPress Enter to continue...";
-			std::cin.get();
+			waitBeforeClear();
 			break;
 		}
 		}	
@@ -579,11 +582,7 @@ void runManagerMenu() {
 void runDepartmentMenu(){
 	auto choice{0};
 	while (1) {
-		std::cout << "1. Insert Department\n";
-		std::cout << "2. Update Department\n";
-		std::cout << "3. View Department\n";
-		std::cout << "4. Delete Department\n";
-		std::cout << "5. Main menu\n\n";
+		displayCRUDMenu("Department");
 
 		choice = stoi(input("Please select an option: ", std::regex("^[1-5]$")));
 
@@ -591,7 +590,7 @@ void runDepartmentMenu(){
 			break;
 		}
 
-		system("CLS");
+		clearDisplay();
 		switch (choice) {
 			case 1:
 			{	
@@ -599,7 +598,7 @@ void runDepartmentMenu(){
 				Department d;
 				d.getUserInput();
 
-				system("CLS");
+				clearDisplay();
 				if (d.save()) {
 					std::cout << "Insertion Successfull.\n";
 				}
@@ -607,8 +606,7 @@ void runDepartmentMenu(){
 					std::cout << "Insertion Failed.\n";
 				};
 
-				std::cout << "\nPress Enter to continue...\n";
-				std::cin.get();
+				waitBeforeClear();
 				break;
 			}
 
@@ -617,10 +615,21 @@ void runDepartmentMenu(){
 				int id = stoi(input("Please enter Id of the Department: ", idRegex));
 				auto d = Department::getDepartment(id);
 
-				system("CLS");
-				if (d.has_value()) {
-					d.value().getUserInputForUpdate();
-					if (d.value().update()) {
+				clearDisplay();
+				if (d) {
+					auto oldMid = d->getManagerId();
+					d->getUserInputForUpdate();
+					auto newMid = d->getManagerId();
+
+					clearDisplay();
+					if (oldMid != newMid) {
+						if (auto m = Manager::getManagerByID(newMid); !m) {
+							std::cout << "No Manager exists with this id, Please retry with valid manager id\n";
+							waitBeforeClear();
+							break;
+						}
+					}
+					if (d->update()) {
 						std::cout << "Updation Successfull.\n";
 					}
 					else {
@@ -631,8 +640,7 @@ void runDepartmentMenu(){
 					std::cout << "No department exist with id: " << id << "\n";
 				}
 
-				std::cout << "\nPress Enter to continue...\n";
-				std::cin.get();
+				waitBeforeClear();
 				break;
 			}
 
@@ -648,13 +656,13 @@ void runDepartmentMenu(){
 
 				choice = stoi(input("Please Select an Option: ", std::regex("^[1-4]$")));
 
-				system("CLS");
+				clearDisplay();
 				switch (choice) {
 					case 1: {
 						queryField = input("Please enter id: ", idRegex);
 						auto d = Department::getDepartment(stoi(queryField));
 						
-						system("CLS");
+						clearDisplay();
 						if (d.has_value()) {
 							std::cout << "Department with id: " << queryField << "\n";
 							d.value().display();
@@ -662,52 +670,28 @@ void runDepartmentMenu(){
 						else {
 							std::cout << "No Department exists with id: " + queryField + "\n";
 						}
-						std::cout << "\nPress Enter to continue...";
-						std::cin.get();
+						waitBeforeClear();
 						break;
 					}
 					case 2: {
 						queryField = input("Please enter name: ");
 						auto vec = Department::getMultipleDepartment("name", queryField);
 
-						system("CLS");
-						std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-						for (auto d : vec) {
-							d.display();
-							std::cout << '\n';
-						}
-						std::cout << "\nPress Enter to continue...";
-						std::cin.get();
+						displayVector(vec);
 						break;
 					}
 					case 3: {
 						queryField = input("Please enter manager ID: ");
 						auto vec = Department::getMultipleDepartment("Department.manager_id", queryField);
 
-						system("CLS");
-						std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-						for (auto d : vec) {
-							d.display();
-							std::cout << '\n';
-						}
-						std::cout << "\nPress Enter to continue...";
-						std::cin.get();
+						displayVector(vec);
 						break;
 					}
 					case 4: {
+						auto vec = Department::getMultipleDepartment();
 
-
-					auto vec = Department::getMultipleDepartment();
-
-					system("CLS");
-					std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-					for (auto d : vec) {
-						d.display();
-						std::cout << '\n';
-					}
-					std::cout << "\nPress Enter to continue...";
-					std::cin.get();
-					break;
+						displayVector(vec);
+						break;
 				}
 				}
 
@@ -720,7 +704,7 @@ void runDepartmentMenu(){
 				int id = stoi(input("Please enter Id of the Department: ", idRegex));
 				auto d = Department::getDepartment(id);
 
-				system("CLS");
+				clearDisplay();
 				if (d.has_value()) {
 					if (d.value().deleteThis()) {
 						std::cout << "Deletion Successfull.\n";
@@ -734,8 +718,7 @@ void runDepartmentMenu(){
 					std::cout << "No department exist with id: " << id << "\n";
 				}
 
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
+				waitBeforeClear();
 				break;
 			}
 		}
@@ -746,7 +729,6 @@ void runDepartmentMenu(){
 
 void runSalaryMenu() {
 	auto choice{ 0 };
-
 	while (1) {
 		std::cout << "1. View Salary details of an Employee\n";
 		std::cout << "2. Update Salary details of an Employee\n";
@@ -758,7 +740,7 @@ void runSalaryMenu() {
 			break;
 		}
 
-		system("CLS");
+		clearDisplay();
 		switch (choice) {
 
 		case 1:
@@ -775,13 +757,13 @@ void runSalaryMenu() {
 			choice = stoi(input("Please Select an Option: ", std::regex("^[1-5]$")));
 
 
-			system("CLS");
+			clearDisplay();
 			switch (choice) {
 				case 1: {
 					queryField = input("Please enter ID: ", idRegex);
 					auto e = Salary::getSalaryByID(stoi(queryField));
 					
-					system("CLS");
+					clearDisplay();
 					if (e.has_value()) {
 						std::cout << "Salary details of Employee with id: " << queryField << '\n';
 						e.value().display();
@@ -789,68 +771,32 @@ void runSalaryMenu() {
 					else {
 						std::cout << "No Employee exists with id" << queryField << '\n';
 					}
-
-					std::cout << "\nPress Enter to continue...";
-					std::cin.get();
+					waitBeforeClear();
 					break;
 				}
 				case 2: {
 					queryField = input("Please enter fisrt name: ");
 					auto vec = Salary::getMultipleSalary("firstname", queryField);
-
-					system("CLS");
-					std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-					for (auto e : vec) {
-						e.display();
-						std::cout << '\n';
-					}
-					std::cout << "\nPress Enter to continue...";
-					std::cin.get();
+					displayVector(vec);
 					break;
 				}
 				case 3: {
 					queryField = input("Please enter last name: ");
 					auto vec = Salary::getMultipleSalary("lastname", queryField);
-
-					system("CLS");
-					std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-					for (auto e : vec) {
-						e.display();
-						std::cout << '\n';
-					}
-					std::cout << "\nPress Enter to continue...";
-					std::cin.get();
+					displayVector(vec);
 					break;
 				}
 				case 4: {
 					queryField = input("Please enter department name: ");
 					auto vec = Salary::getMultipleSalary("department.name", queryField);
-
-					system("CLS");
-					std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-					for (auto e : vec) {
-						e.display();
-						std::cout << '\n';
-					}
-					std::cout << "\nPress Enter to continue...";
-					std::cin.get();
+					displayVector(vec);
 					break;
 				}
 				case 5: {
-
-
-				auto vec = Salary::getMultipleSalary();
-
-				system("CLS");
-				std::cout << "<------------------- " << vec.size() << " - Records Found " << " -------------------->\n";
-				for (auto e : vec) {
-					e.display();
-					std::cout << '\n';
+					auto vec = Salary::getMultipleSalary();
+					displayVector(vec);
+					break;
 				}
-				std::cout << "\nPress Enter to continue...";
-				std::cin.get();
-				break;
-			}
 			}
 			break;
 		}
@@ -858,69 +804,60 @@ void runSalaryMenu() {
 		case 2:
 		{
 			auto id = stoi(input("Please enter id of the employee: ", idRegex));
-			auto e = Salary::getSalaryByID(id);
+			auto salary = Salary::getSalaryByID(id);
 
-			if (e.has_value()) {
-				e.value().getUserInputForUpdate();
-				e.value().update();
+			if (salary.has_value()) {
+				salary.value().getUserInputForUpdate();
+				salary.value().update();
 			}
 			else {
 				std::cout << "No Employee exists with id: " << id << '\n';
 			}
-
-			std::cout << "\nPress Enter to continue...";
-			std::cin.get();
+			waitBeforeClear();
 			break;
 		}
 		}
 
 	}
-
-
-	
 }
 
 void runMenu() {
 	int choice{};
 	
 	while (1) {
-		system("CLS");
-		std::cout << "\n<--------------------------------------------> EMPLOYEE MANAGEMENT SYSTEM <-------------------------------------------->\n";
-		std::cout << "\n1. Employee Menu\n";
-		std::cout << "2. Department Menu\n";
-		std::cout << "3. Engineer Menu\n";
-		std::cout << "4. Manager Menu\n";
-		std::cout << "5. Salary Menu\n";
-		std::cout << "6. Quit\n\n";
+		displayMainMenu();
 
 		choice = stoi(input("Please Select an Option: ",mainChoiceRegex));
 
-		if (choice == 1) {
-			system("CLS");
+		switch (choice) {
+		case 1:
+			clearDisplay();
 			runEmployeeMenu();
-		}
-		else if (choice == 2) {
-			system("CLS");
+			break;
+		case 2:
+			clearDisplay();
 			runDepartmentMenu();
-
-		}
-		else if (choice == 3) {
-			system("CLS");
+			break;
+		case 3:
+			clearDisplay();
 			runEngineerMenu();
-		}
-		else if (choice == 4) {
-			system("CLS");
+			break;
+		case 4:
+			clearDisplay();
 			runManagerMenu();
-		}
-		else if (choice == 5) {
-			system("CLS");
+			break;
+		case 5:
+			clearDisplay();
 			runSalaryMenu();
-
-		}
-		else if (choice == 6) {
+			break;
+		case 6:
 			std::cout << "Thank You\n";
 			break;
+		default:
+			std::cout << "Invalid choice\n";
+			break;
 		}
+
 	}
 }
 

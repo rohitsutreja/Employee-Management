@@ -45,33 +45,41 @@ public:
         managerName += " ( ID - ";
         managerName += std::to_string(manager_id) + ")";
 
+        if (manager_id == -1) {
+            managerName = "-";
+        }
 
         std::cout << "+------------------+----------------------------------------+" << std::endl;
         std::cout << "|\033[32m ID\033[0m               | " << std::setw(38) << std::left << id << " |" << std::endl;
         std::cout << "| Department Name  | " << std::setw(38) << std::left << name        << " |" << std::endl;
-        std::cout << "| Manager Name     | " << std::setw(38) << std::left << managerName << " |" << std::endl;
+        std::cout << "| Manager Name     | " << std::setw(38) << std::left << managerName  << " |" << std::endl;
         std::cout << "| Description      | " << std::setw(38) << std::left << description << " |" << std::endl;
         std::cout << "+------------------+----------------------------------------+" << std::endl;
     }
 
     void getUserInput() {
-        setId(stoi(input("Enter Department ID: ")));
-        setName(input("Enter Department Name: "));
-        setManagerId(stoi(input("Enter Department Manager Id: ")));
-        setDescription(input("Enter Description: "));
+        setId(stoi(input("Enter Department ID: ", idRegex)));
+        setName(input("Enter Department Name: ", nonEmptyRegex));
+        auto mId = input("Enter Department Manager Id ('#' to skip): ", idRegex, true);
+        if (mId == "#") {
+           setManagerId(-1);
+        }
+        else {
+            setManagerId(stoi(mId));
+        }
+        
+        setDescription(input("Enter Description: ", nonEmptyRegex));
     }
 
     void getUserInputForUpdate() {
-        auto id{ input("Enter Department ID: ",idRegex) };
-        if ((id != "#")) { setId(stoi(id)); }
-
-        auto name{ input("Enter Department Name: ") };
+        std::cout << "Update Department with id: " << id << '\n\n';
+        auto name{ input("Enter Department Name: ", nonEmptyRegex , true) };
         if ((name != "#")) { setName(name); }
 
-        auto mid{ input("Enter Manager ID: ", idRegex) };
+        auto mid{ input("Enter Manager ID: ", idRegex , true) };
         if ((mid != "#")) { setManagerId(manager_id); }
 
-        auto desc{ input("Enter brief Description: ") };
+        auto desc{ input("Enter brief Description: ", nonEmptyRegex , true) };
         if ((desc != "#")) { setDescription(desc); }
     }
 
@@ -129,14 +137,14 @@ public:
         std::string selectQuery;
 
         if (queryField == "id" || queryField == "manager_id" ) {
-            selectQuery = "SELECT Department.* FROM Employee JOIN Department ON Employee.id = Department.manager_id WHERE " + queryField + " = " + queryValue + "; ";
+            selectQuery = "SELECT Department.* FROM Department LEFT  JOIN Employee ON Employee.id = Department.manager_id WHERE " + queryField + " = " + queryValue + "; ";
 
         }
         else if (queryField == "" && queryValue == "") {
-            selectQuery = "SELECT Department.* FROM Employee JOIN Department ON Employee.id = Department.manager_id ;";
+            selectQuery = "SELECT Department.* FROM Department LEFT JOIN Employee ON Employee.id = Department.manager_id ;";
         }
         else {
-            selectQuery = "SELECT Department.* FROM Employee JOIN Department ON Employee.id = Department.manager_id WHERE " + queryField + " = '" + queryValue + "';";
+            selectQuery = "SELECT Department.* FROM Department LEFT JOIN Employee ON Employee.id = Department.manager_id WHERE " + queryField + " = '" + queryValue + "';";
         }
 
 

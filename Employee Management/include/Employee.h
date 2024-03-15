@@ -136,16 +136,25 @@ public:
 
     void getUserInput(){
          setId(stoi(input("Enter Id: ", idRegex)));
-         setFirstname(input("Enter first name: "));
+         setFirstname(input("Enter first name: ", nameRegex));
          setLastname(input("Enter last name: "));
          setDob(input("Enter DOB (dd-mm-yyyy): ", dateRegex));
          setMobile(input("Enter Mobile Number: ", mobileRegex));
          setEmail(input("Enter Email: ", emailRegex));
          setAddress(input("Enter Adress: "));
-         setGender(stringToGender(input("Enter Gender (Male, Female, Other): ")));
+         setGender(stringToGender(input("Enter Gender (Male, Female, Other): ",genderRegex)));
          setDoj(input("Enter DOJ (dd-mm-yyyy): ", dateRegex));
-         setManagerId(stoi(input("Enter Manager Id: ")));
-         setDepartmentId(stoi(input("Enter Department Id: ")));
+
+         auto mId = input("Enter Manager Id ('#' to skip): ", idRegex, true);
+         if (mId == "#") {
+             std::cout << "Got it";
+             setManagerId(-1);
+         }
+         else {
+             setManagerId(stoi(mId));
+         }
+        
+         setDepartmentId(stoi(input("Enter Department Id: ",idRegex)));
 
          salary.setID(id);
          salary.getUserInput();
@@ -153,38 +162,38 @@ public:
 
     void getUserInputForUpdate() {
 
-        std::cout << "Please enter the updated values or '#' to keep the value as it is\n";
-        auto id{ input("Enter Id: ") };
-        if (!(id == "#")) setId(stoi(id));
-        
-        auto firstname{ input("Enter first name: ")};
+        //std::cout << "Please enter the updated values or '#' to keep the value as it is\n";
+        //auto id{ input("Enter Id: ", idRegex ,true) };
+        //if (!(id == "#")) setId(stoi(id));
+        //
+        auto firstname{ input("Enter first name: ",nameRegex, true) };
         if (!(firstname == "#")) setFirstname(firstname);
 
-        auto lastname{ input("Enter last name: ") };
+        auto lastname{ input("Enter last name: ", {} , true)};
         if (!(lastname == "#")) setLastname(lastname);
 
-        auto dob{input( "Enter DOB (dd-mm-yyyy): ",dateRegex)};
+        auto dob{ input("Enter DOB (dd-mm-yyyy): ",dateRegex,true) };
         if (!(dob == "#")) setDob(dob);
 
-        auto mobile{ input("Enter Mobile Number: ",mobileRegex) };
+        auto mobile{ input("Enter Mobile Number: ",mobileRegex,true) };
         if (!(mobile == "#")) setMobile(mobile);
 
-        auto email{ input("Enter Email: ",emailRegex) };
+        auto email{ input("Enter Email: ",emailRegex,true) };
         if (!(email == "#")) setEmail(email);
 
-        auto address{ input("Enter Adress: ") };
+        auto address{ input("Enter Adress: ",{},true) };
         if (!(address == "#")) setAddress(address);
 
-        auto gender{ input("Enter Gender (Male, Female, Other): ") };
+        auto gender{ input("Enter Gender (Male, Female, Other): ", genderRegex, true) };
         if (!(gender == "#")) setGender(stringToGender(gender));
 
-        auto doJ{ input("Enter DOJ (dd-mm-yyyy): ", dateRegex) };
+        auto doJ{ input("Enter DOJ (dd-mm-yyyy): ", dateRegex,true) };
         if (!(doJ == "#")) setDoj(doJ);
 
-        auto mid{ input("Enter Manager Id: ") };
+        auto mid{ input("Enter Manager Id: ",idRegex, true) };
         if (!(mid == "#")) setManagerId(stoi(mid));
 
-        auto did{ input("Enter Department Id: ") };
+        auto did{ input("Enter Department Id: ", idRegex , true) };
         if (!(did == "#")) setDepartmentId(stoi(did));
 
         salary.setID(getId());
@@ -245,7 +254,7 @@ public:
             
         }
         else if (queryField == "" && queryValue == "") {
-            selectQuery = "SELECT Employee.* FROM Employee LEFT JOIN Department ON Employee.department_id = Department.id ;";
+            selectQuery = "SELECT Employee.* FROM Employee JOIN Department ON Employee.department_id = Department.id ;";
         }
         else {
             selectQuery = "SELECT Employee.* FROM Employee JOIN Department ON Employee.department_id = Department.id WHERE " + queryField + " = '" + queryValue + "';";   

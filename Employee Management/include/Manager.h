@@ -34,31 +34,30 @@ public:
 
         Employee::getUserInputForUpdate();
 
-        auto me{ input("Enter Management Experience: ",emailRegex) };
+        auto me{ input("Enter Management Experience: ", oneOrTwoDigitRegex , true) };
         if (!(me == "#")) setManagementExperience(stoi(me));
 
-        auto pt{ input("Enter Project Title: ") };
+        auto pt{ input("Enter Project Title: " , nonEmptyRegex , true) };
         if (!(pt == "#")) setProjectTitle(pt);
 
     }
 
     void getUserInput() {
         Employee::getUserInput();
-        setManagementExperience(stoi(input("Enter Management Experience years: ")));
-        setProjectTitle(input("Enter Project Title: "));
+        setManagementExperience(stoi(input("Enter Management Experience years: ",oneOrTwoDigitRegex)));
+        setProjectTitle(input("Enter Project Title: ", nonEmptyRegex));
     }
 
-    void display() {
+    void display() const{
         Employee::display();
 
-        std::cout << "| Management Exp.  | " << std::setw(38) << std::left << management_experience << " |" << std::endl;
+        std::cout << "| Management Exp.  | " << std::setw(38) << std::left << (std::to_string(management_experience) + " years") << " |" << std::endl;
         std::cout << "| Project Title    | " << std::setw(38) << std::left << project_title << " |" << std::endl;
         std::cout << "+------------------+----------------------------------------+" << std::endl;
     }
 
     bool save() {
         auto dbI = DB::getDB();
-
 
         Employee::save();
 

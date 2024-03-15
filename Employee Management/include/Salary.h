@@ -31,16 +31,16 @@ public:
     }
 
     void getUserInput() {
-        setBaseSalary(stof(input("Please enter Base Salary: \n")));
-        setBonus(stof(input("Please enter Bonus: \n")));
+        setBaseSalary(stof(input("Please enter Base Salary: ",salaryRegex)));
+        setBonus(stof(input("Please enter Bonus: ",salaryRegex)));
         setAmount(base_salary + bonus);
     }
 
     void getUserInputForUpdate() {
-        auto base = input("Please enter Base Salary: \n");
+        auto base = input("Please enter Base Salary: ", salaryRegex, true);
         if(base!="#") setBaseSalary(stof(base));
         
-        auto bon = input("Please enter Bonus: \n");
+        auto bon = input("Please enter Bonus: ", salaryRegex, true);
         if(base!= "#") setBonus(stof(bon));
 
         setAmount(base_salary + bonus);

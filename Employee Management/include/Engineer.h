@@ -32,21 +32,21 @@ public:
 
         Employee::getUserInputForUpdate();
 
-        auto pl{ input("Enter Programming Language: ",emailRegex) };
+        auto pl{ input("Enter Programming Language: ",nonEmptyRegex, true) };
         if (!(pl == "#")) setProgrammingLanguage(pl);
 
-        auto sp{ input("Enter specialization: ") };
+        auto sp{ input("Enter specialization: ", nonEmptyRegex , true) };
         if (!(sp == "#")) setSpecialization(sp);
 
     }
 
     void getUserInput() {
         Employee::getUserInput();
-        setProgrammingLanguage(input("Enter programming_language name: "));
-        setSpecialization(input("Enter specialization: "));
+        setProgrammingLanguage(input("Enter programming_language name: ", nonEmptyRegex));
+        setSpecialization(input("Enter specialization: ", nonEmptyRegex));
     }
 
-    void display() {
+    void display() const {
         Employee::display();
 
         std::cout << "| Prog. Language   | " << std::setw(38) << std::left << programming_language << " |" << std::endl;
