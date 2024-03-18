@@ -70,7 +70,7 @@ inline std::string getLogTimeString() {
 
 
 
-inline std::string input(const std::string& prompt, std::optional<std::regex> r = universalRegex, bool allowSkip = false) {
+inline std::string input(std::string_view prompt, std::optional<std::regex> r = universalRegex, bool allowSkip = false) {
 	std::string ip;
 
 	while (1) {

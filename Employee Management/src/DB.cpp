@@ -1,21 +1,18 @@
 #include "../include/DB.h"
-#include"../include/Logger/MyLogger.h"
+#include "../include/Logger/MyLogger.h"
 
-//bool DB::open(const char* str) {
-//        rc = sqlite3_open(str, &db);
-//        if (rc)
-//        {
-//            std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
-//            return false;
-//        }
-//        else
-//        {
-//            MyLogger::info("Opened database successfully");
-//            //std::cout << "Opened database successfully" << std::endl;
-//            return true;
-//        }
-//
-//    }
+DB::DB(const char* str)
+ {
+        rc = sqlite3_open(str, &db);
+        if (rc)
+        {
+            MyLogger::error("Can't open database: ", sqlite3_errmsg(db));
+        }
+        else
+        {
+            MyLogger::info("Opened database successfully");
+        }
+}
 
 bool DB::createTables() {
 
@@ -131,6 +128,12 @@ bool DB::executeSelectQuery(const char* selectQuery, int(*selectCallback)(void*,
             return true;
         }
     }
+
+std::shared_ptr<DB> DB::getDB() {
+    static DB dbI = DB("Rohit.db");
+    static auto ptr = std::make_shared<DB>(dbI);
+    return ptr;
+}
 
 DB::~DB()
 {

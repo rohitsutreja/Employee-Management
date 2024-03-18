@@ -145,6 +145,7 @@
     <ClCompile Include="src\Engineer.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Manager.cpp" />
+    <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\Salary.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="include\Department.h" />
     <ClInclude Include="include\Employee.h" />
     <ClInclude Include="include\Engineer.h" />
+    <ClInclude Include="include\Menu.h" />
     <ClInclude Include="include\Util.h" />
     <ClInclude Include="include\Logger\Log.h" />
     <ClInclude Include="include\Logger\MyLogger.h" />
