@@ -12,7 +12,13 @@ class DB
     int rc{};
 
 public:
-    DB(const char* str);
+    DB() = default;
+
+    int noOfRowChanged() {
+        return sqlite3_changes(db);
+    }
+
+    bool open(const char *);
 
     bool createTables();
 

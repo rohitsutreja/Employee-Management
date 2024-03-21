@@ -24,19 +24,19 @@
     <ClCompile Include="sqlite\sqlite3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Employee.cpp">
+    <ClCompile Include="src\Entities\Employee.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Manager.cpp">
+    <ClCompile Include="src\Entities\Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Department.cpp">
+    <ClCompile Include="src\Entities\Department.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engineer.cpp">
+    <ClCompile Include="src\Entities\Engineer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Salary.cpp">
+    <ClCompile Include="src\Entities\Salary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DB.cpp">
@@ -48,24 +48,27 @@
     <ClCompile Include="src\Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\controllers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Employee.h">
+    <ClInclude Include="include\Entities\Employee.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Department.h">
+    <ClInclude Include="include\Entities\Department.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Manager.h">
+    <ClInclude Include="include\Entities\Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Salary.h">
+    <ClInclude Include="include\Entities\Salary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\DB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Engineer.h">
+    <ClInclude Include="include\Entities\Engineer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sqlite\sqlite3.h">
@@ -89,5 +92,12 @@
     <ClInclude Include="include\Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\controllers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Rohit.db" />
   </ItemGroup>
 </Project>

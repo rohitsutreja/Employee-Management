@@ -28,8 +28,8 @@ public:
 
 	const char* getClassName() const override;
 
-	void getUserInputForUpdate();
-	void getUserInput();
+	bool getUserInputForUpdate();
+	bool getUserInput();
 
 	void display() const;
 	bool save();

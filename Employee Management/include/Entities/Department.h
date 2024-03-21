@@ -4,12 +4,10 @@
 
 #include <iostream>
 #include <string>
-#include "Regex.h"
-#include "Util.h"
-#include "DB.h"
+#include "../Regex.h"
+#include "../Util.h"
+#include "../DB.h"
 #include "Employee.h"
-
-
 
 class Department {
 public:
@@ -32,10 +30,8 @@ public:
 
     void display() const;
 
-    void getUserInput();
-
-    void getUserInputForUpdate();
-
+    bool getUserInput();
+    bool getUserInputForUpdate();
 
     bool save();
 
@@ -43,18 +39,16 @@ public:
 
     static std::vector<Department> getMultipleDepartment(const std::string& queryField = "", const std::string& queryValue = "");
 
-
     bool deleteThis();
+
     bool update();
 
 
 private:
-
     int id{};
     std::string name;
     int manager_id{};
     std::string description;
-
 };
 
 

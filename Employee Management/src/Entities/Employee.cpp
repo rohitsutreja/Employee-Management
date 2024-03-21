@@ -1,8 +1,6 @@
-#include "../include/Employee.h"
+#include "../../include/Entities/Employee.h"
 
-void Employee::display() const {
-
-
+bool Employee::display() const {
     std::cout << "+------------------+----------------------------------------+" << std::endl;
     std::cout << "|\033[32m ID\033[0m               | " << std::setw(38) << std::left << id << " |" << std::endl;
     std::cout << "| First Name       | " << std::setw(38) << std::left << firstname << " |" << std::endl;
@@ -44,80 +42,87 @@ void Employee::display() const {
         std::cout << "+------------------+----------------------------------------+" << std::endl;
     }
 
+    return true;
 }
 
 const char* Employee::getClassName() const {
     return "Emp";
 }
 
-void Employee::getUserInput() {
-    setId(stoi(input("Enter Id: ", idRegex)));
-    setFirstname(input("Enter first name: ", nameRegex));
-    setLastname(input("Enter last name: "));
-    setDob(input("Enter DOB (dd-mm-yyyy): ", dateRegex));
-    setMobile(input("Enter Mobile Number: ", mobileRegex));
-    setEmail(input("Enter Email: ", emailRegex));
-    setAddress(input("Enter Adress: "));
-    setGender(stringToGender(input("Enter Gender (Male, Female, Other): ", genderRegex)));
-    setDoj(input("Enter DOJ (dd-mm-yyyy): ", dateRegex));
+bool Employee::getUserInput() {
+    try {
+        setId(stoi(input("Enter Id: ", idRegex)));
+        setFirstname(input("Enter first name: ", nameRegex));
+        setLastname(input("Enter last name: "));
+        setDob(input("Enter DOB (dd-mm-yyyy): ", dateRegex));
+        setMobile(input("Enter Mobile Number: ", mobileRegex));
+        setEmail(input("Enter Email: ", emailRegex));
+        setAddress(input("Enter Adress: "));
+        setGender(stringToGender(input("Enter Gender (Male, Female, Other): ", genderRegex)));
+        setDoj(input("Enter DOJ (dd-mm-yyyy): ", dateRegex));
 
-    auto mId = input("Enter Manager Id ('#' to skip): ", idRegex, true);
-    if (mId == "#") {
-        std::cout << "Got it";
-        setManagerId(-1);
+        auto mId = input("Enter Manager Id ('#' to skip): ", idRegex, true);
+        if (mId == "#") {
+            setManagerId(-1);
+        }
+        else {
+            setManagerId(stoi(mId));
+        }
+
+        setDepartmentId(stoi(input("Enter Department Id: ", idRegex)));
+
+        salary.setID(id);
+
+        return  salary.getUserInput();
+
     }
-    else {
-        setManagerId(stoi(mId));
+    catch (...) {
+        return false;
     }
-
-    setDepartmentId(stoi(input("Enter Department Id: ", idRegex)));
-
-    salary.setID(id);
-    salary.getUserInput();
 }
 
-void Employee::getUserInputForUpdate() {
+bool Employee::getUserInputForUpdate() {
 
     std::cout << "Updating detail for employee with id: " + std::to_string(id);
     std::cout << "\n\nPlease enter the updated values or '#' to keep the value as it is\n\n";
 
     auto firstname{ input("Enter first name: ",nameRegex, true) };
-    if (!(firstname == "#")) setFirstname(firstname);
+    if (firstname != "#") setFirstname(firstname);
 
     auto lastname{ input("Enter last name: ", {} , true) };
-    if (!(lastname == "#")) setLastname(lastname);
+    if (lastname != "#") setLastname(lastname);
 
     auto dob{ input("Enter DOB (dd-mm-yyyy): ",dateRegex,true) };
-    if (!(dob == "#")) setDob(dob);
+    if (dob != "#") setDob(dob);
 
     auto mobile{ input("Enter Mobile Number: ",mobileRegex,true) };
-    if (!(mobile == "#")) setMobile(mobile);
+    if (mobile != "#") setMobile(mobile);
 
     auto email{ input("Enter Email: ",emailRegex,true) };
-    if (!(email == "#")) setEmail(email);
+    if (email != "#") setEmail(email);
 
     auto address{ input("Enter Adress: ",{},true) };
-    if (!(address == "#")) setAddress(address);
+    if (address != "#") setAddress(address);
 
     auto gender{ input("Enter Gender (Male, Female, Other): ", genderRegex, true) };
-    if (!(gender == "#")) setGender(stringToGender(gender));
+    if (gender != "#") setGender(stringToGender(gender));
 
     auto doJ{ input("Enter DOJ (dd-mm-yyyy): ", dateRegex,true) };
-    if (!(doJ == "#")) setDoj(doJ);
+    if (doJ != "#") setDoj(doJ);
 
     auto mid{ input("Enter Manager Id: ",idRegex, true) };
-    if (!(mid == "#")) setManagerId(stoi(mid));
+    if (mid != "#") setManagerId(stoi(mid));
 
     auto did{ input("Enter Department Id: ", idRegex , true) };
-    if (!(did == "#")) setDepartmentId(stoi(did));
+    if (did != "#") setDepartmentId(stoi(did));
 
     salary.setID(getId());
-    salary.getUserInputForUpdate();
+  
+    return salary.getUserInputForUpdate();
 }
 
 std::optional<Employee> Employee::getEmployeeById(int id) {
     auto dbI = DB::getDB();
-
 
     Employee employee;
 
@@ -133,7 +138,13 @@ std::optional<Employee> Employee::getEmployeeById(int id) {
         employee->setAddress(argv[6]);
         employee->setGender(stringToGender(argv[7]));
         employee->setDoj(argv[8]);
-        employee->setManagerId(std::stoi(argv[9]));
+        if (argv[9]) {
+            employee->setManagerId(std::stoi(argv[9]));
+        }
+        else {
+            employee->setManagerId(-1);
+        }
+       
         employee->setDepartmentId(std::stoi(argv[10]));
 
         return 0;
@@ -146,9 +157,12 @@ std::optional<Employee> Employee::getEmployeeById(int id) {
     if (employee.getId() == 0) {
         return std::nullopt;
     }
+    auto salary1 = Salary::getSalaryByID(id);
 
-    employee.salary = Salary::getSalaryByID(id).value();
-
+        if(salary1) {
+            employee.salary = std::move(*salary1);
+        }
+   
     return employee;
 }
 
@@ -186,7 +200,12 @@ std::vector<Employee> Employee::getMultipleEmployee(const std::string& queryFiel
         employee.setAddress(argv[6]);
         employee.setGender(stringToGender(argv[7]));
         employee.setDoj(argv[8]);
-        employee.setManagerId(std::stoi(argv[9]));
+        if (argv[9]) {
+            employee.setManagerId(std::stoi(argv[9]));
+        }
+        else {
+            employee.setManagerId(-1);
+        }
         employee.setDepartmentId(std::stoi(argv[10]));
         employee.setSalary((Salary::getSalaryByID(std::stoi(argv[0])).value()));
 
@@ -202,7 +221,6 @@ std::vector<Employee> Employee::getMultipleEmployee(const std::string& queryFiel
 bool Employee::save() {
     auto dbI = DB::getDB();
 
-
     std::string  insertQuery = "INSERT INTO Employee "
         "(id, firstname, lastname, dob, mobile, email, address, gender, doj, manager_id, department_id) VALUES (";
 
@@ -215,8 +233,8 @@ bool Employee::save() {
         "','" + address +
         "','" + genderToString(gender) +
         "','" + doj +
-        "'," + std::to_string(manager_id) +
-        "," + std::to_string(department_id) + ");";
+        "'," + (manager_id == -1 ? "NULL" : std::to_string(manager_id)) +
+        "," +  std::to_string(department_id) + ");";
 
     if (!dbI->executeQuery(insertQuery.c_str(), "An Employee Inserted with ID: " + std::to_string(id))) {
         return false;
@@ -229,17 +247,22 @@ bool Employee::save() {
 
 bool Employee::deleteThis() {
     auto dbI = DB::getDB();
-
-
-    std::string deleteQuery = "DELETE FROM Employee WHERE id = " + std::to_string(id);
     std::string deleteQuery1 = "DELETE FROM Manager WHERE id = " + std::to_string(id);
     std::string deleteQuery2 = "DELETE FROM Engineer WHERE id = " + std::to_string(id);
+    salary.deleteThis();
 
-    std::string updateQuery = "UPDATE Department SET manager_id = -1 where manager_id = " + std::to_string(id);
-    dbI->executeQuery(updateQuery.c_str());
     dbI->executeQuery(deleteQuery1.c_str());
     dbI->executeQuery(deleteQuery2.c_str());
-    return dbI->executeQuery(deleteQuery.c_str(), "Employee Deleted with ID: " + std::to_string(id)) && salary.deleteThis();
+
+    std::string deleteQuery = "DELETE FROM Employee WHERE id = " + std::to_string(id);
+
+    if (!dbI->executeQuery(deleteQuery.c_str(), " Employee Deleted with Id: " + std::to_string(id))) {
+        return false;
+    }
+    
+    if (dbI->noOfRowChanged() == 0) { return false; }
+    
+    return true;
 }
 
 bool Employee::update() {
@@ -256,12 +279,14 @@ bool Employee::update() {
         "', address='" + address +
         "', gender='" + genderToString(gender) +
         "', doj='" + doj +
-        "', manager_id=" + std::to_string(manager_id) +
+        "', manager_id=" + (manager_id == -1 ? "NULL" : std::to_string(manager_id)) +
         ", department_id=" + std::to_string(department_id) +
         " WHERE id = " + std::to_string(id) + ";";
 
 
     if (!dbI->executeQuery(updateQuery.c_str(), "Employee Updated with ID: " + std::to_string(id))) return false;
+
+    if (dbI->noOfRowChanged() == 0) return false;
 
     salary.update();
 

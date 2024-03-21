@@ -1,28 +1,33 @@
-#include "../include/Department.h"
+#include "../../include/Entities/Department.h"
 
 void  Department::display() const {
     auto dbI = DB::getDB();
 
     std::string managerName = "-";
-    std::string selectQuery = "SELECT id, firstname, lastname FROM EMPLOYEE WHERE id = " + std::to_string(manager_id) + ";";
-    dbI->executeSelectQuery(selectQuery.c_str(), [](void* data, int argc, char** argv, char** aZcolname) {
-        auto m = static_cast<std::string*>(data);
-
-        *m = argv[1];
-        *m += " ";
-        *m += argv[2];
-
-        *m += " (ID - ";
-        *m += argv[0];
-        *m += ")";
-
-        return 0;
-        }, &managerName, "Employee name selected to display department");
-
 
     if (manager_id == -1) {
         managerName = "-";
     }
+    else {
+        std::string selectQuery = "SELECT id, firstname, lastname FROM EMPLOYEE WHERE id = " + std::to_string(manager_id) + ";";
+        dbI->executeSelectQuery(selectQuery.c_str(), [](void* data, int argc, char** argv, char** aZcolname) {
+            auto m = static_cast<std::string*>(data);
+
+            *m = argv[1];
+            *m += " ";
+            *m += argv[2];
+
+            *m += " (ID - ";
+            *m += argv[0];
+            *m += ")";
+
+            return 0;
+            }, &managerName, "Employee name selected to display department");
+    }
+  
+
+
+
 
     std::cout << "+------------------+----------------------------------------+" << std::endl;
     std::cout << "|\033[32m ID\033[0m               | " << std::setw(38) << std::left << id << " |" << std::endl;
@@ -32,33 +37,49 @@ void  Department::display() const {
     std::cout << "+------------------+----------------------------------------+" << std::endl;
 }
 
-void  Department::getUserInput() {
-    setId(stoi(input("Enter Department ID: ", idRegex)));
-    setName(input("Enter Department Name: ", nonEmptyRegex));
-    auto mId = input("Enter Department Manager Id ('#' to skip): ", idRegex, true);
-    if (mId == "#") {
-        setManagerId(-1);
-    }
-    else {
-        setManagerId(stoi(mId));
-    }
+bool Department::getUserInput() {
+    try {
+        setId(stoi(input("Enter Department ID: ", idRegex)));
+        setName(input("Enter Department Name: ", nonEmptyRegex));
+        auto mId = input("Enter Department Manager Id ('#' to skip): ", idRegex, true);
+        if (mId == "#") {
+            setManagerId(-1);
+        }
+        else {
+            setManagerId(stoi(mId));
+        }
 
-    setDescription(input("Enter Description: ", nonEmptyRegex));
+        setDescription(input("Enter Description: ", nonEmptyRegex));
+
+        return true;
+
+    }
+    catch (...) {
+        return false;
+    }
+  
 }
 
-void  Department::getUserInputForUpdate() {
-    std::cout << "Update Department with id: " << id;
+bool  Department::getUserInputForUpdate() {
+    try {
+        std::cout << "Update Department with id: " << id;
 
-    std::cout << "\n\nPlease enter the updated values or '#' to keep the value as it is\n\n";
+        std::cout << "\n\nPlease enter the updated values or '#' to keep the value as it is\n\n";
 
-    auto name{ input("Enter Department Name: ", nonEmptyRegex , true) };
-    if ((name != "#")) { setName(name); }
+        auto name{ input("Enter Department Name: ", nonEmptyRegex , true) };
+        if ((name != "#")) { setName(name); }
 
-    auto mid{ input("Enter Manager ID: ", idRegex , true) };
-    if ((mid != "#")) { setManagerId(stoi(mid)); }
+        auto mid{ input("Enter Manager ID: ", idRegex , true) };
+        if ((mid != "#")) { setManagerId(stoi(mid)); }
 
-    auto desc{ input("Enter brief Description: ", nonEmptyRegex , true) };
-    if ((desc != "#")) { setDescription(desc); }
+        auto desc{ input("Enter brief Description: ", nonEmptyRegex , true) };
+        if ((desc != "#")) { setDescription(desc); }
+
+        return true;
+   }
+    catch (...) {
+        return false;
+    }
 }
 
 bool  Department::save() {
@@ -69,7 +90,7 @@ bool  Department::save() {
 
     insertQuery += std::to_string(id) +
         ",'" + name +
-        "'," + std::to_string(manager_id) +
+        "'," + (manager_id == -1 ? "NULL" : std::to_string(manager_id)) +
         ",'" + description + "');";
 
     if (!dbI->executeQuery(insertQuery.c_str(), "A Departement Inserted with ID: " + std::to_string(id) + "\n")) { return false; }
@@ -90,7 +111,13 @@ std::optional<Department>  Department::getDepartmentById(int id) {
 
         dpt->setId(std::stoi(argv[0]));
         dpt->setName(argv[1]);
-        dpt->setManagerId(std::stoi(argv[2]));
+        if (argv[2]) {
+            dpt->setManagerId(std::stoi(argv[2]));
+        }
+        else {
+            dpt->setManagerId(-1);
+        }
+       
         dpt->setDescription(argv[3]);
         return 0;
         };
@@ -111,8 +138,8 @@ std::vector<Department>  Department::getMultipleDepartment(const std::string& qu
 
     std::string selectQuery;
 
-    if (queryField == "id" || queryField == "manager_id") {
-        selectQuery = "SELECT Department.* FROM Department LEFT  JOIN Employee ON Employee.id = Department.manager_id WHERE " + queryField + " = " + queryValue + "; ";
+    if (queryField == "id" || queryField == "Department.manager_id") {
+        selectQuery = "SELECT Department.* FROM Department LEFT JOIN Employee ON Employee.id = Department.manager_id WHERE " + queryField + " = " + queryValue + "; ";
 
     }
     else if (queryField == "" && queryValue == "") {
@@ -130,7 +157,12 @@ std::vector<Department>  Department::getMultipleDepartment(const std::string& qu
 
         dpt.setId(std::stoi(argv[0]));
         dpt.setName(argv[1]);
-        dpt.setManagerId(std::stoi(argv[2]));
+        if (argv[2]) {
+            dpt.setManagerId(std::stoi(argv[2]));
+        }
+        else {
+            dpt.setManagerId(-1);
+        }
         dpt.setDescription(argv[3]);
 
         vecOfDep->push_back(std::move(dpt));
@@ -146,11 +178,13 @@ std::vector<Department>  Department::getMultipleDepartment(const std::string& qu
 
 bool Department::deleteThis() {
     auto dbI = DB::getDB();
-
+    
     std::string deleteQuery = "DELETE FROM Department WHERE id = ";
     deleteQuery += std::to_string(id);
 
     if (!dbI->executeQuery(deleteQuery.c_str(), "Department Deleted with ID: " + std::to_string(id) + ".")) { return false; }
+
+    if (dbI->noOfRowChanged() == 0) return false;
 
     return true;
 }
@@ -162,12 +196,17 @@ bool  Department::update() {
     std::string updateQuery = "UPDATE Department SET ";
     updateQuery +=
         "name='" + name +
-        "', manager_id=" + std::to_string(manager_id) +
+        "', manager_id=" + (manager_id == -1 ? "NULL" : std::to_string(manager_id)) +
         ", description='" + description +
         "' WHERE id = " + std::to_string(id) + ";";
 
 
     if (!dbI->executeQuery(updateQuery.c_str(), "Department Updated with ID: " + std::to_string(id) + ".")) return false;
+
+
+    if (dbI->noOfRowChanged() == 0) {
+        return false;
+    }
 
     return true;
 }

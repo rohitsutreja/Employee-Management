@@ -1,25 +1,42 @@
-#include "../include//Manager.h"
+#include "../../include/Entities/Manager.h"
 
 const char* Manager::getClassName() const {
 	return "Manager";
 }
 
-void Manager::getUserInputForUpdate() {
+bool Manager::getUserInputForUpdate() {
 
-	Employee::getUserInputForUpdate();
+	if (!Employee::getUserInputForUpdate()) return false;
 
-	auto me{ input("Enter Management Experience: ", oneOrTwoDigitRegex , true) };
-	if (!(me == "#")) setManagementExperience(stoi(me));
+	try {
+		auto me{ input("Enter Management Experience: ", oneOrTwoDigitRegex , true) };
+		if (!(me == "#")) setManagementExperience(stoi(me));
 
-	auto pt{ input("Enter Project Title: " , nonEmptyRegex , true) };
-	if (!(pt == "#")) setProjectTitle(pt);
+		auto pt{ input("Enter Project Title: " , nonEmptyRegex , true) };
+		if (!(pt == "#")) setProjectTitle(pt);
 
+		return true;
+	}
+	catch (...) {
+		return false;
+	}
+
+	
 }
 
-void Manager::getUserInput() {
-	Employee::getUserInput();
-	setManagementExperience(stoi(input("Enter Management Experience years: ", oneOrTwoDigitRegex)));
-	setProjectTitle(input("Enter Project Title: ", nonEmptyRegex));
+bool Manager::getUserInput() {
+
+	if (!Employee::getUserInput()) return false;
+
+	try{
+		setManagementExperience(stoi(input("Enter Management Experience years: ", oneOrTwoDigitRegex)));
+		setProjectTitle(input("Enter Project Title: ", nonEmptyRegex));
+		return true;
+	}
+	catch (...) {
+		return false;
+	}
+
 }
 
 void Manager::display() const {
@@ -33,7 +50,7 @@ void Manager::display() const {
 bool Manager::save() {
 	auto dbI = DB::getDB();
 
-	Employee::save();
+	if(!Employee::save()) return false;
 
 	std::string insertQuery = "INSERT INTO Manager VALUES (" + std::to_string(Employee::getId()) + "," + std::to_string(management_experience) + ", '" + project_title + "');";
 
@@ -50,16 +67,18 @@ bool Manager::update() {
 	auto dbI = DB::getDB();
 
 
-	Employee::update();
+	if (!Employee::update()) return false;;
 
-	std::string updateQuery = "UPDATE Engineer SET ";
+	std::string updateQuery = "UPDATE Manager SET ";
 	updateQuery +=
 		"management_experience=" + std::to_string(management_experience) +
 		", project_title='" + project_title +
-		" WHERE id = " + std::to_string(getId()) + ";";
+		"' WHERE id = " + std::to_string(getId()) + ";";
 
 
 	if (!dbI->executeQuery(updateQuery.c_str(), "Manager Updated with ID: " + std::to_string(getId()) + ".")) return false;
+
+	if (dbI->noOfRowChanged() == 0) return false;
 
 	return true;
 }
@@ -84,7 +103,12 @@ std::optional<Manager> Manager::getManagerById(int id) {
 		emp->setAddress(argv[6]);
 		emp->setGender(stringToGender(argv[7]));
 		emp->setDoj(argv[8]);
-		emp->setManagerId(std::stoi(argv[9]));
+		if (argv[9]) {
+			emp->setManagerId(std::stoi(argv[9]));
+		}
+		else {
+			emp->setManagerId(-1);
+		}
 		emp->setDepartmentId(std::stoi(argv[10]));
 		emp->setManagementExperience(std::stoi(argv[12]));
 		emp->setProjectTitle(argv[13]);
@@ -137,7 +161,12 @@ std::vector<Manager> Manager::getMultipleManagers(const std::string& queryField,
 		emp.setAddress(argv[6]);
 		emp.setGender(stringToGender(argv[7]));
 		emp.setDoj(argv[8]);
-		emp.setManagerId(std::stoi(argv[9]));
+		if (argv[9]) {
+			emp.setManagerId(std::stoi(argv[9]));
+		}
+		else {
+			emp.setManagerId(-1);
+		}
 		emp.setDepartmentId(std::stoi(argv[10]));
 		emp.setManagementExperience(std::stoi(argv[12]));
 		emp.setProjectTitle(argv[13]);

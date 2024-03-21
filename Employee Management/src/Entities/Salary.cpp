@@ -1,19 +1,32 @@
-#include "../include/Salary.h"
+#include "../../include/Entities/Salary.h"
 
-void Salary::getUserInput() {
-	setBaseSalary(stof(input("Please enter Base Salary: ", salaryRegex)));
-	setBonus(stof(input("Please enter Bonus: ", salaryRegex)));
-	setAmount(base_salary + bonus);
+bool Salary::getUserInput() {
+	try {
+		setBaseSalary(stof(input("Please enter Base Salary: ", salaryRegex)));
+		setBonus(stof(input("Please enter Bonus: ", salaryRegex)));
+		setAmount(base_salary + bonus);
+		return true;
+	}
+	catch (...) {
+		return false;
+	}
 }
 
-void Salary::getUserInputForUpdate() {
-	auto base = input("Please enter Base Salary: ", salaryRegex, true);
-	if (base != "#") setBaseSalary(stof(base));
+bool Salary::getUserInputForUpdate() {
+	try {
+		auto base = input("Please enter Base Salary: ", salaryRegex, true);
+		if (base != "#") setBaseSalary(stof(base));
 
-	auto bon = input("Please enter Bonus: ", salaryRegex, true);
-	if (base != "#") setBonus(stof(bon));
+		auto bon = input("Please enter Bonus: ", salaryRegex, true);
+		if (base != "#") setBonus(stof(bon));
 
-	setAmount(base_salary + bonus);
+		setAmount(base_salary + bonus);
+
+		return true;
+	}
+	catch (...) {
+		return false;
+	}
 }
 
 void Salary::display() const {
@@ -140,7 +153,7 @@ bool Salary::update() {
 
 
 	if (!dbI->executeQuery(updateQuery.c_str(), "Salary Updated for EMployee with ID: " + std::to_string(id) + ".")) return false;
-
+	if (dbI->noOfRowChanged() == 0) return false;
 	return true;
 }
 
@@ -152,6 +165,7 @@ bool Salary::deleteThis() {
 
 	if (!dbI->executeQuery(deleteQuery.c_str(), "Salary deleted for Employee with ID: " + std::to_string(id) + ".")) { return false; }
 
+	if (dbI->noOfRowChanged() == 0) return false;
 	return true;
 }
 

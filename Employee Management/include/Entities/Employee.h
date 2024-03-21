@@ -5,15 +5,15 @@
 #include <typeinfo>
 #include <optional>
 #include <iomanip>
-#include "DB.h"
-#include "Util.h"
-#include "Regex.h"
+#include "../DB.h"
+#include "../Util.h"
+#include "../Regex.h"
 #include "Department.h"
 #include "Salary.h"
 
 class Employee {
 
-protected:
+public:
     enum class Gender { Male, Female, Other };
 
 public:
@@ -53,12 +53,12 @@ public:
     void setDepartmentId(int department_id) { this->department_id = department_id; }
     void setSalary(const Salary& s) { this->salary = s; }
 
-    void display() const;
+    bool display() const;
 
     virtual const char* getClassName() const;
 
-    void getUserInput();
-    void getUserInputForUpdate();
+    bool getUserInput();
+    bool getUserInputForUpdate();
 
     static std::optional<Employee> getEmployeeById(int id);
     static std::vector<Employee> getMultipleEmployee(const std::string& queryField = "", const std::string& queryValue = "");

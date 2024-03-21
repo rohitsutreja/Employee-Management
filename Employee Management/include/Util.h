@@ -20,7 +20,9 @@ inline void clearDisplay() {
 
 inline void waitBeforeClear() {
 	std::cout << "\nPress Enter to continue...";
-	std::cin.get();
+	std::string line;
+	 std::getline(std::cin, line);
+
 }
 
 template<typename T>
@@ -31,8 +33,6 @@ void displayVector(const std::vector<T>& coll) {
 		e.display();
 		std::cout << '\n';
 	}
-	waitBeforeClear();
-
 }
 
 inline void displayCRUDMenu(std::string_view entity) {
@@ -71,25 +71,26 @@ inline std::string getLogTimeString() {
 
 
 inline std::string input(std::string_view prompt, std::optional<std::regex> r = universalRegex, bool allowSkip = false) {
+	
 	std::string ip;
 
 	while (1) {
-
 		std::cout << prompt;
 
 		std::getline(std::cin, ip);
-		if (allowSkip) {
-			if (ip == "#") { return "#"; }
+
+		if (allowSkip && ip == "#") {
+			return "#"; 
 		}
-		
+
 		if(std::regex_match(ip, r.value_or(universalRegex))) {
 			return ip;
 		}
 		
 		std::cout << "\033[31mInValid Input!!\033[0m\n";
-
 	}
 }
+
 
 std::string inline getString() { return ""; };
 

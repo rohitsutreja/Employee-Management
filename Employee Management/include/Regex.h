@@ -10,7 +10,7 @@ inline std::regex mainChoiceRegex("^[1-6]$");
 inline std::regex universalRegex{ ".*" };
 inline std::regex nameRegex("^[A-Za-z]+(?: [A-Za-z]+)*$");
 inline std::regex genderRegex("^(male|female|other)$", std::regex_constants::icase);
-inline std::regex salaryRegex("^(100000000(\.0+)?|([1-9]\d{0,7}|0)(\.\d+)?)$");
+inline std::regex salaryRegex("^(100000000(\\.0+)?|([1-9]\\d{0,7}|0)(\\.\\d+)?)$");
 inline std::regex oneOrTwoDigitRegex("^\\d{1,2}$");
 inline std::regex nonEmptyRegex("^.+$");
 inline std::regex idRegex("^(?:[1-9]\\d{0,3}|9999)$");

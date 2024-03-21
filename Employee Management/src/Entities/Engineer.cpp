@@ -1,66 +1,45 @@
-#include "../include/Engineer.h"
+#include "../../include/Entities/Engineer.h"
 
 const char* Engineer::getClassName() const {
 	return "Eng";
 }
 
-void Engineer::getUserInputForUpdate() {
+bool Engineer::getUserInputForUpdate() {
 
-	Employee::getUserInputForUpdate();
+	if (!Employee::getUserInputForUpdate()) return false;
 
-	auto pl{ input("Enter Programming Language: ",nonEmptyRegex, true) };
-	if (!(pl == "#")) setProgrammingLanguage(pl);
+	try {
+		auto pl{ input("Enter Programming Language: ",nonEmptyRegex, true) };
+		if (!(pl == "#")) setProgrammingLanguage(pl);
 
-	auto sp{ input("Enter specialization: ", nonEmptyRegex , true) };
-	if (!(sp == "#")) setSpecialization(sp);
+		auto sp{ input("Enter specialization: ", nonEmptyRegex , true) };
+		if (!(sp == "#")) setSpecialization(sp);
 
+		return true;
+	}
+	catch (...) {
+		return false;
+	}
 }
 
-void Engineer::getUserInput() {
-	Employee::getUserInput();
-	setProgrammingLanguage(input("Enter programming_language name: ", nonEmptyRegex));
-	setSpecialization(input("Enter specialization: ", nonEmptyRegex));
+bool Engineer::getUserInput() {
+	if(!Employee::getUserInput()) return false;
+	try {
+		setProgrammingLanguage(input("Enter programming_language name: ", nonEmptyRegex));
+		setSpecialization(input("Enter specialization: ", nonEmptyRegex));
+		return true;
+	}
+	catch (...) {
+		return false;
+	}
+
 }
 
 void Engineer::display() const {
 	Employee::display();
-
 	std::cout << "| Prog. Language   | " << std::setw(38) << std::left << programming_language << " |" << std::endl;
 	std::cout << "| Specialization   | " << std::setw(38) << std::left << specialization << " |" << std::endl;
 	std::cout << "+------------------+----------------------------------------+" << std::endl;
-}
-
-bool Engineer::save() {
-	auto dbI = DB::getDB();
-
-	Employee::save();
-
-	std::string insertQuery = "INSERT INTO Engineer VALUES (" + std::to_string(getId()) + ",'" + programming_language + "', '" + specialization + "');";
-
-	if (!dbI->executeQuery(insertQuery.c_str(), "An Engineer Inserted with ID : " + std::to_string(getId()) + ".")) { return false; }
-	return true;
-}
-
-bool Engineer::deleteThis() {
-	auto dbI = DB::getDB();
-	return  Employee::deleteThis();
-}
-
-bool Engineer::update() {
-	auto dbI = DB::getDB();
-
-	Employee::update();
-
-	std::string updateQuery = "UPDATE Engineer SET ";
-	updateQuery +=
-		"programming_language='" + programming_language +
-		"', specialization='" + specialization +
-		"' WHERE id = " + std::to_string(getId()) + ";";
-
-
-	if (!dbI->executeQuery(updateQuery.c_str(), "Engineer Updated with ID: " + std::to_string(getId()) + ".")) return false;
-
-	return true;
 }
 
 std::optional<Engineer> Engineer::getEngineerById(int id) {
@@ -83,7 +62,12 @@ std::optional<Engineer> Engineer::getEngineerById(int id) {
 		emp->setAddress(argv[6]);
 		emp->setGender(stringToGender(argv[7]));
 		emp->setDoj(argv[8]);
-		emp->setManagerId(std::stoi(argv[9]));
+		if (argv[9]) {
+			emp->setManagerId(std::stoi(argv[9]));
+		}
+		else {
+			emp->setManagerId(-1);
+		}
 		emp->setDepartmentId(std::stoi(argv[10]));
 		emp->setProgrammingLanguage(argv[12]);
 		emp->setSpecialization(argv[13]);
@@ -138,7 +122,12 @@ std::vector<Engineer> Engineer::getMultipleEngineers(const std::string& queryFie
 		emp.setAddress(argv[6]);
 		emp.setGender(stringToGender(argv[7]));
 		emp.setDoj(argv[8]);
-		emp.setManagerId(std::stoi(argv[9]));
+		if (argv[9]) {
+			emp.setManagerId(std::stoi(argv[9]));
+		}
+		else {
+			emp.setManagerId(-1);
+		}
 		emp.setDepartmentId(std::stoi(argv[10]));
 		emp.setProgrammingLanguage(argv[12]);
 		emp.setSpecialization(argv[13]);
@@ -152,4 +141,40 @@ std::vector<Engineer> Engineer::getMultipleEngineers(const std::string& queryFie
 	dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfEmp, "Multiple Engineers salected.");
 
 	return vecOfEmp;
+}
+
+bool Engineer::save() {
+	auto dbI = DB::getDB();
+
+	if(!Employee::save()) return false;
+
+	std::string insertQuery = "INSERT INTO Engineer VALUES (" + std::to_string(getId()) + ",'" + programming_language + "', '" + specialization + "');";
+
+	if (!dbI->executeQuery(insertQuery.c_str(), "An Engineer Inserted with ID : " + std::to_string(getId()) + ".")) { return false; }
+	
+	return true;
+}
+
+bool Engineer::deleteThis() {
+	auto dbI = DB::getDB();
+	return Employee::deleteThis();
+}
+
+bool Engineer::update() {
+	auto dbI = DB::getDB();
+
+	if(!Employee::update()) return false;
+
+	std::string updateQuery = "UPDATE Engineer SET ";
+	updateQuery +=
+		"programming_language='" + programming_language +
+		"', specialization='" + specialization +
+		"' WHERE id = " + std::to_string(getId()) + ";";
+
+
+	if (!dbI->executeQuery(updateQuery.c_str(), "Engineer Updated with ID: " + std::to_string(getId()) + ".")) return false;
+
+	if (dbI->noOfRowChanged() == 0) return false;
+
+	return true;
 }

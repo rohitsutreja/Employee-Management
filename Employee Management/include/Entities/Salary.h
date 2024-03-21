@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include<iomanip>
-#include"Util.h"
-#include "DB.h"
+#include"../Util.h"
+#include "../DB.h"
 
 class Salary {
 public:
@@ -27,13 +27,15 @@ public:
     }
     void setBonus(float bonus) {
         this->bonus = bonus;
+        setAmount(base_salary + bonus);
     }
     void setID(int id) {
         this->id = id;
+        setAmount(base_salary + bonus);
     }
 
-    void getUserInput();
-    void getUserInputForUpdate();
+    bool getUserInput();
+    bool getUserInputForUpdate();
 
     void display() const;
 

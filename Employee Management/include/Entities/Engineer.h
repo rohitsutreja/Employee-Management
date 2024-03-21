@@ -1,3 +1,4 @@
+#pragma once
 #include "Employee.h"
 
 class Engineer : public Employee {
@@ -9,7 +10,7 @@ public:
         Gender gender, std::string_view doj, float salary, int w_location_id,
         int manager_id, int department_id, std::string_view programming_language,
         std::string_view specialization)
-        : Employee(id, firstname, lastname, dob, mobile, email, address, gender, doj, 
+        : Employee(id, firstname, lastname, dob, mobile, email, address, gender, doj,
             manager_id, department_id),
         programming_language(programming_language), specialization(specialization) {}
 
@@ -26,8 +27,8 @@ public:
 
     const char* getClassName() const override;
 
-    void getUserInputForUpdate();
-    void getUserInput();
+    bool getUserInputForUpdate();
+    bool getUserInput();
 
     void display() const;
 
@@ -40,5 +41,5 @@ public:
 private:
     std::string programming_language;
     std::string specialization;
-    
+
 };

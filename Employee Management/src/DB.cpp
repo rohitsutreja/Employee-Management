@@ -1,17 +1,24 @@
 #include "../include/DB.h"
 #include "../include/Logger/MyLogger.h"
 
-DB::DB(const char* str)
- {
-        rc = sqlite3_open(str, &db);
-        if (rc)
-        {
-            MyLogger::error("Can't open database: ", sqlite3_errmsg(db));
-        }
-        else
-        {
-            MyLogger::info("Opened database successfully");
-        }
+
+
+bool DB::open(const char* str) {
+    rc = sqlite3_open(str, &db);
+    if (rc)
+    {
+        MyLogger::error("Can't open database: ", sqlite3_errmsg(db));
+        return false;
+    }
+    else
+    {   
+        createTables();
+        executeQuery("PRAGMA case_sensitive_like = ON;");
+        executeQuery("PRAGMA foreign_keys = ON;");
+
+        MyLogger::info("Opened database successfully");
+        return true;
+    }
 }
 
 bool DB::createTables() {
@@ -29,7 +36,7 @@ bool DB::createTables() {
             "manager_id INTEGER,"
             "department_id INTEGER,"
             "FOREIGN KEY (department_id) REFERENCES Department(id),"
-            "FOREIGN KEY (manager_id) REFERENCES Employee(id));";
+            "FOREIGN KEY (manager_id) REFERENCES Manager(id));";
 
         if (!executeQuery(sql,"Employee Table Created Successfully\n"))
         {   
@@ -41,7 +48,7 @@ bool DB::createTables() {
             "name VARCHAR,"
             "manager_id INTEGER,"
             "description VARCHAR,"
-            "FOREIGN KEY (manager_id) REFERENCES Employee(id))";
+            "FOREIGN KEY (manager_id) REFERENCES Manager(id))";
 
 
         if (!executeQuery(sql2,"Department Table Created Successfully\n"))
@@ -91,7 +98,8 @@ bool DB::createTables() {
             return false;
         }
 
-
+       
+        
         return true;
     }
 
@@ -130,7 +138,7 @@ bool DB::executeSelectQuery(const char* selectQuery, int(*selectCallback)(void*,
     }
 
 std::shared_ptr<DB> DB::getDB() {
-    static DB dbI = DB("Rohit.db");
+    static DB dbI = DB();
     static auto ptr = std::make_shared<DB>(dbI);
     return ptr;
 }
