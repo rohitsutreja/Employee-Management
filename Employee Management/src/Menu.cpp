@@ -1,6 +1,12 @@
 #pragma once
-#include "../include/Menu.h"
-#include "../include/controllers.h"
+
+#include "include/Menu.h"
+#include "include/Controllers/EmployeeController.h"
+#include "include/Controllers/DepartmentController.h"
+#include "include/Controllers/EngineerController.h"
+#include "include/Controllers/ManagerController.h"
+#include "include/Controllers/SalaryController.h"
+
 void runEmployeeMenu() {
 	auto choice{ 0 };
 	while (1) {

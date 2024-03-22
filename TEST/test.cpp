@@ -12,7 +12,7 @@
 #include "Fixtures/EngineerFixture.h"
 #include "Fixtures/ManagerFixture.h"
 
-//EMPLOYEE TESTS
+//EMPLOYEE
 TEST_F(EmployeeFixture, employeeSave) {
 	//Employee Without manager (id 103)
 	EXPECT_TRUE(emp1.save());
@@ -61,7 +61,7 @@ TEST_F(EmployeeFixture, employeeDelete) {
 }
 
 
-//DEPARTMENT TESTS
+//DEPARTMENT
 TEST_F(DepartmentFixture, departmentSave) {
 	//Department without manager
 	EXPECT_TRUE(d1.save());
@@ -182,7 +182,7 @@ TEST_F(EngineerFixture, engineerDelete) {
 }
 
 
-////MANAGER
+//MANAGER
 TEST_F(ManagerFixture, managerSave) {
 	//Manager Without manager 
 	EXPECT_TRUE(mng1.save());

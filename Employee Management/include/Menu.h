@@ -2,9 +2,9 @@
 
 #include <iostream>
 #include "../sqlite/sqlite3.h"
-#include "Entities/Employee.h"
 #include "DB.h"
 #include "Regex.h"
+#include "Entities/Employee.h"
 #include "Entities/Department.h"
 #include "Entities/Engineer.h"
 #include "Entities/Manager.h"

@@ -19,23 +19,15 @@ public:
 public:
     Employee() = default;
 
-    Employee(int id, std::string_view firstname, std::string_view lastname, std::string_view,
-        std::string_view mobile, std::string_view email, std::string_view address,
-        Gender gender, std::string_view doj,
-        int manager_id, int department_id)
-        : id(id), firstname(firstname), lastname(lastname), dob(dob), mobile(mobile), email(email),
-        address(address), gender(gender), doj(doj),
-        manager_id(manager_id), department_id(department_id) {}
-
     int getId() const { return id; }
-    std::string getFirstname() const { return firstname; }
-    std::string getLastname() const { return lastname; }
-    std::string getDob() const { return dob; }
-    std::string getMobile() const { return mobile; }
-    std::string getEmail() const { return email; }
-    std::string getAddress() const { return address; }
+    const std::string& getFirstname() const { return firstname; }
+    const std::string& getLastname() const { return lastname; }
+    const std::string& getDob() const { return dob; }
+    const std::string& getMobile() const { return mobile; }
+    const std::string& getEmail() const { return email; }
+    const std::string& getAddress() const { return address; }
+    const std::string& getDoj() const { return doj; }
     Gender getGender() const { return gender; }
-    std::string getDoj() const { return doj; }
     int getManagerId() const { return manager_id; }
     int getDepartmentId() const { return department_id; }
 
@@ -94,7 +86,6 @@ protected:
         case Gender::Other:
             return "Other";
         }
-        return "Other";
     }
 
 

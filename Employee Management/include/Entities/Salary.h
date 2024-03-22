@@ -10,8 +10,6 @@ class Salary {
 public:
 
     Salary() = default;
-    Salary(int id, float base_salary, float bonus)
-        : id(id), base_salary(base_salary), bonus(bonus), amount(base_salary + bonus) {}
 
     int getId() const { return id; }
 

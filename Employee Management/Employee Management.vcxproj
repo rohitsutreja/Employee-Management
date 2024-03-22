@@ -143,7 +143,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="sqlite\shell.c" />
     <ClCompile Include="sqlite\sqlite3.c" />
-    <ClCompile Include="src\controllers.cpp" />
+    <ClCompile Include="src\Controllers\DepartmentController.cpp" />
+    <ClCompile Include="src\Controllers\EmployeeController.cpp" />
+    <ClCompile Include="src\Controllers\EngineerController.cpp" />
+    <ClCompile Include="src\Controllers\ManagerController.cpp" />
+    <ClCompile Include="src\Controllers\SalaryController.cpp" />
     <ClCompile Include="src\DB.cpp" />
     <ClCompile Include="src\Entities\Department.cpp" />
     <ClCompile Include="src\Entities\Employee.cpp" />
@@ -154,11 +158,16 @@
     <ClCompile Include="src\Entities\Salary.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\controllers.h" />
+    <ClInclude Include="include\Controllers\DepartmentController.h" />
+    <ClInclude Include="include\Controllers\EmployeeController.h" />
+    <ClInclude Include="include\Controllers\EngineerController.h" />
+    <ClInclude Include="include\Controllers\ManagerController.h" />
+    <ClInclude Include="include\Controllers\SalaryController.h" />
     <ClInclude Include="include\DB.h" />
     <ClInclude Include="include\Entities\Department.h" />
     <ClInclude Include="include\Entities\Employee.h" />
     <ClInclude Include="include\Entities\Engineer.h" />
+    <ClInclude Include="include\Entities\Table.h" />
     <ClInclude Include="include\Menu.h" />
     <ClInclude Include="include\Util.h" />
     <ClInclude Include="include\Logger\Log.h" />
