@@ -45,7 +45,7 @@
     <ClCompile Include="src\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Menu.cpp">
+    <ClCompile Include="src\View\Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Controllers\EmployeeController.cpp">
@@ -92,16 +92,13 @@
     <ClInclude Include="include\Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Regex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Logger\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Logger\MyLogger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Menu.h">
+    <ClInclude Include="include\VIew\Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Controllers\EmployeeController.h">

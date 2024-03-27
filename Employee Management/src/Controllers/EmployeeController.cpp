@@ -8,12 +8,14 @@ void insertEmployee() {
 
 	Employee employee;
 
+
 	if (!employee.getUserInput()) {
 		clearDisplay();
 		std::cout << "Insertion cancelled\n";
 		return;
 	};
 
+	clearDisplay();
 	if (auto duplicateEmployee = Employee::getEmployeeById(employee.getId()); duplicateEmployee) {
 		std::cout << "This employee id already exists, Please try again with another id.\n";
 		return;
@@ -28,11 +30,12 @@ void insertEmployee() {
 		return;
 	}
 
+
 	if (employee.save()) {
-		std::cout << "Insertion Successfull.\n";
+		std::cout << getInGreen("Insertion Successfull.") << '\n';
 	}
 	else {
-		std::cout << "Insertion Failed\n";
+		std::cout << getInRed("Insertion Failed.") << '\n';
 	};
 }
 void updateEmployee() {
@@ -57,6 +60,7 @@ void updateEmployee() {
 		auto newMid = employee->getManagerId();
 		auto newDid = employee->getDepartmentId();
 
+		clearDisplay();
 		if (oldDid != newDid) {
 			if (auto department = Department::getDepartmentById(employee->getDepartmentId()); !department) {
 				std::cout << "This department does not exist, Please try again with valid department id\n";
@@ -71,10 +75,10 @@ void updateEmployee() {
 		}
 
 		if (employee->update()) {
-			std::cout << "Updation Successfull.\n";
+			std::cout << getInGreen("Updation Successfull.") << '\n';
 		}
 		else {
-			std::cout << "Updation Failed.\n";
+			std::cout << getInRed("Updation Failed.") <<'\n';
 		}
 	}
 	else {
@@ -91,6 +95,8 @@ void deleteEmployee() {
 		std::cout << "This employee is manager of [" << managerOfEmployees.size() << "] employees and [" << managerOfDepartments.size() << "] departments\n\n";
 		std::cout << "If you delete this employee, they will be manager less.\n\n";
 		auto ip = input("Do you still want to delete it? ( Y / N ): ", std::regex{ "^[YNyn]$" });
+
+		clearDisplay();
 		if (ip == "N" || ip == "n") {
 			std::cout << "\nDeletion cancelled\n";
 			return;
@@ -110,10 +116,10 @@ void deleteEmployee() {
 	auto employee = Employee::getEmployeeById(id);
 	if (employee) {
 		if (employee->deleteThis()) {
-			std::cout << "Employee with id: " << id << " deleted successfully.\n";
+			std::cout << getInGreen("Deletion Successfull.") << '\n';
 		}
 		else {
-			std::cout << "Employee couldn't be deleted\n";
+			std::cout << getInRed("Deletion Failed.") << '\n';
 		}
 
 	}

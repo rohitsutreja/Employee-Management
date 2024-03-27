@@ -13,9 +13,7 @@ bool DB::open(const char* str) {
     else
     {   
         createTables();
-        executeQuery("PRAGMA case_sensitive_like = ON;");
         executeQuery("PRAGMA foreign_keys = ON;");
-
         MyLogger::info("Opened database successfully");
         return true;
     }
@@ -38,7 +36,7 @@ bool DB::createTables() {
             "FOREIGN KEY (department_id) REFERENCES Department(id),"
             "FOREIGN KEY (manager_id) REFERENCES Manager(id));";
 
-        if (!executeQuery(sql,"Employee Table Created Successfully\n"))
+        if (!executeQuery(sql,"Employee Table Created Successfully"))
         {   
             return false;
         }
@@ -51,7 +49,7 @@ bool DB::createTables() {
             "FOREIGN KEY (manager_id) REFERENCES Manager(id))";
 
 
-        if (!executeQuery(sql2,"Department Table Created Successfully\n"))
+        if (!executeQuery(sql2,"Department Table Created Successfully"))
         {
             return false;
         }
@@ -65,7 +63,7 @@ bool DB::createTables() {
             "specialization VARCHAR,"
             "FOREIGN KEY (id) REFERENCES Employee(id))";
 
-        if (!executeQuery(sql3, "Engineer Table Created Successfully\n"))
+        if (!executeQuery(sql3, "Engineer Table Created Successfully"))
         {
             return false;
         }
@@ -79,7 +77,7 @@ bool DB::createTables() {
             "FOREIGN KEY (id) REFERENCES Employee(id))";
 
 
-        if (!executeQuery(sql4, "Manager Table Created Successfully\n"))
+        if (!executeQuery(sql4, "Manager Table Created Successfully"))
         {
             return false;
         }
@@ -93,7 +91,7 @@ bool DB::createTables() {
             "bonus INTEGER,"
             "FOREIGN KEY (id) REFERENCES Employee(id))";
 
-        if (!executeQuery(sql5, "Salary Table Created Successfully\n"))
+        if (!executeQuery(sql5, "Salary Table Created Successfully"))
         {
             return false;
         }
@@ -121,8 +119,6 @@ bool DB::executeQuery(const char* sql,const std::string& msg)
     }
 
 bool DB::executeSelectQuery(const char* selectQuery, int(*selectCallback)(void*, int, char**, char**), void* data, const std::string& msg) {
-
-
         rc = sqlite3_exec(db, selectQuery, selectCallback, data, &errMsg);
 
         if (rc != SQLITE_OK) {
@@ -138,8 +134,8 @@ bool DB::executeSelectQuery(const char* selectQuery, int(*selectCallback)(void*,
     }
 
 std::shared_ptr<DB> DB::getDB() {
-    static DB dbI = DB();
-    static auto ptr = std::make_shared<DB>(dbI);
+   // static DB dbI = DB();
+    static auto ptr = std::make_shared<DB>();
     return ptr;
 }
 

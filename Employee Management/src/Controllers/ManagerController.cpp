@@ -27,10 +27,10 @@ void insertManager() {
 		}
 		else {
 			if (manager.save()) {
-				std::cout << "Insertion Successfull.\n";
+			std::cout << getInGreen("Insertion Successfull.") << '\n';
 			}
 			else {
-				std::cout << "Insertion Failed.\n";
+				std::cout << getInRed("Insertion Failed.") << '\n';
 			};
 		}
 
@@ -71,10 +71,10 @@ void updateManager() {
 		}
 
 		if (manager->update()) {
-			std::cout << "Updation Successfull.\n";
+			std::cout << getInGreen("Updation Successfull.") << '\n';
 		}
 		else {
-			std::cout << "Updation Failed.\n";
+			std::cout << getInRed("Updation Failed.") << '\n';
 		}
 	}
 	else {
@@ -93,6 +93,8 @@ void deleteManager() {
 		std::cout << "This employee is manager of [" << managerOfEmployees.size() << "] employees and [" << managerOfDepartments.size() << "] departments\n\n";
 		std::cout << "If you delete this employee, they will be manager less.\n\n";
 		auto ip = input("Do you still want to delete it? ( Y / N ): ", std::regex{ "^[YNyn]$" });
+
+		clearDisplay();
 		if (ip == "N" || ip == "n") {
 			std::cout << "\nDeletion cancelled\n";
 			return;
@@ -110,13 +112,12 @@ void deleteManager() {
 	}
 
 	auto manager = Manager::getManagerById(id);
-	clearDisplay();
 	if (manager) {
 		if (manager->deleteThis()) {
-			std::cout << "\nDeletion Successfull.\n";
+			std::cout << getInGreen("Deletion Successfull.") << '\n';
 		}
 		else {
-			std::cout << "\nDeletion Failed.\n";
+			std::cout << getInGreen("Deletion Failed.") << '\n';
 		}
 
 	}
@@ -146,7 +147,7 @@ void viewManagers() {
 
 		clearDisplay();
 		if (manager) {
-			std::cout << "Manager with id: " << queryField << '\n';
+			std::cout << "Manager with id: " << getInGreen(queryField) << '\n';
 			manager->display();
 		}
 		else {

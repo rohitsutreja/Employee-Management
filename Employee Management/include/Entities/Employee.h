@@ -7,7 +7,6 @@
 #include <iomanip>
 #include "../DB.h"
 #include "../Util.h"
-#include "../Regex.h"
 #include "Department.h"
 #include "Salary.h"
 

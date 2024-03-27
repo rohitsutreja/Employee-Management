@@ -31,6 +31,19 @@ TEST_F(EmployeeFixture, employeeSave) {
 
 }
 
+TEST_F(EmployeeFixture, employeeRead) {
+	ASSERT_EQ(Employee::getEmployeeById(1000), std::nullopt);
+	ASSERT_EQ(Employee::getEmployeeById(103)->getFirstname(), "Rohit");
+	ASSERT_EQ(Employee::getEmployeeById(103)->getId(), 103);
+	ASSERT_NE(Employee::getEmployeeById(103)->getId(), 104);
+}
+
+TEST_F(EmployeeFixture, employeeReadMultiple) {
+	ASSERT_EQ(Employee::getMultipleEmployee("firstname","rajuraju").size(), 0 );
+	ASSERT_EQ(Employee::getMultipleEmployee("firstname", "Rohit").size(), 3);
+	ASSERT_EQ(Employee::getMultipleEmployee("Department.name", "C++").size(), 4);
+}
+
 TEST_F(EmployeeFixture, employeeUpdate) {
 	//Updating employee that does not exist (id 0)
 	EXPECT_FALSE(emp0.update()); 
@@ -79,6 +92,20 @@ TEST_F(DepartmentFixture, departmentSave) {
 	EXPECT_TRUE(d5.save());
 }
 
+TEST_F(DepartmentFixture, departmentRead) {
+	ASSERT_EQ(Department::getDepartmentById(1000), std::nullopt);
+	ASSERT_EQ(Department::getDepartmentById(401)->getName(), "C++");
+	ASSERT_EQ(Department::getDepartmentById(402)->getId(), 402);
+	ASSERT_NE(Department::getDepartmentById(402)->getId(), 500);
+}
+
+TEST_F(DepartmentFixture, departmentReadMultiple) {
+	ASSERT_EQ(Department::getMultipleDepartment("name", "A Department").size(), 2);
+	ASSERT_EQ(Department::getMultipleDepartment("Department.manager_id", "302").size(), 1);
+	ASSERT_EQ(Department::getMultipleDepartment("Department.name", "C++").size(), 1);
+	ASSERT_EQ(Department::getMultipleDepartment("Department.name", "C++").back().getId(), 401);
+}
+
 TEST_F(DepartmentFixture, departmentUpdate) {
 	//Department that does not exists
 	EXPECT_FALSE(d0.update());
@@ -122,6 +149,20 @@ TEST_F(SalaryFixture, salarySave) {
 	EXPECT_FALSE(s3.save());
 }
 
+TEST_F(SalaryFixture, salaryRead) {
+	ASSERT_EQ(Salary::getSalaryByID(1000), std::nullopt);
+	ASSERT_EQ(Salary::getSalaryByID(107)->getId(), 107);
+	ASSERT_EQ(Salary::getSalaryByID(301)->getAmount(), 150000);
+	ASSERT_NE(Salary::getSalaryByID(301)->getAmount(), 150001);
+}
+
+TEST_F(SalaryFixture, salaryReadMultiple) {
+	ASSERT_EQ(Salary::getMultipleSalary("Department.name", "C++").size() , 3);
+	ASSERT_EQ(Salary::getMultipleSalary("bonus","100000").back().getBonus(), 100000);
+	ASSERT_NE(Salary::getMultipleSalary("bonus", "100000").back().getBonus(), 100001);
+	ASSERT_EQ(Salary::getMultipleSalary("firstname", "Rohit").size(), 2);
+}
+
 TEST_F(SalaryFixture, salaryUpdate) {
 	//updating salary that does not exists.
 	EXPECT_FALSE(s0.update());
@@ -153,6 +194,20 @@ TEST_F(EngineerFixture, engineersave) {
 	//Engineer with department that does not exists
 	EXPECT_FALSE(eng8.save());
 
+}
+
+TEST_F(EngineerFixture, engineerRead) {
+	ASSERT_EQ(Engineer::getEngineerById(1000), std::nullopt);
+	ASSERT_EQ(Engineer::getEngineerById(112)->getFirstname(), "rajesh");
+	ASSERT_EQ(Engineer::getEngineerById(113)->getId(), 113);
+	ASSERT_EQ(Engineer::getEngineerById(112)->getDepartmentId(), 450);
+	ASSERT_NE(Engineer::getEngineerById(113)->getId(), 110);
+}
+
+TEST_F(EngineerFixture, engineerReadMultiple) {
+	ASSERT_EQ(Engineer::getMultipleEngineers("firstname", "naineel").back().getFirstname(), "naineel");
+	ASSERT_EQ(Engineer::getMultipleEngineers("programming_language", "javascript").size(), 1);
+	ASSERT_EQ(Engineer::getMultipleEngineers("Department.name", "OS").size(), 2);
 }
 
 TEST_F(EngineerFixture, engineerUpdate) {
@@ -201,6 +256,21 @@ TEST_F(ManagerFixture, managerSave) {
 
 }
 
+TEST_F(ManagerFixture, managerRead) {
+	ASSERT_EQ(Manager::getManagerById(1000), std::nullopt);
+	ASSERT_EQ(Manager::getManagerById(301)->getFirstname(), "rohit");
+	ASSERT_EQ(Manager::getManagerById(302)->getId(), 302);
+	ASSERT_EQ(Manager::getManagerById(302)->getDepartmentId(), 450);
+	ASSERT_EQ(Manager::getManagerById(302)->getManagementExperience(), 15);
+	ASSERT_NE(Manager::getManagerById(303)->getId(), 110);
+}
+
+TEST_F(ManagerFixture, managerReadMultiple) {
+	ASSERT_EQ(Manager::getMultipleManagers("firstname", "kesu").back().getId(), 310);
+	ASSERT_EQ(Manager::getMultipleManagers("management_experience", "15").size(), 2);
+	ASSERT_EQ(Manager::getMultipleManagers("project_title", "DC").size(), 3);
+}
+
 TEST_F(ManagerFixture, managerUpdate) {
 	//Updating Manager that does not exist (id 0)
 	EXPECT_FALSE(mng0.update());
@@ -227,6 +297,14 @@ TEST_F(ManagerFixture, managerDelete) {
 
 	//Delete manager that is not manager of anyone currently
 	EXPECT_TRUE(mng9.deleteThis());
+}
+
+
+//UTIL
+TEST(UTIL, getString) {
+	ASSERT_EQ(getString("Hello ", "World"), "Hello World");
+	ASSERT_NE(getString("Hello ", "World"), "HelloWorld");
+	ASSERT_EQ(getString("This", " is", " Testing", " of", " Project"), "This is Testing of Project");
 }
 
 

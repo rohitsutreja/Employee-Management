@@ -2,8 +2,8 @@
 
 bool Salary::getUserInput() {
 	try {
-		setBaseSalary(stof(input("Please enter Base Salary: ", salaryRegex)));
-		setBonus(stof(input("Please enter Bonus: ", salaryRegex)));
+		setBaseSalary(stof(inputWithQuit("Please enter Base Salary: ", salaryRegex)));
+		setBonus(stof(inputWithQuit("Please enter Bonus: ", salaryRegex)));
 		setAmount(base_salary + bonus);
 		return true;
 	}
@@ -13,11 +13,12 @@ bool Salary::getUserInput() {
 }
 
 bool Salary::getUserInputForUpdate() {
+
 	try {
-		auto base = input("Please enter Base Salary: ", salaryRegex, true);
+		auto base = inputWithQuit("Please enter Base Salary: ", salaryRegex, true);
 		if (base != "#") setBaseSalary(stof(base));
 
-		auto bon = input("Please enter Bonus: ", salaryRegex, true);
+		auto bon = inputWithQuit("Please enter Bonus: ", salaryRegex, true);
 		if (base != "#") setBonus(stof(bon));
 
 		setAmount(base_salary + bonus);
@@ -44,13 +45,13 @@ void Salary::display() const {
 		return 0;
 	}, &name, "Employee Selected to display salary.");
 
-	std::cout << "+------------------+----------------------------------------+" << std::endl;
-	std::cout << "|\033[32m ID\033[0m               | " << std::setw(38) << std::left << id << " |" << std::endl;
-	std::cout << "| Name             | " << std::setw(38) << std::left << name << " |" << std::endl;
-	std::cout << "| Base Salary      | " << std::setw(38) << std::left << base_salary << " |" << std::endl;
-	std::cout << "| Bonus            | " << std::setw(38) << std::left << bonus << " |" << std::endl;
-	std::cout << "| Total Salary     | " << std::setw(38) << std::left << amount << " |" << std::endl;
-	std::cout << "+------------------+----------------------------------------+" << std::endl;
+	std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
+	std::cout << "|\033[32m ID\033[0m                         | " << std::setw(48) << std::left << id << " |" << std::endl;
+	std::cout << "| Name                       | " << std::setw(48) << std::left << name << " |" << std::endl;
+	std::cout << "| Base Salary                | " << std::setw(48) << std::left << base_salary << " |" << std::endl;
+	std::cout << "| Bonus                      | " << std::setw(48) << std::left << bonus << " |" << std::endl;
+	std::cout << "| Total Salary               | " << std::setw(48) << std::left << amount << " |" << std::endl;
+	std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
 }
 
 void Salary::increment(int percentage) {
@@ -69,16 +70,23 @@ std::optional<Salary> Salary::getSalaryByID(int id) {
 
 		Salary* s = static_cast<Salary*>(data);
 
-		s->setID(std::stoi(argv[0]));
-		s->setBaseSalary(std::stof(argv[2]));
-		s->setBonus(std::stof(argv[3]));
-		s->setAmount(std::stof(argv[2]) + std::stof(argv[3]));
+		s->setID(argv[0] ? std::stoi(argv[0]) : -1);
+		s->setBaseSalary(argv[2] ? std::stof(argv[2]) : 0.0);
+		s->setBonus(argv[3] ? std::stof(argv[3]) : 0.0);
+		s->setAmount(s->getBaseSalary() + s->getBonus());
 
 
 		return 0;
 		};
 
-	dbI->executeSelectQuery(selectQuery.c_str(), callback, &salary, "Salary selected for Employee with ID " + std::to_string(id) + ".");
+
+	try {
+		dbI->executeSelectQuery(selectQuery.c_str(), callback, &salary, "Salary selected for Employee with ID " + std::to_string(id) + ".");
+	}
+	catch (...) {
+		return std::nullopt;
+	}
+	
 
 	if (salary.getId() == 0) {
 		return std::nullopt;
@@ -119,7 +127,14 @@ std::vector<Salary> Salary::getMultipleSalary(const std::string& queryField, con
 		return 0;
 		};
 
-	dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfSal, "Salary of Multiple Employee selected.");
+
+	try {
+		dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfSal, "Salary of Multiple Employee selected.");
+	}
+	catch (...) {
+		return {};
+	}
+
 
 
 	return vecOfSal;

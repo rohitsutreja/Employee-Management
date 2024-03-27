@@ -120,7 +120,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\Employee;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\Department;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\Salary;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\Engineer;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\Manager;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\DB;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\sqlite3;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -154,7 +154,7 @@
     <ClCompile Include="src\Entities\Engineer.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Entities\Manager.cpp" />
-    <ClCompile Include="src\Menu.cpp" />
+    <ClCompile Include="src\View\Menu.cpp" />
     <ClCompile Include="src\Entities\Salary.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,11 +168,10 @@
     <ClInclude Include="include\Entities\Employee.h" />
     <ClInclude Include="include\Entities\Engineer.h" />
     <ClInclude Include="include\Entities\Table.h" />
-    <ClInclude Include="include\Menu.h" />
+    <ClInclude Include="include\VIew\Menu.h" />
     <ClInclude Include="include\Util.h" />
     <ClInclude Include="include\Logger\Log.h" />
     <ClInclude Include="include\Logger\MyLogger.h" />
-    <ClInclude Include="include\Regex.h" />
     <ClInclude Include="include\Entities\Salary.h" />
     <ClInclude Include="include\Entities\Manager.h" />
     <ClInclude Include="sqlite\sqlite3.h" />

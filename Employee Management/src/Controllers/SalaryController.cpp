@@ -62,12 +62,37 @@ void updateSalary() {
 	auto salary = Salary::getSalaryByID(id);
 
 	if (salary) {
-		salary->getUserInputForUpdate();
-		salary->update();
+		if (salary->getUserInputForUpdate()) {
+			std::cout << "Updation Cancelled\n";
+			return;
+		}
+		if (salary->update()) {
+			std::cout << getInGreen("Updation Successfull.") << '\n';
+		}
+		else {
+			std::cout << getInRed("Updation Failed") << '\n';
+		}
 	}
 	else {
 		std::cout << "No Employee exists with id: " << id << '\n';
 	}
 };
+void incrementSalary() {
+	auto id = stoi(input("Please enter id of the employee: ", idRegex));
+	auto salary = Salary::getSalaryByID(id);
+	
+	if (salary) {
+		auto inc = input("Enter the % of increment (1 - 500): ", std::regex{ "\\b([1-9]|[1-9][0-9]|[1-4][0-9]{2}|500)\\b" });
 
+		salary->increment(stoi(inc));
+
+		clearDisplay();
+		if (salary->update()) std::cout << getInGreen("Increment Successfull.") << '\n';
+		else std::cout << getInRed("Increment Failed.") << '\n';
+	}
+	else {
+		std::cout << "No employee exists with this id.\n";
+	}
+
+}
 

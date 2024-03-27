@@ -13,6 +13,7 @@ void insertEngineer() {
 		std::cout << "Insertion cancelled\n";
 		return;
 	}
+	clearDisplay();
 	if (auto duplicateEngineer = Employee::getEmployeeById(engineer.getId()); duplicateEngineer) {
 		std::cout << "This employee id already exists, Please try again with another id.\n";
 		return;
@@ -26,10 +27,10 @@ void insertEngineer() {
 		}
 		else {
 			if (engineer.save()) {
-				std::cout << "Insertion Successfull.\n";
+				std::cout << getInGreen("Insertion Successfull.") << '\n';
 			}
 			else {
-				std::cout << "Insertion Failed.\n";
+				std::cout << getInRed("Insertion Failed.") << '\n';
 			};
 		}
 
@@ -69,10 +70,10 @@ void updateEngineer() {
 		}
 
 		if (engineer->update()) {
-			std::cout << "Updation Successfull.\n";
+			std::cout << getInGreen("Updation Successfull.") << '\n';
 		}
 		else {
-			std::cout << "Updation Failed.\n";
+			std::cout << getInRed("Updation Failed.") << '\n';
 		}
 	}
 	else {
@@ -86,10 +87,10 @@ void deleteEngineer() {
 	clearDisplay();
 	if (engineer) {
 		if (engineer->deleteThis()) {
-			std::cout << "Deletion Successfull.\n";
+			std::cout << getInGreen("Deletion Successfull.") << '\n';
 		}
 		else {
-			std::cout << "Deletion Failed.\n";
+			std::cout << getInGreen("Deletion Failed.") << '\n';
 		}
 
 	}
@@ -119,7 +120,7 @@ void viewEngineers() {
 
 		clearDisplay();
 		if (engineer) {
-			std::cout << "Engineer with id: " << queryField << '\n';
+			std::cout << "Engineer with id: " << getInGreen(queryField) << '\n';
 			engineer->display();
 		}
 		else {

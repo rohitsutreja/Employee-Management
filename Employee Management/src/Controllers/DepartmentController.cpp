@@ -13,17 +13,22 @@ void insertDepartment() {
 		return;
 	}
 
-
+	clearDisplay();
 	if (auto duplicateDepartment = Department::getDepartmentById(department.getId()); duplicateDepartment) {
-		std::cout << "This employee id already exists, Please try again with another id.\n";
+		std::cout << "This department id already exists, Please try again with another id.\n";
+		return;
+	}
+
+	if (auto manager = Manager::getManagerById(department.getManagerId()); !manager) {
+		std::cout << "This Manager does not exists, please try again valid manager id or skip it.\n";
 		return;
 	}
 
 	if (department.save()) {
-		std::cout << "Insertion Successfull.\n";
+		std::cout << getInGreen("Insertion Successfull.") << '\n';
 	}
 	else {
-		std::cout << "Insertion Failed.\n";
+		std::cout << getInRed("Insertion Failed.") << '\n';
 	};
 
 };
@@ -51,10 +56,10 @@ void updateDepartment() {
 			}
 		}
 		if (department->update()) {
-			std::cout << "Updation Successfull.\n";
+			std::cout << getInGreen("Updation Successfull.") << '\n';
 		}
 		else {
-			std::cout << "Updation Failed.\n";
+			std::cout << getInRed("Updation Failed.") << '\n'; 
 		}
 	}
 	else {
@@ -74,6 +79,8 @@ void deleteDepartment() {
 			std::cout << "There are total [" << employyesInDepartment.size() << "] employees in this department.\n\n";
 			std::cout << "If you delete this department, they will be deleted too.\n\n";
 			auto ip = input("Do you still want to delete it? ( Y / N ): ", std::regex{ "^[YNyn]$" });
+
+			clearDisplay();
 			if (ip == "N" || ip == "n") {
 				std::cout << "\nDeletion cancelled\n";
 				return;
@@ -82,10 +89,10 @@ void deleteDepartment() {
 				e.deleteThis();
 			}
 			if (department->deleteThis()) {
-				std::cout << "\nDeletion Successfull.\n";
+				std::cout << getInGreen("Deletion Successfull.") << '\n';
 			}
 			else {
-				std::cout << "\nDeletion Failed.\n";
+				std::cout << getInRed("Deletion Failed.") << '\n';
 			}
 
 		}
@@ -103,7 +110,7 @@ void viewDepartments() {
 	std::cout << "3. View by manager ID\n";
 	std::cout << "4. View All Departments\n\n";
 
-	choice = stoi(input("Please Select an Option: ", std::regex("^[1-4]$")));
+	choice = stoi(input("Please Select an Option (1-4): ", std::regex("^[1-4]$")));
 
 	clearDisplay();
 	switch (choice) {
@@ -113,7 +120,7 @@ void viewDepartments() {
 
 		clearDisplay();
 		if (department) {
-			std::cout << "Department with id: " << queryField << "\n";
+			std::cout << "Department with id: " << getInGreen(queryField) << "\n";
 			department->display();
 		}
 		else {

@@ -2,5 +2,6 @@
 
 void viewSalaries();
 void updateSalary();
+void incrementSalary();
 
 

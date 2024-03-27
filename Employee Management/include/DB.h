@@ -13,9 +13,13 @@ class DB
 
 public:
     DB() = default;
+    
+    ~DB();
 
-    int noOfRowChanged() {
-        return sqlite3_changes(db);
+    int noOfRowChanged() { return sqlite3_changes(db); }
+
+    const char* getErrorMessage() {
+        return errMsg;
     }
 
     bool open(const char *);
@@ -27,8 +31,6 @@ public:
     bool executeSelectQuery(const char* selectQuery, int(*selectCallback)(void*, int, char**, char**), void* data, const std::string& msg = "");
 
     static std::shared_ptr<DB> getDB();
-
-    ~DB();
 };
 
 #endif

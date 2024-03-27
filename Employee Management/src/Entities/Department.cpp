@@ -25,23 +25,22 @@ void  Department::display() const {
             }, &managerName, "Employee name selected to display department");
     }
   
-
-
-
-
-    std::cout << "+------------------+----------------------------------------+" << std::endl;
-    std::cout << "|\033[32m ID\033[0m               | " << std::setw(38) << std::left << id << " |" << std::endl;
-    std::cout << "| Department Name  | " << std::setw(38) << std::left << name << " |" << std::endl;
-    std::cout << "| Manager Name     | " << std::setw(38) << std::left << managerName << " |" << std::endl;
-    std::cout << "| Description      | " << std::setw(38) << std::left << description << " |" << std::endl;
-    std::cout << "+------------------+----------------------------------------+" << std::endl;
+    std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
+    std::cout << "|\033[32m ID\033[0m                         | " << std::setw(48) << std::left << id << " |" << std::endl;
+    std::cout << "| Department Name            | " << std::setw(48) << std::left << name << " |" << std::endl;
+    std::cout << "| Manager Name               | " << std::setw(48) << std::left << managerName << " |" << std::endl;
+    std::cout << "| Description                | " << std::setw(48) << std::left << description << " |" << std::endl;
+    std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
 }
 
 bool Department::getUserInput() {
     try {
-        setId(stoi(input("Enter Department ID: ", idRegex)));
-        setName(input("Enter Department Name: ", nonEmptyRegex));
-        auto mId = input("Enter Department Manager Id ('#' to skip): ", idRegex, true);
+        std::cout << "- Insert Department Details\n\n";
+        std::cout << "- Enter ':q' at any point to cancel insertion\n\n";
+
+        setId(stoi(inputWithQuit("Enter Department ID: ", idRegex)));
+        setName(inputWithQuit("Enter Department Name: ", nonEmptyRegex));
+        auto mId = inputWithQuit("Enter Department Manager Id ('#' to skip): ", idRegex, true);
         if (mId == "#") {
             setManagerId(-1);
         }
@@ -49,7 +48,7 @@ bool Department::getUserInput() {
             setManagerId(stoi(mId));
         }
 
-        setDescription(input("Enter Description: ", nonEmptyRegex));
+        setDescription(inputWithQuit("Enter Description: ", nonEmptyRegex));
 
         return true;
 
@@ -61,18 +60,20 @@ bool Department::getUserInput() {
 }
 
 bool  Department::getUserInputForUpdate() {
+    
+
     try {
-        std::cout << "Update Department with id: " << id;
+        std::cout << "- Update Details of Department with id: " << id << "\n\n";
+        std::cout << "- Enter ':q' at any point to cancel updation\n\n";
+        std::cout << "- Enter '#' to keep the value as it is.\n\n";
 
-        std::cout << "\n\nPlease enter the updated values or '#' to keep the value as it is\n\n";
-
-        auto name{ input("Enter Department Name: ", nonEmptyRegex , true) };
+        auto name{ inputWithQuit("Enter Department Name: ", nonEmptyRegex , true) };
         if ((name != "#")) { setName(name); }
 
-        auto mid{ input("Enter Manager ID: ", idRegex , true) };
+        auto mid{ inputWithQuit("Enter Manager ID: ", idRegex , true) };
         if ((mid != "#")) { setManagerId(stoi(mid)); }
 
-        auto desc{ input("Enter brief Description: ", nonEmptyRegex , true) };
+        auto desc{ inputWithQuit("Enter brief Description: ", nonEmptyRegex , true) };
         if ((desc != "#")) { setDescription(desc); }
 
         return true;
@@ -101,7 +102,6 @@ bool  Department::save() {
 std::optional<Department>  Department::getDepartmentById(int id) {
     auto dbI = DB::getDB();
 
-
     Department dpt;
 
     std::string selectQuery = "SELECT * FROM Department WHERE id = " + std::to_string(id) + ";";
@@ -109,24 +109,24 @@ std::optional<Department>  Department::getDepartmentById(int id) {
     auto callback = [](void* data, int argc, char** argv, char** azColName) {
         Department* dpt = static_cast<Department*>(data);
 
-        dpt->setId(std::stoi(argv[0]));
-        dpt->setName(argv[1]);
-        if (argv[2]) {
-            dpt->setManagerId(std::stoi(argv[2]));
-        }
-        else {
-            dpt->setManagerId(-1);
-        }
-       
-        dpt->setDescription(argv[3]);
+        dpt->setId(argv[0] ? std::stoi(argv[0]) : -1);
+        dpt->setName(argv[1] ? argv[1] : "");
+        dpt->setManagerId(argv[2] ? std::stoi(argv[2]) : -1);
+        dpt->setDescription(argv[3] ? argv[3] : "");
         return 0;
         };
 
-    dbI->executeSelectQuery(selectQuery.c_str(), callback, &dpt, "Department selected with ID " + std::to_string(id));
+    try {
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &dpt, "Department selected with ID " + std::to_string(id));
+    }
+    catch (...) {
+        return std::nullopt;
+    }
 
     if (dpt.getId() == 0) {
         return {};
     }
+
     return dpt;
 }
 
@@ -155,22 +155,24 @@ std::vector<Department>  Department::getMultipleDepartment(const std::string& qu
 
         Department dpt;
 
-        dpt.setId(std::stoi(argv[0]));
-        dpt.setName(argv[1]);
-        if (argv[2]) {
-            dpt.setManagerId(std::stoi(argv[2]));
-        }
-        else {
-            dpt.setManagerId(-1);
-        }
-        dpt.setDescription(argv[3]);
+
+        dpt.setId(argv[0] ? std::stoi(argv[0]) : -1);
+        dpt.setName(argv[1] ? argv[1] : "");
+        dpt.setManagerId(argv[2] ? std::stoi(argv[2]) : -1);
+        dpt.setDescription(argv[3] ? argv[3] : "");
 
         vecOfDep->push_back(std::move(dpt));
 
         return 0;
         };
 
-    dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfDep, "Multiple Department selected.");
+    try {
+        dbI->executeSelectQuery(selectQuery.c_str(), callback, &vecOfDep, "Multiple Department selected.");
+    }
+    catch (...) {
+        return {};
+    }
+  
 
     return vecOfDep;
 
@@ -189,7 +191,7 @@ bool Department::deleteThis() {
     return true;
 }
 
-bool  Department::update() {
+bool Department::update() {
     auto dbI = DB::getDB();
 
 

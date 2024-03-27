@@ -4,14 +4,12 @@
 
 #include <iostream>
 #include <string>
-#include "../Regex.h"
 #include "../Util.h"
 #include "../DB.h"
 #include "Employee.h"
 
 class Department {
 public:
-
     Department() = default;
 
     int getId() const { return id; }
@@ -31,13 +29,9 @@ public:
     bool getUserInputForUpdate();
 
     bool save();
-
     static std::optional<Department> getDepartmentById(int id);
-
     static std::vector<Department> getMultipleDepartment(const std::string& queryField = "", const std::string& queryValue = "");
-
     bool deleteThis();
-
     bool update();
 
 
