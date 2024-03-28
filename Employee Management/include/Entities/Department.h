@@ -8,40 +8,58 @@
 #include "../DB.h"
 #include "Employee.h"
 
-class Department {
-public:
-    Department() = default;
+namespace Entity {
 
-    int getId() const { return id; }
-    std::string getName() const { return name; }
-    int getManagerId() const { return manager_id; }
-    std::string getDescription() const { return description; }
+    class Department {
+    public:
+        Department() = default;
 
-    void setId(int id) { this->id = id; }
-    void setName(const std::string& name) { this->name = name; }
-    void setManagerId(int manager_id) { this->manager_id = manager_id; }
-    void setDescription(const std::string& description) { this->description = description; }
+        static std::optional<Department> getDepartmentById(int id);
+        static std::vector<Department> getMultipleDepartment(const std::string& queryField = "", const std::string& queryValue = "");
+        bool save() const;
+        bool update() const;
+        bool deleteThis() const;
+        
+        void display() const;
+        bool getUserInput() noexcept;
+        bool getUserInputForUpdate() noexcept;
 
+        int getId() const { return id; }
+        const std::string& getName() const { return name; }
+        int getManagerId() const { return manager_id; }
+        const std::string& getDescription() const { return description; }
 
-    void display() const;
+        bool setId(int id) {
+            if (id >= -1 && id < 1000000) {
+                this->id = id;
+                return true;
+            }
+            return false;
+        }
+        bool setName(const std::string& name) {
+            this->name = name;
+            return false;
+        }
+        bool setManagerId(int manager_id) {
+            if (id >= -1 && id < 1000000) {
+                this->manager_id = manager_id;
+                return true;
+            }
+            return false;
+        }
+        bool setDescription(const std::string& description) {
+            this->description = description;
+            return true;
+        }
 
-    bool getUserInput();
-    bool getUserInputForUpdate();
+    private:
+        int id{};
+        std::string name;
+        int manager_id{};
+        std::string description;
+    };
 
-    bool save();
-    static std::optional<Department> getDepartmentById(int id);
-    static std::vector<Department> getMultipleDepartment(const std::string& queryField = "", const std::string& queryValue = "");
-    bool deleteThis();
-    bool update();
-
-
-private:
-    int id{};
-    std::string name;
-    int manager_id{};
-    std::string description;
-};
-
+}
 
 #endif
 

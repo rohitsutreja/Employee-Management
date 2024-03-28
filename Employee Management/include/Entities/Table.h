@@ -23,15 +23,16 @@ inline constexpr std::array<std::string_view, 5 > myTables = { "Employee", "Mana
 class Table {
 
 public:
-	void getUserInputForTable() {
-		this->name = input("Enter the name of the table: ",nonEmptyRegex);
+	bool getUserInputForTable() {
+	try{
+		this->name = input("Enter the name of the table: ", nonEmptyRegex);
 		std::cout << '\n';
 
 		while (1) {
 			auto fieldName = input("Enter the field name: ", nonEmptyRegex);
 			auto fieldType = input("Enter the type of the field - " + fieldName + ": ", validTypes);
 
-			
+
 			keyType.insert({ fieldName,fieldType });
 
 			auto choice = input("\nDo you want to add more fields (Y/N): ", yesNoRegex);
@@ -41,14 +42,14 @@ public:
 		}
 
 
-		
 
-		if (auto choice = input("\nDo you want to insert any foreign key field? (Y/N): " ,yesNoRegex);  choice == "Y" || choice == "y") {
+
+		if (auto choice = input("\nDo you want to insert any foreign key field? (Y/N): ", yesNoRegex);  choice == "Y" || choice == "y") {
 			while (1) {
 				auto fieldName = input("Enter the field name: ", nonEmptyRegex);
-				auto fieldType = input("Enter the type of the field - " + fieldName + ": ",validTypes);
+				auto fieldType = input("Enter the type of the field - " + fieldName + ": ", validTypes);
 				auto parentTable = input("Enter the name of the parent table: ", nonEmptyRegex);
-				auto parentField = input("Enter the name of the parent field: ",nonEmptyRegex);
+				auto parentField = input("Enter the name of the parent field: ", nonEmptyRegex);
 
 
 
@@ -57,20 +58,27 @@ public:
 				fKey.insert({ fieldName, {parentTable,parentField} });
 				keyType.insert({ fieldName,fieldType });
 
-				auto choice = input("\nDo you want to add more foreign keys? (Y/N): ",yesNoRegex);
+				auto choice = input("\nDo you want to add more foreign keys? (Y/N): ", yesNoRegex);
 
 				if (choice == "n" || choice == "N") { break; }
 				std::cout << "\n";
 			}
 		}
 
-	
 
-		if (auto choice = input("\nDo you want to do on delete cascade? (Y/N): ",yesNoRegex); choice == "Y" || choice == "y") {
+
+		if (auto choice = input("\nDo you want to do on delete cascade? (Y/N): ", yesNoRegex); choice == "Y" || choice == "y") {
 			onDeleteCascade = true;
 		}
 
 		keyType.insert({ "id", "int" });
+	
+		return true;
+	}
+	catch (...) {
+		*this = Table();
+		return false;
+	}
 
 	};
 
@@ -100,30 +108,32 @@ public:
 
 		auto dbI = DB::getDB();
 
-		if(!dbI->executeQuery(query.c_str())) return false;
+		if(!dbI->executeQuery(query.c_str(), "Table Created: " + name)) return false;
 
 		return true;
 	};
 
 	bool deleteThis() const {
 
-		if (std::find(myTables.begin(), myTables.end(), name) != myTables.end()) return false;
+		if (std::find(myTables.begin(), myTables.end(), name) != myTables.end()) {
+			MyLogger::info("Deletion failed", "- Trying to delete EMP DB table");
+			return false;
+		};
 
 		std::string query = "DROP TABLE " + name + ";";
 
 		auto dbI = DB::getDB();
 
-		if (!dbI->executeQuery(query.c_str())) return false;
+		if (!dbI->executeQuery(query.c_str(),"Deleted Table: " + name)) return false;
 
 		return true;
 	};
 
-	void displayThis() const {
+	void display() const {
 		std::cout << "+----------------------------+----------------------------------------+" << std::left << std::endl;
 	
 		for (auto& [key, type] : keyType) {
 			std::cout << "| " << std::setw(27)  << key << "| " << std::setw(38)  << type << " |" << std::endl;
-			//std::cout << key << " " << type << '\n';
 		}
 
 		std::cout << "+----------------------------+----------------------------------------+" << std::endl;
@@ -146,7 +156,7 @@ public:
 			keyType->insert({argv[1],argv[2] ? toLower(argv[2]) : "NULL"});
 
 			return 0;
-	    }, &t.keyType);
+	    }, &t.keyType, "Selected Table: " + name);
 
 
 		if (t.keyType.size() == 0) return {};
@@ -171,7 +181,7 @@ public:
 
 			return 0;
 
-			}, &tableList, "");
+			}, &tableList, "Selected Tables list");
 
 		return tableList;
 	}
@@ -222,7 +232,7 @@ public:
 
 
 		auto dbI = DB::getDB();
-		if (dbI->executeQuery(insertQuery.c_str(), "")) return true;
+		if (dbI->executeQuery(insertQuery.c_str(), "Inserted Record in: " + name)) return true;
 
 		return false;	
 	}
@@ -234,7 +244,7 @@ public:
 
 		auto dbI = DB::getDB();
 
-		if(dbI->executeQuery(deleteQuery.c_str(), "")) return true;
+		if(dbI->executeQuery(deleteQuery.c_str(), "Deleted record from "+ name)) return true;
 
 		return false;
 	}
@@ -283,7 +293,7 @@ public:
 
 		std::cout << updateQuery;
 
-		if (dbI->executeQuery(updateQuery.c_str(), "")) return true;
+		if (dbI->executeQuery(updateQuery.c_str(), "Updated record in " + name)) return true;
 
 		return false;
 	}
@@ -307,7 +317,7 @@ public:
 			}
 			std::cout << "+------------------+----------------------------------------+" << std::endl;
 			return 0;
-			}, nullptr, "");
+			}, nullptr, "Selected Records from: " + name);
 
 	}
 
@@ -324,12 +334,12 @@ public:
 			std::cout << "+------------------+----------------------------------------+" << std::endl;
 
 			return 0;
-		}, nullptr, "");
+		}, nullptr, "Selected Records from: "+ name);
 
 
 	}
 
-	const std::string& getName() {
+	const std::string& getName()  const {
 		return name;
 	}
 

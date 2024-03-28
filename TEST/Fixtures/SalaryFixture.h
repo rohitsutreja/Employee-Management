@@ -1,8 +1,8 @@
 #pragma once
-#pragma once
-#pragma once
 #include "gtest/gtest.h"
 #include "include/Entities/Department.h"
+
+using::Entity::Salary;
 
 class SalaryFixture : public testing::Test {
 protected:

@@ -8,6 +8,7 @@
 #include "include/Controllers/SalaryController.h"
 #include "include/Entities/Table.h"
 
+
 void runEmployeeMenu() {
 	auto choice{ 0 };
 	while (1) {
@@ -22,26 +23,54 @@ void runEmployeeMenu() {
 
 		switch (choice) {
 			case 1:
-			{
-				insertEmployee();
+			{	
+				try{
+					Controller::insertEmployee();
+				}
+				catch (const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while insertion of Employee. - ",e.what());
+					std::cout << getInRed("Error while insertion of Employee. Please try again!");
+				}
 				waitBeforeClear();
 				break;
 			}
 			case 2:
 			{
-				updateEmployee();
+				try{
+					Controller::updateEmployee();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while updation of Employee. - ",e.what());
+					std::cout << getInRed("Error while updation of Employee. Please try again!");
+				}			
 				waitBeforeClear();
 				break;
 			}
 			case 3:
 			{
-				viewEmployees();
+				try {
+					Controller::viewEmployees();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while viewing of Employee. - ",e.what());
+					std::cout << getInRed("Error while viewing of Employee. Please try again!");
+				}
 				waitBeforeClear();
 				break;
 			}
 			case 4:
 			{
-				deleteEmployee();
+				try {
+					Controller::deleteEmployee();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while deletion of Employee. - ",e.what());
+					std::cout << getInRed("Error while deletion of Employee. Please try again!");
+				}
 				waitBeforeClear();
 				break;
 			}
@@ -64,28 +93,59 @@ void runEngineerMenu() {
 		switch (choice) {
 			case 1:
 			{
-				insertEngineer();
+				try {
+					Controller::insertEngineer();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while insertion of Engineer. - ",e.what());
+					std::cout << getInRed("Error while insertion of Engineer. Please try again!");
+				}
+				
 				waitBeforeClear();
 				break;
 			}
 
 			case 2:
 			{
-				updateEngineer();
+				try {
+					Controller::updateEngineer();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while updation of Engineer. - ", e.what());
+					std::cout << getInRed("Error while updation of Engineer. Please try again!");
+				}
+
 				waitBeforeClear();
 				break;
 			}
 
 			case 3:
 			{	
-				viewEngineers();
+				try {
+					Controller::viewEngineers();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while viewing of Engineer. - ",e.what());
+					std::cout << getInRed("Error while viewing of Engineer. Please try again!");
+				}
+				
 				waitBeforeClear();
 				break;
 			}
 
 			case 4:
 			{
-				deleteEngineer();
+				try {
+					Controller::deleteEngineer();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while deletion of Engineer. - ",e.what());
+					std::cout << getInRed("Error while deletion of Engineer. Please try again!");
+				}
 				waitBeforeClear();
 				break;
 			}
@@ -107,24 +167,55 @@ void runManagerMenu() {
 		clearDisplay();
 		switch (choice) {
 			case 1:
-			{	insertManager();
+			{	
+				try {
+					Controller::insertManager();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while insertion of Manager. - ",e.what());
+					std::cout << getInRed("Error while insertion of Manager. Please try again!");
+				}
 				waitBeforeClear();
 				break;
 			}
 			case 2:
 			{
-				updateManager();
+				try {
+					Controller::updateManager();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while updation of Manager. - ",e.what());
+					std::cout << getInRed("Error while updation of Manager. Please try again!");
+				}
 				waitBeforeClear();
 				break;
 			}
 			case 3:
-			{	viewManagers();
+			{	
+				try {
+					Controller::viewManagers();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while viewing of Manager. - ",e.what());
+					std::cout << getInRed("Error while viewing of Manager. Please try again!");
+				}
+				
 				waitBeforeClear();
 				break;
 			}
 			case 4:
 			{
-				deleteManager();
+				try {
+					Controller::deleteManager();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while deletion of Manager. - ",e.what());
+					std::cout << getInRed("Error while deletion of Manager. Please try again!");
+				}
 				waitBeforeClear();
 				break;
 			}
@@ -147,28 +238,59 @@ void runDepartmentMenu() {
 		switch (choice) {
 			case 1:
 			{
-				insertDepartment();
+				try {
+					Controller::insertDepartment();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while insertion of Department. - ",e.what());
+					std::cout << getInRed("Error while insertion of Department. Please try again!");
+				}
+				
 				waitBeforeClear();
 				break;
 			}
 
 			case 2:
 			{
-				updateDepartment();
+				try {
+					Controller::updateDepartment();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while updation of Department. - ",e.what());
+					std::cout << getInRed("Error while updation of Department. Please try again!");
+				}
 				waitBeforeClear();
 				break;
 			}
 
 			case 3:
 			{
-				viewDepartments();
+				try {
+					Controller::viewDepartments();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while viewing of Department. - ",e.what());
+					std::cout << getInRed("Error while viewing of Department. Please try again!");
+				}
+				
 				waitBeforeClear();
 				break;
 			}
 
 			case 4:
 			{
-				deleteDepartment();
+				try {
+					Controller::deleteDepartment();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while deletion of Department. - ",e.what());
+					std::cout << getInRed("Error while deletion of Department. Please try again!");
+				}
+				
 				waitBeforeClear();
 				break;
 			}
@@ -195,19 +317,42 @@ void runSalaryMenu() {
 		switch (choice) {
 			case 1:
 			{
-				viewSalaries();
+				try {
+					Controller::viewSalaries();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while viewing of salary. - ",e.what());
+					std::cout << getInRed("Error while viewing salary. Please try again!");
+				}				
 				waitBeforeClear();
 				break;
 			}
 			case 2:
 			{
-				updateSalary();
+				try {
+					Controller::updateSalary();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while updation of salary. - ",e.what());
+					std::cout << getInRed("Error while updation of salary. Please try again!");
+				}
+				
 				waitBeforeClear();
 				break;
 			}
 			case 3:
 			{
-				incrementSalary();
+				try {
+					Controller::incrementSalary();
+				}
+				catch(const std::exception& e) {
+					clearDisplay();
+					MyLogger::error("Error while incrementing of salary. - ",e.what());
+					std::cout << getInRed("Error while incrementing salary. Please try again!");
+				}
+				
 				waitBeforeClear();
 				break;
 			}
@@ -217,112 +362,111 @@ void runSalaryMenu() {
 }
 
 void runTableMenu() {
-
-
 	while (1) {
-		clearDisplay();
-		std::cout << "0. Go Back\n";
-		std::cout << "1. Create a Table\n";
-		std::cout << "2. Delete a Table\n";
-		std::cout << "3. View All Tables\n";
-		std::cout << "4. Access a Table\n\n";
-
-		auto choice = stoi(input("Enter a choice: ", std::regex("^[0-4]$")));
-
-		if (choice == 0) {
-			break;
-		}
-
-		clearDisplay();
-		switch (choice) {
-		case 1: {
-			Table t;
-			t.getUserInputForTable();
-
+		try {
 			clearDisplay();
-			if (t.save()) std::cout << getInGreen("Creation Successfull.") << '\n';
-			else std::cout << getInRed("Creation Failed") << '\n';
-			waitBeforeClear();
-			break;
-		}
-		case 2: {
-			auto name = input("Enter name: ", nameRegex);
+			std::cout << "0. Go Back\n";
+			std::cout << "1. Create a Table\n";
+			std::cout << "2. Delete a Table\n";
+			std::cout << "3. View All Tables\n";
+			std::cout << "4. Access a Table\n\n";
 
-			clearDisplay();
-			if (auto t = Table::getTable(name); t) {
-				if (t->deleteThis()) std::cout << getInGreen("Deletion Successfull.") << '\n';
-				else std::cout << getInRed("Deletion Failed.") << '\n';
-			}
-			else {
-				std::cout << "There is no table with given name in database\n";
-			}
-			waitBeforeClear();
-			break;
-		}
-		case 3:
-		{
-			auto tableList = Table::getAllTables();
-			for (auto t : tableList) {
-				std::cout << "\n->>" << t.getName() << "\n";
-				t.displayThis();
-			}
-			waitBeforeClear();
-			break;
+			auto choice = stoi(input("Enter a choice: ", std::regex("^[0-4]$")));
 
-		}
-		case 4: {
-
-			auto tableList = Table::getAllTables();
-			auto noOfTables = std::to_string(tableList.size());
-
-
-			for (auto t : tableList) {
-				std::cout << "o " << " " << t.getName() << '\n';
-
-			}
-
-			auto choice = input("\nPlease enter name of the one of the table : ", nameRegex);
-
-			std::optional<Table> table = Table::getTable(choice);;
-			
-			if (!table) {
-				clearDisplay();
-				std::cout << "This table does not exists, please enter valid name\n";
-				waitBeforeClear();
+			if (choice == 0) {
 				break;
 			}
 
-
-			while (1) {
-				clearDisplay();
-				std::cout << "0. Go Back\n";
-				std::cout << "1. Insert Record\n";
-				std::cout << "2. Update Record\n";
-				std::cout << "3. View Records\n";
-				std::cout << "4. Delete Record\n";
-				std::cout << "5. View Table Schema\n\n";
-
-				auto choice = stoi(input("Please enter name of the one of the table : ", std::regex("^[0-5]$")));
-
-				if (choice == 0) {
-					break;
-				}
-				clearDisplay();
-				switch (choice) {
-				case 1: {
-
-					if (table->insertRecord()) {
-						clearDisplay();
-						std::cout << getInGreen("Insertion Successfull.") << '\n';
-					}
-					else {
-						clearDisplay();
-						std::cout << getInRed("Insertion Failed.") << '\n';
-					}
+			clearDisplay();
+			switch (choice) {
+			case 1: {
+				Table t;
+			
+				if (!t.getUserInputForTable()) {
+					clearDisplay();
+					std::cout << getInRed("Insertion Cancelled.");
 					waitBeforeClear();
 					break;
 				}
-				case 2: {
+
+				clearDisplay();
+				if (t.save()) std::cout << getInGreen("Creation Successfull.") << '\n';
+				else std::cout << getInRed("Creation Failed") << '\n';
+				waitBeforeClear();
+				break;
+			}
+			case 2: {
+				auto name = input("Enter name: ", nameRegex);
+
+				clearDisplay();
+				if (auto t = Table::getTable(name); t) {
+					if (t->deleteThis()) std::cout << getInGreen("Deletion Successfull.") << '\n';
+					else std::cout << getInRed("Deletion Failed.") << '\n';
+				}
+				else {
+					std::cout << "There is no table with given name in database\n";
+				}
+				waitBeforeClear();
+				break;
+			}
+			case 3:{
+				auto tableList = Table::getAllTables();
+				for (const auto& t : tableList) {
+					std::cout << "\n->>" << t.getName() << "\n";
+					t.display();
+				}
+				waitBeforeClear();
+				break;
+
+			}
+			case 4: {
+				auto tableList = Table::getAllTables();
+
+				for (const auto& t : tableList) {
+					std::cout << "o " << " " << t.getName() << '\n';
+				}
+
+				auto choice = input("\nPlease enter name of the one of the table : ", nameRegex);
+
+				std::optional<Table> table = Table::getTable(choice);;
+
+				if (!table) {
+					clearDisplay();
+					std::cout << "This table does not exists, please enter valid name\n";
+					waitBeforeClear();
+					break;
+				}
+
+				while (1) {
+					clearDisplay();
+					std::cout << "0. Go Back\n";
+					std::cout << "1. Insert Record\n";
+					std::cout << "2. Update Record\n";
+					std::cout << "3. View Records\n";
+					std::cout << "4. Delete Record\n";
+					std::cout << "5. View Table Schema\n\n";
+
+					auto choice = stoi(input("Please enter an option : ", std::regex("^[0-5]$")));
+
+					if (choice == 0) {
+						break;
+					}
+					clearDisplay();
+					switch (choice) {
+					case 1: {
+
+						if (table->insertRecord()) {
+							clearDisplay();
+							std::cout << getInGreen("Insertion Successfull.") << '\n';
+						}
+						else {
+							clearDisplay();
+							std::cout << getInRed("Insertion Failed.") << '\n';
+						}
+						waitBeforeClear();
+						break;
+					}
+					case 2: {
 						if (table->updateRecord()) {
 							clearDisplay();
 							std::cout << getInGreen("Updation Successfull.") << '\n';
@@ -331,39 +475,44 @@ void runTableMenu() {
 							clearDisplay();
 							std::cout << getInRed("Updation Failed.") << '\n';
 						}
-					waitBeforeClear();
-					break;
-				}
-				case 3: {
-					table->displayAllRecords();
-					waitBeforeClear();
-					break;
-
-				}
-				case 4: {
-					if (table->deleteRecord()) {
-						clearDisplay();
-						std::cout << getInGreen("Deletion Successfull.") << '\n';
+						waitBeforeClear();
+						break;
 					}
-					else {
-						clearDisplay();
-						std::cout << getInRed("Deletion Failed.") << '\n';
+					case 3: {
+						table->displayAllRecords();
+						waitBeforeClear();
+						break;
 					}
-					waitBeforeClear();
-					break;
+					case 4: {
+						if (table->deleteRecord()) {
+							clearDisplay();
+							std::cout << getInGreen("Deletion Successfull.") << '\n';
+						}
+						else {
+							clearDisplay();
+							std::cout << getInRed("Deletion Failed.") << '\n';
+						}
+						waitBeforeClear();
+						break;
+					}
+					case 5: {
+						table->display();
+						waitBeforeClear();
+						break;
+					}
+					}
 				}
-				case 5: {
-					table->displayThis();
-					waitBeforeClear();
-					break;
-				}
-				}
+				break;
 			}
-			break;
+			}
 		}
+		catch (const std::exception& e) {
+			clearDisplay();
+			MyLogger::error("Error in table menu Please try again! - ", e.what());
+			std::cout << getInRed("Unexpected Error. Please try again.") << '\n';
+			waitBeforeClear();
 		}
 	}
-
 }
 
 void runMenu() {

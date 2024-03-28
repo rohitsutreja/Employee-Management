@@ -4,6 +4,9 @@
 #include "include/Entities/Manager.h"
 #include "include/Entities/Manager.h"
 
+using::Entity::Manager;
+using::Entity::Salary;
+
 class ManagerFixture : public testing::Test {
 protected:
 	void SetUp() {

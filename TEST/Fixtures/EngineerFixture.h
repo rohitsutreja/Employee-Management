@@ -3,6 +3,9 @@
 #include "include/Entities/Employee.h"
 #include "include/Entities/Engineer.h"
 
+using::Entity::Engineer;
+using::Entity::Salary;
+
 class EngineerFixture : public testing::Test {
 protected:
 	void SetUp() {

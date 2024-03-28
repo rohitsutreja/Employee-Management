@@ -33,7 +33,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Users\ZTI\source\repos\Employee Management\Employee Management;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)$(SolutionName)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -65,7 +65,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\Employee;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\Manager;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\Engineer;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\Department;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\Salary;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\DB;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\sqlite3;C:\Users\ZTI\source\repos\Employee Management\bin-int\x64\Debug\log;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)bin-int\x64\Debug\Employee;$(SolutionDir)bin-int\x64\Debug\Manager;$(SolutionDir)bin-int\x64\Debug\Engineer;$(SolutionDir)bin-int\x64\Debug\Department;$(SolutionDir)bin-int\x64\Debug\Salary;$(SolutionDir)bin-int\x64\Debug\DB;$(SolutionDir)bin-int\x64\Debug\sqlite3;$(SolutionDir)bin-int\x64\Debug\log;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

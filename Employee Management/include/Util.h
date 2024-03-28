@@ -7,17 +7,9 @@
 #include <chrono>
 #include <optional>
 
-//namespace std {
-//	_EXPORT_STD _NODISCARD inline string to_string(const string& s) {
-//		return s;
-//	}
-//}
-
 inline std::regex emailRegex(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
 inline std::regex mobileRegex(R"([0-9]{10})");
 inline std::regex dateRegex(R"([0-3][0-9]-[01][0-9]-\d{4})");
-inline std::regex choiceRegex("^[0-9]$");
-inline std::regex mainChoiceRegex("^[1-6]$");
 inline std::regex universalRegex{ ".*" };
 inline std::regex nameRegex("^[A-Za-z]+(?: [A-Za-z]+)*$");
 inline std::regex genderRegex("^(male|female|other)$", std::regex_constants::icase);
@@ -26,7 +18,7 @@ inline std::regex oneOrTwoDigitRegex("^\\d{1,2}$");
 inline std::regex nonEmptyRegex("^.+$");
 inline std::regex idRegex("^(?:[1-9]\\d{0,5}|999999)$");
 inline std::regex realNumberRegex("^-?\\d*\\.?\\d+$");
-inline std::regex yesNoRegex("^[YN]$");
+inline std::regex yesNoRegex("^[YNyn]$");
 inline std::regex validTypes("^(int|integer|varchar|date|float)$", std::regex_constants::icase);
 
 
@@ -52,7 +44,7 @@ inline std::string getInRed(const std::string& str) {
 template<typename T>
 void displayVector(const std::vector<T>& coll) {
 	clearDisplay();
-	std::cout << "<------------------- " << coll.size() << " - Records Found " << " -------------------->\n";
+	std::cout << "<----------------------------- " << coll.size() << " - Records Found " << " ------------------------------>\n";
 	for (const auto& e : coll) {
 		e.display();
 		std::cout << '\n';
@@ -131,7 +123,8 @@ inline std::string inputWithQuit(std::string_view prompt, std::optional<std::reg
 			return ip;
 		}
 
-		std::cout << "\033[31mInValid Input!\033[0m Please enter valid input or ':q' to quit.\n";
+		std::cout << getInRed("Invalid Input! - ") << "Please enter valid input or " << getInRed("':q'") << " to quit.\n";
+		//std::cout << "\033[31mInValid Input!\033[0m - Please enter valid input or ':q' to quit.\n";
 	}
 }
 

@@ -6,52 +6,52 @@
 #include"../Util.h"
 #include "../DB.h"
 
-class Salary {
-public:
+namespace Entity {
 
-    Salary() = default;
+    class Salary {
+    public:
+        Salary() = default;
 
-    int getId() const { return id; }
+        static std::optional<Salary> getSalaryByID(int id);
+        static std::vector<Salary> getMultipleSalary(const std::string& queryField = "", const std::string& queryValue = "");
+        bool save() const;
+        bool update() const;
+        bool deleteThis() const;
 
-    float getAmount() const { return amount; }
-    float getBaseSalary() const { return base_salary; }
-    float getBonus() const { return bonus; }
+        bool getUserInput() noexcept;
+        bool getUserInputForUpdate() noexcept;
+        void display() const;
 
-    void setAmount(float amount) {
-        this->amount = amount;
-    }
-    void setBaseSalary(float base_salary) {
-        this->base_salary = base_salary;
-    }
-    void setBonus(float bonus) {
-        this->bonus = bonus;
-        setAmount(base_salary + bonus);
-    }
-    void setID(int id) {
-        this->id = id;
-        setAmount(base_salary + bonus);
-    }
+        void increment(int percentage);
+        double computeSalary() const;
 
-    bool getUserInput();
-    bool getUserInputForUpdate();
+        int getId() const { return id; }
+        double getBaseSalary() const { return base_salary; }
+        double getBonus() const { return bonus; }
 
-    void display() const;
+        bool setID(int id) {
+            if (id >= -1 && id < 1000000) {
+                this->id = id;
+                return true;
+            }
+            return false;
+        }
+        bool setBaseSalary(double base_salary) {
+            this->base_salary = base_salary; 
+            return true;
+        }
+        bool setBonus(double bonus) {
+            this->bonus = bonus; 
+            return true;
+        }
 
-    void increment(int percentage);
+    private:
+        int id{};
+        double base_salary{};
+        double bonus{};
+        double amount{};
+    };
 
-    static std::optional<Salary> getSalaryByID(int id);
-    static std::vector<Salary> getMultipleSalary(const std::string& queryField = "", const std::string& queryValue = "");
-
-    bool save();
-    bool update();
-    bool deleteThis();
-
-private:
-    int id{};
-    float base_salary{};
-    float bonus{};
-    float amount{};
-};
-
+}
 
 #endif

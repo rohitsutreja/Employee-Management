@@ -152,8 +152,8 @@ TEST_F(SalaryFixture, salarySave) {
 TEST_F(SalaryFixture, salaryRead) {
 	ASSERT_EQ(Salary::getSalaryByID(1000), std::nullopt);
 	ASSERT_EQ(Salary::getSalaryByID(107)->getId(), 107);
-	ASSERT_EQ(Salary::getSalaryByID(301)->getAmount(), 150000);
-	ASSERT_NE(Salary::getSalaryByID(301)->getAmount(), 150001);
+	ASSERT_EQ(Salary::getSalaryByID(301)->computeSalary(), 150000);
+	ASSERT_NE(Salary::getSalaryByID(301)->computeSalary(), 150001);
 }
 
 TEST_F(SalaryFixture, salaryReadMultiple) {
@@ -306,6 +306,8 @@ TEST(UTIL, getString) {
 	ASSERT_NE(getString("Hello ", "World"), "HelloWorld");
 	ASSERT_EQ(getString("This", " is", " Testing", " of", " Project"), "This is Testing of Project");
 }
+
+
 
 
 int main(int argc, char** argv) {

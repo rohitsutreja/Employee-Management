@@ -2,148 +2,168 @@
 #include "include/Entities/Department.h"
 #include "include/Entities/Manager.h"
 
-void insertDepartment() {
-	clearDisplay();
+using Entity::Department;
+using Entity::Employee;
+using Entity::Manager;
 
-	Department department;
-
-	if (!department.getUserInput()) {
+namespace Controller {
+	void insertDepartment() {
 		clearDisplay();
-		std::cout << "Insertion cancelled\n";
-		return;
-	}
 
-	clearDisplay();
-	if (auto duplicateDepartment = Department::getDepartmentById(department.getId()); duplicateDepartment) {
-		std::cout << "This department id already exists, Please try again with another id.\n";
-		return;
-	}
+		Department department;
 
-	if (auto manager = Manager::getManagerById(department.getManagerId()); !manager) {
-		std::cout << "This Manager does not exists, please try again valid manager id or skip it.\n";
-		return;
-	}
+		if (!department.getUserInput()) {
+			clearDisplay();
+			std::cout << "Insertion cancelled\n";
+			return;
+		}
 
-	if (department.save()) {
-		std::cout << getInGreen("Insertion Successfull.") << '\n';
-	}
-	else {
-		std::cout << getInRed("Insertion Failed.") << '\n';
+		clearDisplay();
+
+		if (auto duplicateDepartment = Department::getDepartmentById(department.getId()); duplicateDepartment) {
+			std::cout << "This department id already exists, Please try again with another id.\n";
+			return;
+		}
+
+		if (auto manager = Manager::getManagerById(department.getManagerId()); !manager) {
+			std::cout << "This Manager does not exists, please try again valid manager id or skip it.\n";
+			return;
+		}
+
+		if (department.save()) {
+			std::cout << getInGreen("Insertion Successfull.") << '\n';
+		}
+		else {
+			std::cout << getInRed("Insertion Failed.") << '\n';
+		};
+
 	};
-
-};
-void updateDepartment() {
-	int id = stoi(input("Please enter Id of the Department: ", idRegex));
-	auto department = Department::getDepartmentById(id);
-
-	clearDisplay();
-	if (department) {
-		auto oldMid = department->getManagerId();
-
-		if (!department->getUserInputForUpdate()) {
+	void updateDepartment() {
+		auto id = input("Please enter id of the department (Enter '#' to cancel updation): ", idRegex, true);
+		if (id == "#") {
 			clearDisplay();
 			std::cout << "Updation cancelled\n";
 			return;
 		}
-
-		auto newMid = department->getManagerId();
-
-		clearDisplay();
-		if (oldMid != newMid) {
-			if (auto manager = Manager::getManagerById(newMid); !manager) {
-				std::cout << "No Manager exists with this id, Please retry with valid manager id\n";
-				return;
-			}
-		}
-		if (department->update()) {
-			std::cout << getInGreen("Updation Successfull.") << '\n';
-		}
-		else {
-			std::cout << getInRed("Updation Failed.") << '\n'; 
-		}
-	}
-	else {
-		std::cout << "No department exist with id: " << id << "\n";
-	}
-
-};
-void deleteDepartment() {
-	int id = stoi(input("Please enter Id of the Department: ", idRegex));
-	auto department = Department::getDepartmentById(id);
-
-
-	clearDisplay();
-	if (department) {
-		auto employyesInDepartment = Employee::getMultipleEmployee("department_id", std::to_string(department->getId()));
-		if (employyesInDepartment.size() != 0) {
-			std::cout << "There are total [" << employyesInDepartment.size() << "] employees in this department.\n\n";
-			std::cout << "If you delete this department, they will be deleted too.\n\n";
-			auto ip = input("Do you still want to delete it? ( Y / N ): ", std::regex{ "^[YNyn]$" });
-
-			clearDisplay();
-			if (ip == "N" || ip == "n") {
-				std::cout << "\nDeletion cancelled\n";
-				return;
-			}
-			for (auto e : employyesInDepartment) {
-				e.deleteThis();
-			}
-			if (department->deleteThis()) {
-				std::cout << getInGreen("Deletion Successfull.") << '\n';
-			}
-			else {
-				std::cout << getInRed("Deletion Failed.") << '\n';
-			}
-
-		}
-	}
-	else {
-		std::cout << "No department exist with id: " << id << "\n";
-	}
-}
-void viewDepartments() {
-	std::string queryField;
-	auto choice{ 0 };
-
-	std::cout << "1. View by ID\n";
-	std::cout << "2. View by name\n";
-	std::cout << "3. View by manager ID\n";
-	std::cout << "4. View All Departments\n\n";
-
-	choice = stoi(input("Please Select an Option (1-4): ", std::regex("^[1-4]$")));
-
-	clearDisplay();
-	switch (choice) {
-	case 1: {
-		queryField = input("Please enter id: ", idRegex);
-		auto department = Department::getDepartmentById(stoi(queryField));
+		
+		auto department = Department::getDepartmentById(stoi(id));
 
 		clearDisplay();
 		if (department) {
-			std::cout << "Department with id: " << getInGreen(queryField) << "\n";
-			department->display();
+			auto oldMid = department->getManagerId();
+
+			if (!department->getUserInputForUpdate()) {
+				clearDisplay();
+				std::cout << "Updation cancelled\n";
+				return;
+			}
+
+			auto newMid = department->getManagerId();
+
+			clearDisplay();
+			if (oldMid != newMid) {
+				if (auto manager = Manager::getManagerById(newMid); !manager) {
+					std::cout << "No Manager exists with this id, Please retry with valid manager id\n";
+					return;
+				}
+			}
+			if (department->update()) {
+				std::cout << getInGreen("Updation Successfull.") << '\n';
+			}
+			else {
+				std::cout << getInRed("Updation Failed.") << '\n';
+			}
 		}
 		else {
-			std::cout << "No Department exists with id: " + queryField + "\n";
+			std::cout << "No department exist with id: " << id << "\n";
 		}
-		return;
+
+	};
+	void deleteDepartment() {
+
+		auto id = input("Please enter id of the department (Enter '#' to cancel deletion): ", idRegex, true);
+		if (id == "#") {
+			clearDisplay();
+			std::cout << "deletion cancelled\n";
+			return;
+		}
+		
+		auto department = Department::getDepartmentById(stoi(id));
+
+
+		clearDisplay();
+		if (department) {
+			auto employyesInDepartment = Employee::getMultipleEmployee("department_id", std::to_string(department->getId()));
+			if (employyesInDepartment.size() != 0) {
+				std::cout << "There are total [" << employyesInDepartment.size() << "] employees in this department.\n\n";
+				std::cout << "If you delete this department, they will be deleted too.\n\n";
+				auto ip = input("Do you still want to delete it? ( Y / N ): ", std::regex{ "^[YNyn]$" });
+
+				clearDisplay();
+				if (ip == "N" || ip == "n") {
+					std::cout << "\nDeletion cancelled\n";
+					return;
+				}
+				for (auto e : employyesInDepartment) {
+					e.deleteThis();
+				}
+				if (department->deleteThis()) {
+					std::cout << getInGreen("Deletion Successfull.") << '\n';
+				}
+				else {
+					std::cout << getInRed("Deletion Failed.") << '\n';
+				}
+
+			}
+		}
+		else {
+			std::cout << "No department exist with id: " << id << "\n";
+		}
 	}
-	case 2: {
-		queryField = input("Please enter name: ");
-		auto departmentVector = Department::getMultipleDepartment("name", queryField);
-		displayVector(departmentVector);
-		break;
-	}
-	case 3: {
-		queryField = input("Please enter manager ID: ");
-		auto departmentVector = Department::getMultipleDepartment("Department.manager_id", queryField);
-		displayVector(departmentVector);
-		break;
-	}
-	case 4: {
-		auto departmentVector = Department::getMultipleDepartment();
-		displayVector(departmentVector);
-		break;
-	}
-	}
-};
+	void viewDepartments() {
+		std::string queryField;
+		auto choice{ 0 };
+
+		std::cout << "1. View by ID\n";
+		std::cout << "2. View by name\n";
+		std::cout << "3. View by manager ID\n";
+		std::cout << "4. View All Departments\n\n";
+
+		choice = stoi(input("Please Select an Option (1-4): ", std::regex("^[1-4]$")));
+
+		clearDisplay();
+		switch (choice) {
+		case 1: {
+			queryField = input("Please enter id: ", idRegex);
+			auto department = Department::getDepartmentById(stoi(queryField));
+
+			clearDisplay();
+			if (department) {
+				std::cout << "Department with id: " << getInGreen(queryField) << "\n";
+				department->display();
+			}
+			else {
+				std::cout << "No Department exists with id: " + queryField + "\n";
+			}
+			return;
+		}
+		case 2: {
+			queryField = input("Please enter name: ");
+			auto departmentVector = Department::getMultipleDepartment("name", queryField);
+			displayVector(departmentVector);
+			break;
+		}
+		case 3: {
+			queryField = input("Please enter manager ID: ");
+			auto departmentVector = Department::getMultipleDepartment("Department.manager_id", queryField);
+			displayVector(departmentVector);
+			break;
+		}
+		case 4: {
+			auto departmentVector = Department::getMultipleDepartment();
+			displayVector(departmentVector);
+			break;
+		}
+		}
+	};
+}

@@ -13,7 +13,7 @@ bool DB::open(const char* str) {
     else
     {   
         createTables();
-        executeQuery("PRAGMA foreign_keys = ON;");
+        executeQuery("PRAGMA foreign_keys = ON;","Foreign key constraints enabled");
         MyLogger::info("Opened database successfully");
         return true;
     }
@@ -134,7 +134,6 @@ bool DB::executeSelectQuery(const char* selectQuery, int(*selectCallback)(void*,
     }
 
 std::shared_ptr<DB> DB::getDB() {
-   // static DB dbI = DB();
     static auto ptr = std::make_shared<DB>();
     return ptr;
 }

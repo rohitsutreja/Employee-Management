@@ -2,6 +2,8 @@
 #include "gtest/gtest.h"
 #include "include/Entities/Employee.h"
 
+using Entity::Salary;
+using Entity::Employee;
 class EmployeeFixture : public testing::Test {
 protected:
 	void SetUp() {

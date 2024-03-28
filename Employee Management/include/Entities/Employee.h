@@ -10,94 +10,164 @@
 #include "Department.h"
 #include "Salary.h"
 
-class Employee {
+namespace Entity {
 
-public:
-    enum class Gender { Male, Female, Other };
+    class Employee {
 
-public:
-    Employee() = default;
+    public:
+        enum class Gender { Male, Female, Other };
 
-    int getId() const { return id; }
-    const std::string& getFirstname() const { return firstname; }
-    const std::string& getLastname() const { return lastname; }
-    const std::string& getDob() const { return dob; }
-    const std::string& getMobile() const { return mobile; }
-    const std::string& getEmail() const { return email; }
-    const std::string& getAddress() const { return address; }
-    const std::string& getDoj() const { return doj; }
-    Gender getGender() const { return gender; }
-    int getManagerId() const { return manager_id; }
-    int getDepartmentId() const { return department_id; }
+    public:
+        Employee() = default;
 
+        static std::optional<Employee> getEmployeeById(int id);
+        static std::vector<Employee> getMultipleEmployee(const std::string& queryField = "", const std::string& queryValue = "");
+        bool save() const;
+        bool deleteThis() const;
+        bool update() const;
 
-    void setId(int id) { this->id = id; }
-    void setFirstname(std::string_view firstname) { this->firstname = firstname; }
-    void setLastname(std::string_view lastname) { this->lastname = lastname; }
-    void setDob(std::string_view dob) { this->dob = dob; }
-    void setMobile(std::string_view mobile) { this->mobile = mobile; }
-    void setEmail(std::string_view email) { this->email = email; }
-    void setAddress(std::string_view address) { this->address = address; }
-    void setGender(Gender g) { this->gender = g; }
-    void setDoj(std::string_view doj) { this->doj = doj; }
-    void setManagerId(int manager_id) { this->manager_id = manager_id; }
-    void setDepartmentId(int department_id) { this->department_id = department_id; }
-    void setSalary(const Salary& s) { this->salary = s; }
+        bool display() const;
+        bool getUserInput() noexcept;
+        bool getUserInputForUpdate() noexcept;
 
-    bool display() const;
+        virtual const char* getClassName() const;
 
-    virtual const char* getClassName() const;
-
-    bool getUserInput();
-    bool getUserInputForUpdate();
-
-    static std::optional<Employee> getEmployeeById(int id);
-    static std::vector<Employee> getMultipleEmployee(const std::string& queryField = "", const std::string& queryValue = "");
-    bool save();
-    bool deleteThis();
-    bool update();
+        int getId() const { return id; }
+        const std::string& getFirstname() const { return firstname; }
+        const std::string& getLastname() const { return lastname; }
+        const std::string& getDob() const { return dob; }
+        const std::string& getMobile() const { return mobile; }
+        const std::string& getEmail() const { return email; }
+        const std::string& getAddress() const { return address; }
+        const std::string& getDoj() const { return doj; }
+        Gender getGender() const { return gender; }
+        int getManagerId() const { return manager_id; }
+        int getDepartmentId() const { return department_id; }
 
 
-private:
-    int id{};
-    std::string firstname;
-    std::string lastname;
-    std::string dob;
-    std::string mobile;
-    std::string email;
-    std::string address;
-    Gender gender{Gender::Other};
-    std::string doj;
-    int manager_id{};
-    int department_id{};
-    Salary salary;
-
-
-protected:
-    static std::string genderToString(Gender g) {
-        switch (g) {
-        case Gender::Male:
-            return "Male";
-
-        case Gender::Female:
-            return "Female";
-
-        case Gender::Other:
-            return "Other";
+        bool setId(int id) {
+            if (id >= -1 && id < 1000000) {
+                this->id = id;
+                return true;
+            }
+            return false;
         }
-    }
+        bool setFirstname(const std::string& firstname) {
+            if (!firstname.empty() && !std::regex_match(firstname, nameRegex)) {
+                return false;
+            }
+            this->firstname = firstname;
+            return true;
+
+        }
+        bool setLastname(const std::string& lastname) {
+            if (!lastname.empty() && !std::regex_match(lastname, nameRegex)) {
+                return false;
+            }
+            this->lastname = lastname;
+            return true;
+        }
+        bool setDob(const std::string& dob) {
+            if (!dob.empty() && !std::regex_match(dob, dateRegex)) {
+                return false;
+            }
+            this->dob = dob;
+            return true;
+
+        }
+        bool setMobile(const std::string& mobile) {
+            if (!mobile.empty() && !std::regex_match(mobile, mobileRegex)) {
+                return false;
+            }
+            this->mobile = mobile;
+            return true;
+
+        }
+        bool setEmail(const std::string& email) {
+            if (!email.empty() && !std::regex_match(email, emailRegex)) {
+                return false;
+            }
+            this->email = email;
+            return true;
+        }
+        bool setAddress(const std::string& address) {
+            this->address = address;
+            return true;
+        }
+        bool setGender(Gender g) {
+            if (!std::regex_match(genderToString(g), genderRegex)) {
+                return false;
+            }
+            this->gender = g;
+            return true;
+        }
+        bool setDoj(const std::string& doj) {
+            if (!dob.empty() && !std::regex_match(dob, dateRegex)) {
+                return false;
+            }
+            this->doj = doj;
+            return true;
+        }
+        bool setManagerId(int manager_id) {
+            if (manager_id >= -1 && manager_id < 1000000) {
+                this->manager_id = manager_id;
+                return true;
+            }
+            return false;
+        }
+        bool setDepartmentId(int department_id) {
+            if (department_id >= -1 && department_id < 1000000) {
+                this->department_id = department_id;
+                return true;
+            }
+            return false;
+        }
+        bool setSalary(const Salary& s) {
+            this->salary = s;
+            return true;
+        }
+
+    private:
+        int id{};
+        std::string firstname;
+        std::string lastname;
+        std::string dob;
+        std::string mobile;
+        std::string email;
+        std::string address;
+        Gender gender{ Gender::Other };
+        std::string doj;
+        int manager_id{};
+        int department_id{};
+        Salary salary;
 
 
-    static Gender stringToGender(std::string_view s) {
-        if (s == "Male") {
-            return Gender::Male;
-        }
-        else if (s == "Female") {
-            return Gender::Female;
-        }
-        else {
-            return Gender::Other;
-        }
-    }
+    protected:
+        static std::string genderToString(Gender g) {
+            switch (g) {
+            case Gender::Male:
+                return "Male";
 
-};
+            case Gender::Female:
+                return "Female";
+
+            default:
+                return "Other";
+            }
+        }
+
+
+        static Gender stringToGender(std::string_view s) {
+            if (s == "Male") {
+                return Gender::Male;
+            }
+            else if (s == "Female") {
+                return Gender::Female;
+            }
+            else {
+                return Gender::Other;
+            }
+        }
+
+    };
+}

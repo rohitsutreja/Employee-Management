@@ -5,7 +5,7 @@
 
 using MyLogger::Log;
 
-auto  defaultLogger = std::make_shared<Log>();
+auto defaultLogger = std::make_shared<Log>();
 
 std::string Log::getLevelName(Level l) const {
 
@@ -68,14 +68,14 @@ void Log::logOnFile(const std::string& msg, const std::string& fileName) const {
 
 void Log::flushOnFile() const {
 	if (m_buffer != "") {
-		logOnFile(m_buffer, m_fPath);
+		logOnFile(m_buffer, m_fPath.string());
 		m_buffer = "";
 	}
 }
 
 Log::~Log() {
 	if (m_buffer != "") {
-		logOnFile(m_buffer, m_fPath);
+		logOnFile(m_buffer, m_fPath.string());
 		m_buffer = "";
 	}
 }

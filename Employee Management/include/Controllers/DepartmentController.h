@@ -1,5 +1,8 @@
 #pragma once
-void insertDepartment();
-void updateDepartment();
-void deleteDepartment();
-void viewDepartments();
+
+namespace Controller {
+	void insertDepartment();
+	void updateDepartment();
+	void deleteDepartment();
+	void viewDepartments();
+}

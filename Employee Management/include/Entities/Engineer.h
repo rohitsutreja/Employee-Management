@@ -1,35 +1,39 @@
 #pragma once
 #include "Employee.h"
 
-class Engineer : public Employee {
-public:
-    Engineer() = default;
+namespace Entity {
+    class Engineer : public Employee {
+    public:
+        Engineer() = default;
 
-    std::string getProgrammingLanguage() const { return programming_language; }
-    std::string getSpecialization() const { return specialization; }
+        static std::optional<Engineer> getEngineerById(int id);
+        static std::vector<Engineer> getMultipleEngineers(const std::string& queryField = "", const std::string& queryValue = "");
+        bool save() const;
+        bool update() const;
+        bool deleteThis() const;
 
-    void setProgrammingLanguage(std::string_view programming_language) {
-        this->programming_language = programming_language;
-    }
-    void setSpecialization(std::string_view specialization) {
-        this->specialization = specialization;
-    }
+        bool getUserInput() noexcept;
+        bool getUserInputForUpdate() noexcept;
+        void display() const;
+        
+        const char* getClassName() const override;
 
-    const char* getClassName() const override;
+        const std::string& getProgrammingLanguage() const { return programming_language; }
+        const std::string& getSpecialization() const { return specialization; }
 
-    bool getUserInputForUpdate();
-    bool getUserInput();
+        bool setProgrammingLanguage(std::string_view programming_language) {
+            this->programming_language = programming_language;
+            return true;
+        }
+        bool setSpecialization(std::string_view specialization) {
+            this->specialization = specialization;
+            return true;
+        }
 
-    void display() const;
+    private:
+        std::string programming_language;
+        std::string specialization;
 
-    bool save();
-    bool deleteThis();
-    bool update();
-    static std::optional<Engineer> getEngineerById(int id);
-    static std::vector<Engineer> getMultipleEngineers(const std::string& queryField = "", const std::string& queryValue = "");
+    };
 
-private:
-    std::string programming_language;
-    std::string specialization;
-
-};
+}

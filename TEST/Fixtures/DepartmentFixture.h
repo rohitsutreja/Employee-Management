@@ -2,6 +2,8 @@
 #pragma once
 #include "gtest/gtest.h"
 #include "include/Entities/Department.h"
+using Entity::Department;
+
 
 class DepartmentFixture : public testing::Test {
 protected:

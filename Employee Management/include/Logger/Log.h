@@ -4,6 +4,7 @@
 #include "../Util.h"
 #include "../Util.h"
 #include <chrono>
+#include <filesystem>
 
 
 namespace MyLogger
@@ -23,7 +24,7 @@ namespace MyLogger
     private:
         Level m_LogLevel;
         bool m_dumpInFile{ true };
-        std::string m_fPath{ "C:\\Users\\ZTI\\source\\repos\\Employee Management\\Employee Management\\logs\\logs.txt" };
+        std::filesystem::path m_fPath{ "logs/logs.txt" };
         mutable std::string m_buffer{ };
         mutable int m_bufferCount{};
 
@@ -67,9 +68,7 @@ namespace MyLogger
                     m_buffer.append(finalMessageForFile);
                     ++m_bufferCount;
                     if (m_bufferCount >= 1) {
-
                         flushOnFile();
-
                     }
                 }
 

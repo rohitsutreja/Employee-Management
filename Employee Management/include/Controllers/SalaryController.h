@@ -1,7 +1,7 @@
 #pragma once
-
-void viewSalaries();
-void updateSalary();
-void incrementSalary();
-
+namespace Controller {
+	void viewSalaries();
+	void updateSalary();
+	void incrementSalary();
+}
 
