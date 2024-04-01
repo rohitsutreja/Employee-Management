@@ -361,7 +361,8 @@ void runSalaryMenu() {
 	}
 }
 
-void runTableMenu() {
+void runTableMenu()
+{
 	while (1) {
 		try {
 			clearDisplay();
@@ -479,7 +480,24 @@ void runTableMenu() {
 						break;
 					}
 					case 3: {
-						table->displayAllRecords();
+						std::cout << "0. Go Back\n";
+						std::cout << "1. View all records.\n";
+						std::cout << "2. Filter records.\n\n";
+
+						auto choice = input("Please enter an option: ", std::regex("^[1-2]$"));
+						
+						clearDisplay();
+						if (choice == "0") {
+							break;
+						}
+						else if (choice == "1") {
+							table->displayAllRecords();
+						}
+						else {
+							table->displayFilteredRecords();
+						}
+						
+
 						waitBeforeClear();
 						break;
 					}

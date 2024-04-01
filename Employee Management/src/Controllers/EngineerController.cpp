@@ -48,8 +48,15 @@ namespace Controller {
 		
 	};
 	void updateEngineer() {
-		auto id = stoi(input("Please enter id of the engineer: ", idRegex));
-		auto engineer = Engineer::getEngineerById(id);
+		auto id = input("Please enter id of the engineer (Enter '#' to cancel updation): ", idRegex, true);
+		if (id == "#") {
+			clearDisplay();
+			std::cout << "Updation cancelled\n";
+			return;
+		}
+
+		
+		auto engineer = Engineer::getEngineerById(stoi(id));
 
 		if (engineer) {
 			auto oldMid = engineer->getManagerId();
@@ -92,8 +99,14 @@ namespace Controller {
 		}
 	};
 	void deleteEngineer() {
-		int id = stoi(input("Please enter id of the engineer: ", idRegex));
-		auto engineer = Engineer::getEngineerById(id);
+		auto id = input("Please enter id of the engineer (Enter '#' to cancel deletion): ", idRegex, true);
+		if (id == "#") {
+			clearDisplay();
+			std::cout << "Deletion cancelled\n";
+			return;
+		}
+		
+		auto engineer = Engineer::getEngineerById(stoi(id));
 
 		clearDisplay();
 		if (engineer) {

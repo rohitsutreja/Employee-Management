@@ -8,7 +8,7 @@ namespace Entity {
 
         Department department;
 
-        std::string selectQuery = "SELECT * FROM Department WHERE id = " + std::to_string(id) + ";";
+        std::string selectQuery = "SELECT * FROM Department WHERE id = " + std::to_string(id) + " COLLATE NOCASE;";
 
         auto callback = [](void* data, int argc, char** argv, char** azColName) {
             Department* dpt = static_cast<Department*>(data);
@@ -42,14 +42,14 @@ namespace Entity {
         std::string selectQuery;
 
         if (queryField == "id" || queryField == "Department.manager_id") {
-            selectQuery = "SELECT Department.* FROM Department LEFT JOIN Employee ON Employee.id = Department.manager_id WHERE " + queryField + " = " + queryValue + "; ";
+            selectQuery = "SELECT Department.* FROM Department LEFT JOIN Employee ON Employee.id = Department.manager_id WHERE " + queryField + " = " + queryValue + " COLLATE NOCASE; ";
 
         }
         else if (queryField == "" && queryValue == "") {
-            selectQuery = "SELECT Department.* FROM Department LEFT JOIN Employee ON Employee.id = Department.manager_id ;";
+            selectQuery = "SELECT Department.* FROM Department LEFT JOIN Employee ON Employee.id = Department.manager_id COLLATE NOCASE;";
         }
         else {
-            selectQuery = "SELECT Department.* FROM Department LEFT JOIN Employee ON Employee.id = Department.manager_id WHERE " + queryField + " = '" + queryValue + "';";
+            selectQuery = "SELECT Department.* FROM Department LEFT JOIN Employee ON Employee.id = Department.manager_id WHERE " + queryField + " = '" + queryValue + "' COLLATE NOCASE;";
         }
 
 

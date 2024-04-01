@@ -45,13 +45,13 @@ namespace Entity {
 
 
 		if (queryField == "id" || queryField == "manager_id" || queryField == "department_id") {
-			selectQuery = "SELECT Salary.* FROM Employee JOIN Department ON Employee.department_id = Department.id JOIN Salary ON Employee.id = Salary.id WHERE " + queryField + " = " + queryValue + "; ";
+			selectQuery = "SELECT Salary.* FROM Employee JOIN Department ON Employee.department_id = Department.id JOIN Salary ON Employee.id = Salary.id WHERE " + queryField + " = " + queryValue + " COLLATE NOCASE; ";
 		}
 		else if (queryField == "" && queryValue == "") {
-			selectQuery = "SELECT Salary.* FROM Employee JOIN Department ON Employee.department_id = Department.id JOIN Salary ON Employee.id = Salary.id;";
+			selectQuery = "SELECT Salary.* FROM Employee JOIN Department ON Employee.department_id = Department.id JOIN Salary ON Employee.id = Salary.id COLLATE NOCASE;";
 		}
 		else {
-			selectQuery = "SELECT Salary.* FROM Employee JOIN Department ON Employee.department_id = Department.id JOIN Salary ON Employee.id = Salary.id WHERE " + queryField + " = '" + queryValue + "';";
+			selectQuery = "SELECT Salary.* FROM Employee JOIN Department ON Employee.department_id = Department.id JOIN Salary ON Employee.id = Salary.id WHERE " + queryField + " = '" + queryValue + "' COLLATE NOCASE;";
 		}
 
 

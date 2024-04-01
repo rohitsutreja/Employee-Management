@@ -25,6 +25,7 @@ namespace Controller {
 			return;
 		}
 
+
 		if (auto department = Department::getDepartmentById(employee.getDepartmentId()); !department) {
 			std::cout << "This department does not exist, Please try again with valid department id\n";
 			return;
@@ -46,7 +47,7 @@ namespace Controller {
 	}
 	void updateEmployee() {
 
-		auto id = input("Please enter id of the employee (Enter '#' to cancel updation): ", idRegex,true);
+		auto id = input("Please enter id of the employee (Enter '#' to cancel updation): ", idRegex, true);
 		if (id == "#") {
 			clearDisplay();
 			std::cout << "Updation cancelled\n";

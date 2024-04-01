@@ -40,7 +40,7 @@ TEST_F(EmployeeFixture, employeeRead) {
 
 TEST_F(EmployeeFixture, employeeReadMultiple) {
 	ASSERT_EQ(Employee::getMultipleEmployee("firstname","rajuraju").size(), 0 );
-	ASSERT_EQ(Employee::getMultipleEmployee("firstname", "Rohit").size(), 3);
+	ASSERT_EQ(Employee::getMultipleEmployee("firstname", "Rohit").size(), 4);
 	ASSERT_EQ(Employee::getMultipleEmployee("Department.name", "C++").size(), 4);
 }
 
@@ -160,7 +160,7 @@ TEST_F(SalaryFixture, salaryReadMultiple) {
 	ASSERT_EQ(Salary::getMultipleSalary("Department.name", "C++").size() , 3);
 	ASSERT_EQ(Salary::getMultipleSalary("bonus","100000").back().getBonus(), 100000);
 	ASSERT_NE(Salary::getMultipleSalary("bonus", "100000").back().getBonus(), 100001);
-	ASSERT_EQ(Salary::getMultipleSalary("firstname", "Rohit").size(), 2);
+	ASSERT_EQ(Salary::getMultipleSalary("firstname", "Rohit").size(), 3);
 }
 
 TEST_F(SalaryFixture, salaryUpdate) {

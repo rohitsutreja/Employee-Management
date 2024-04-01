@@ -18,56 +18,57 @@ inline std::string toLower(std::string_view str) {
 	return result;
 }
 inline constexpr std::array<std::string_view, 3 > numericFields{ "int", "integer", "float" };
-inline constexpr std::array<std::string_view, 5 > myTables = { "Employee", "Manager", "Engineer", "Salary", "Department" };
+inline constexpr std::array<std::string_view, 5 > myTables = { "employee", "manager", "engineer", "salary", "department" };
+inline constexpr std::array<std::string_view, 5> types = { "int","integer","varchar","float","date" };
 
 class Table {
 
 public:
 	bool getUserInputForTable() {
+
+		std::cout << "- Please enter ':q' at any point to cancel creation of table.\n\n";
 	try{
-		this->name = input("Enter the name of the table: ", nonEmptyRegex);
+		this->name = inputWithQuit("Enter the name of the table: ", nonEmptyRegex);
 		std::cout << '\n';
 
-		while (1) {
-			auto fieldName = input("Enter the field name: ", nonEmptyRegex);
-			auto fieldType = input("Enter the type of the field - " + fieldName + ": ", validTypes);
+		std::cout << "These are the supported types:\n";
 
+		for (const auto& type : types) {
+			std::cout << type << ', ';
+		}
+		std::cout << "\n";
+		while (1) {
+			auto fieldName = inputWithQuit("Enter the field name: ", nonEmptyRegex);
+			auto fieldType = inputWithQuit("Enter the type of the field - " + fieldName + ": ", validTypes);
 
 			keyType.insert({ fieldName,fieldType });
 
-			auto choice = input("\nDo you want to add more fields (Y/N): ", yesNoRegex);
+			auto choice = inputWithQuit("\nDo you want to add more fields (Y/N): ", yesNoRegex);
 
 			if (choice == "n" || choice == "N") { break; }
 			std::cout << "\n";
 		}
 
-
-
-
-		if (auto choice = input("\nDo you want to insert any foreign key field? (Y/N): ", yesNoRegex);  choice == "Y" || choice == "y") {
+		if (auto choice = inputWithQuit("\nDo you want to insert any foreign key field? (Y/N): ", yesNoRegex);  choice == "Y" || choice == "y") {
 			while (1) {
-				auto fieldName = input("Enter the field name: ", nonEmptyRegex);
-				auto fieldType = input("Enter the type of the field - " + fieldName + ": ", validTypes);
-				auto parentTable = input("Enter the name of the parent table: ", nonEmptyRegex);
-				auto parentField = input("Enter the name of the parent field: ", nonEmptyRegex);
-
-
+				auto fieldName = inputWithQuit("Enter the field name: ", nonEmptyRegex);
+				auto fieldType = inputWithQuit("Enter the type of the field - " + fieldName + ": ", validTypes);
+				auto parentTable = inputWithQuit("Enter the name of the parent table: ", nonEmptyRegex);
+				auto parentField = inputWithQuit("Enter the name of the parent field: ", nonEmptyRegex);
 
 				std::cout << "\n";
 
 				fKey.insert({ fieldName, {parentTable,parentField} });
 				keyType.insert({ fieldName,fieldType });
 
-				auto choice = input("\nDo you want to add more foreign keys? (Y/N): ", yesNoRegex);
+				auto choice = inputWithQuit("\nDo you want to add more foreign keys? (Y/N): ", yesNoRegex);
 
 				if (choice == "n" || choice == "N") { break; }
 				std::cout << "\n";
 			}
 		}
 
-
-
-		if (auto choice = input("\nDo you want to do on delete cascade? (Y/N): ", yesNoRegex); choice == "Y" || choice == "y") {
+		if (auto choice = inputWithQuit("\nDo you want to do on delete cascade? (Y/N): ", yesNoRegex); choice == "Y" || choice == "y") {
 			onDeleteCascade = true;
 		}
 
@@ -114,8 +115,7 @@ public:
 	};
 
 	bool deleteThis() const {
-
-		if (std::find(myTables.begin(), myTables.end(), name) != myTables.end()) {
+		if (std::find(myTables.begin(), myTables.end(), toLower(name)) != myTables.end()) {
 			MyLogger::info("Deletion failed", "- Trying to delete EMP DB table");
 			return false;
 		};
@@ -131,11 +131,9 @@ public:
 
 	void display() const {
 		std::cout << "+----------------------------+----------------------------------------+" << std::left << std::endl;
-	
 		for (auto& [key, type] : keyType) {
 			std::cout << "| " << std::setw(27)  << key << "| " << std::setw(38)  << type << " |" << std::endl;
 		}
-
 		std::cout << "+----------------------------+----------------------------------------+" << std::endl;
 	}
 
@@ -187,21 +185,22 @@ public:
 	}
 	
 	bool insertRecord() {
-		
+		std::cout << "- Enter ':q' at any point to cacncel insertion\n";
+		std::cout << "- Enter '#' to keep value NULL\n\n";
 		keyVal.clear();
 
-		auto val = input("Enter id: ", idRegex);
+		auto val = inputWithQuit("Enter id: ", idRegex);
 		keyVal.insert({ "id" , val });
 
 		for (const auto& [key, type] : keyType) {
 			if (key == "id") continue;
 
-			if (std::find(numericFields.begin(), numericFields.end(), type) != numericFields.end()) {	
-				auto val = input("Enter " + key + ": ", realNumberRegex, true);
+			if (std::find(numericFields.begin(), numericFields.end(), toLower(type)) != numericFields.end()) {
+				auto val = inputWithQuit("Enter " + key + ": ", realNumberRegex, true);
 				keyVal.insert({ key,val });
 			}
 			else {
-				auto val = input("Enter " + key + ": ", nonEmptyRegex , true);
+				auto val = inputWithQuit("Enter " + key + ": ", nonEmptyRegex , true);
 				keyVal.insert({ key,val });
 			}
 		}
@@ -217,8 +216,8 @@ public:
 		insertQuery += ") VALUES (";
 
 		for (auto& [key, val] : keyVal) {
-			if (std::find(numericFields.begin(), numericFields.end(), keyType[key]) != numericFields.end()) {
-				insertQuery = insertQuery + (val == "#" ?  "NULL" :val) + ",";
+			if (std::find(numericFields.begin(), numericFields.end(),toLower(keyType[key])) != numericFields.end()) {
+				insertQuery = insertQuery + (val == "#" ?  "NULL" : val) + ",";
 			}
 			else {
 				insertQuery = insertQuery + ((val == "#") ? ("NULL ,") : ("'" + val + "' ,"));
@@ -237,8 +236,13 @@ public:
 		return false;	
 	}
 
-	bool deleteRecord () const {
-		auto id = input("Enter id: ", idRegex);
+	bool deleteRecord () const 
+	{
+		auto id = input("Enter id ('#' to cancel deletion): ", idRegex, true);
+
+		if (id == "#") {
+			return false;
+		}
 
 		std::string deleteQuery = "DELETE FROM " + name + " WHERE id = " + id;
 
@@ -250,16 +254,22 @@ public:
 	}
 
 	bool updateRecord() {
-		auto id = input("Enter id: ", idRegex);
+
+		auto id = input("Enter id ('#' to cancel updation): ", idRegex,true);
+
+		if (id == "#") {
+			return false;
+		}
 
 		keyVal.clear();
 
+		clearDisplay();
 		std::cout << "\n- Enter '#' to keep values as it is.\n- Press ':q' at any point to quit the updation\n\n";
 
 		for (auto& [key, type] : keyType) {
 			if (key == "id") continue;
 
-			if (std::find(numericFields.begin(), numericFields.end(), type) != numericFields.end()) {
+			if (std::find(numericFields.begin(), numericFields.end(), toLower(type)) != numericFields.end()) {
 				auto val = input("Enter " + key + ": ", realNumberRegex, true);
 				if (val == "#") continue;
 				keyVal.insert({ key,val });
@@ -278,7 +288,7 @@ public:
 
 		for (auto& [key, val] : keyVal) {
 
-			if (std::find(numericFields.begin(), numericFields.end(), keyType[key]) != numericFields.end()) {
+			if (std::find(numericFields.begin(), numericFields.end(), toLower(keyType[key])) != numericFields.end()) {
 				if (key == "id") continue;
 				updateQuery += (key + "=" + val + ",");
 			}
@@ -298,35 +308,60 @@ public:
 		return false;
 	}
 
-	void displayRecordsByField(const std::string& field, const std::string& value ) {
+	void displayFilteredRecords() {
+
+		auto field = input("Enter the name of the field by which you want to filter: ", nonEmptyRegex);
+		auto value = input("Enter the value of " + field + ": ");
+
+
 		std::string selectQuery;
 
-		if (std::find(numericFields.begin(), numericFields.end(), keyType[field]) != numericFields.end()) {
-			selectQuery = "SELECT * FROM " + name + " WHERE " + field + " = " + value + "; ";
+		if (std::find(numericFields.begin(), numericFields.end(), toLower(keyType[field])) != numericFields.end()) {
+			selectQuery = "SELECT * FROM " + name + " WHERE " + field + " = " + value + " COLLATE NOCASE; ";
 		}
 		else {
-			selectQuery = "SELECT * FROM " + name + " WHERE " + field + " = '" + value + "'; ";
+			selectQuery = "SELECT * FROM " + name + " WHERE " + field + " = '" + value + "' COLLATE NOCASE; ";
 		}
 		auto dbI = DB::getDB();
 
-		dbI->executeSelectQuery(selectQuery.c_str(), [](void*, int argc, char** argv, char** argZcolName) {
+	
 
-			std::cout << "+------------------+----------------------------------------+" << std::endl;
+		clearDisplay();
+
+		int count = 0;
+		bool succeed = dbI->executeSelectQuery(selectQuery.c_str(), [](void* data, int argc, char** argv, char** argZcolName) {
+			auto count = static_cast<int*>(data);
+			(*count)++;
+			
+			std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
 			for (int i = 0; i < argc; i++) {
-				std::cout << "| " << std::setw(17) << std::left << argZcolName[i] << "| " << std::setw(38) << std::left << argv[i] << " |" << std::endl;
+				
+				std::cout << "| " << std::setw(27) << std::left << argZcolName[i] << "| " << std::setw(48) << std::left << argv[i] << " |" << std::endl;
 			}
-			std::cout << "+------------------+----------------------------------------+" << std::endl;
+			std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
+			std::cout << "\n\n";
+		
 			return 0;
-			}, nullptr, "Selected Records from: " + name);
+			}, &count, "Selected Records from: " + name);
 
+		std::cout << "--> " << count << " - Records found." << std::endl;
+
+		if (!succeed) {
+			clearDisplay();
+			std::cout << "There is no '" << field << "' in the table " << name << '\n';
+			return;
+		}
 	}
 
 	void displayAllRecords() const {
 		std::string selectQuery = "SELECT * FROM " + name + ";";
 
 		auto dbI = DB::getDB();
-
-		dbI->executeSelectQuery(selectQuery.c_str(), [](void*, int argc, char** argv, char** argZcolName) {
+		
+		int count = 0;
+		bool succeed = dbI->executeSelectQuery(selectQuery.c_str(), [](void* data, int argc, char** argv, char** argZcolName) {
+			auto count = static_cast<int*>(data);
+			(*count)++;
 			std::cout << "+------------------+----------------------------------------+" << std::endl;
 			for (int i = 0; i < argc; i++) {
 				std::cout << "| " << std::setw(17) << std::left << argZcolName[i] << "| " << std::setw(38) << std::left << (argv[i] ? argv[i] : "NULL") << " |" << std::endl;
@@ -334,9 +369,9 @@ public:
 			std::cout << "+------------------+----------------------------------------+" << std::endl;
 
 			return 0;
-		}, nullptr, "Selected Records from: "+ name);
+		}, &count, "Selected Records from: "+ name);
 
-
+		std::cout << "--> " << count << " - Records found." << std::endl;
 	}
 
 	const std::string& getName()  const {

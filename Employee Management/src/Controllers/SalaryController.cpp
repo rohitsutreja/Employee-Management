@@ -62,8 +62,14 @@ namespace Controller {
 		}
 	}
 	void updateSalary() {
-		auto id = stoi(input("Please enter id of the employee: ", idRegex));
-		auto salary = Salary::getSalaryByID(id);
+		auto id = input("Please enter id of the employee (Enter '#' to cancel updation): ", idRegex, true);
+		if (id == "#") {
+			clearDisplay();
+			std::cout << "updation cancelled\n";
+			return;
+		}
+	
+		auto salary = Salary::getSalaryByID(stoi(id));
 
 		if (salary) {
 			if (salary->getUserInputForUpdate()) {
@@ -82,8 +88,13 @@ namespace Controller {
 		}
 	};
 	void incrementSalary() {
-		auto id = stoi(input("Please enter id of the employee: ", idRegex));
-		auto salary = Salary::getSalaryByID(id);
+		auto id = input("Please enter id of the employee (Enter '#' to cancel increment): ", idRegex, true);
+		if (id == "#") {
+			clearDisplay();
+			std::cout << "Increment cancelled\n";
+			return;
+		}
+		auto salary = Salary::getSalaryByID(stoi(id));
 
 		if (salary) {
 			auto inc = input("Enter the % of increment (1 - 500): ", std::regex{ "\\b([1-9]|[1-9][0-9]|[1-4][0-9]{2}|500)\\b" });
@@ -99,5 +110,4 @@ namespace Controller {
 		}
 
 	}
-
 }

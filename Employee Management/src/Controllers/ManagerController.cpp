@@ -40,8 +40,14 @@ namespace Controller {
 		};
 	};
 	void updateManager() {
-		auto id = stoi(input("Please enter Id of the Manager: ", idRegex));
-		auto manager = Manager::getManagerById(id);
+		auto id = input("Please enter id of the manager (Enter '#' to cancel updation): ", idRegex, true);
+		if (id == "#") {
+			clearDisplay();
+			std::cout << "Updation cancelled\n";
+			return;
+		}
+	
+		auto manager = Manager::getManagerById(stoi(id));
 
 		clearDisplay();
 		if (manager) {
@@ -85,12 +91,18 @@ namespace Controller {
 		}
 	};
 	void deleteManager() {
-		int id = stoi(input("Please enter Id of the Manager: ", idRegex));
+		auto id = input("Please enter id of the manager (Enter '#' to cancel deletion): ", idRegex, true);
+		if (id == "#") {
+			clearDisplay();
+			std::cout << "Deletion cancelled\n";
+			return;
+		}
+		
 
 		clearDisplay();
 
-		auto managerOfEmployees = Employee::getMultipleEmployee("Employee.manager_id", std::to_string(id));
-		auto managerOfDepartments = Department::getMultipleDepartment("Department.manager_id", std::to_string(id));
+		auto managerOfEmployees = Employee::getMultipleEmployee("Employee.manager_id", id);
+		auto managerOfDepartments = Department::getMultipleDepartment("Department.manager_id",id);
 
 		if ((managerOfEmployees.size() != 0) || (managerOfDepartments.size() != 0)) {
 			std::cout << "This employee is manager of [" << managerOfEmployees.size() << "] employees and [" << managerOfDepartments.size() << "] departments\n\n";
@@ -114,7 +126,7 @@ namespace Controller {
 			}
 		}
 
-		auto manager = Manager::getManagerById(id);
+		auto manager = Manager::getManagerById(stoi(id));
 		if (manager) {
 			if (manager->deleteThis()) {
 				std::cout << getInGreen("Deletion Successfull.") << '\n';
