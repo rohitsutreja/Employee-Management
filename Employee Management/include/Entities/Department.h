@@ -21,8 +21,8 @@ namespace Entity {
         bool deleteThis() const;
         
         void display() const;
-        bool getUserInput() noexcept;
-        bool getUserInputForUpdate() noexcept;
+        bool populateForInsertion() noexcept;
+        bool populateForUpdation() noexcept;
 
         int getId() const { return id; }
         const std::string& getName() const { return name; }

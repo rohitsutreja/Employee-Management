@@ -13,37 +13,37 @@ namespace Controller {
 
 		Manager manager;
 
-		if (!manager.getUserInput()) {
+		if (!manager.populateForInsertion()) {
 			clearDisplay();
-			std::cout << "Insertion cancelled\n";
+			std::cout << getInCyan("- Insertion cancelled.\n");
 			return;
 		}
 		if (auto duplicateManager = Employee::getEmployeeById(manager.getId()); duplicateManager) {
-			std::cout << "This employee id already exists, Please try again with another id.\n";
+			std::cout << getInCyan("- This employee id already exists") <<", Please try again with another id.\n";
 			return;
 		}
 
 		if (auto department = Department::getDepartmentById(manager.getDepartmentId());  !department) {
-			std::cout << "This department does not exist, Please try again with valid department id\n";
+			std::cout << getInCyan("- This department does not exist") << ", Please try again with valid department id.\n";
 			return;
 		}
 		if (auto managerOfManager = Manager::getManagerById(manager.getManagerId());  manager.getManagerId() != -1 && !managerOfManager) {
-			std::cout << "This manager of manager does not exist, Please try again with valid manager id or without manager\n";
+			std::cout << getInCyan("- This manager of manager does not exist") <<", Please try again with valid manager id or without manager.\n";
 			return;
 		}
 
 		if (manager.save()) {
-			std::cout << getInGreen("Insertion Successfull.") << '\n';
+			std::cout << getInGreen("- Insertion successful.") << '\n';
 		}
 		else {
-			std::cout << getInRed("Insertion Failed.") << '\n';
+			std::cout << getInRed("- Insertion failed.") << '\n';
 		};
 	};
 	void updateManager() {
-		auto id = input("Please enter id of the manager (Enter '#' to cancel updation): ", idRegex, true);
+		auto id = input("- Please enter id of the manager (Enter '#' to cancel updation): ", idRegex, true);
 		if (id == "#") {
 			clearDisplay();
-			std::cout << "Updation cancelled\n";
+			std::cout << getInCyan("- Updation cancelled.\n");
 			return;
 		}
 	
@@ -54,9 +54,9 @@ namespace Controller {
 			auto oldMid = manager->getManagerId();
 			auto oldDid = manager->getDepartmentId();
 
-			if (!manager->getUserInputForUpdate()) {
+			if (!manager->populateForUpdation()) {
 				clearDisplay();
-				std::cout << "Updation cancelled\n";
+				std::cout << getInCyan("- Updation cancelled.\n");
 				return;
 			}
 
@@ -66,7 +66,7 @@ namespace Controller {
 
 			if (oldDid != newDid) {
 				if (auto department = Department::getDepartmentById(manager->getDepartmentId()); !department) {
-					std::cout << "This department does not exist, Please try again with valid department id\n";
+					std::cout << getInCyan("- This department does not exist")<<", Please try again with valid department id.\n";
 					return;
 				}
 			}
@@ -74,27 +74,27 @@ namespace Controller {
 			if (oldMid != newMid) {
 
 				if (auto managerOfManager = Manager::getManagerById(manager->getManagerId()); !managerOfManager) {
-					std::cout << "This manager does not exist, Please try again with valid manager id\n";
+					std::cout << getInCyan("- This manager does not exist")<<", Please try again with valid manager id.\n";
 					return;
 				}
 			}
 
 			if (manager->update()) {
-				std::cout << getInGreen("Updation Successfull.") << '\n';
+				std::cout << getInGreen("- Updation successful.") << '\n';
 			}
 			else {
-				std::cout << getInRed("Updation Failed.") << '\n';
+				std::cout << getInRed("- Updation failed.") << '\n';
 			}
 		}
 		else {
-			std::cout << "No manager exist with id: " << id << "\n";
+			std::cout << getInCyan("- No manager exist with id: ") << id << "\n";
 		}
 	};
 	void deleteManager() {
-		auto id = input("Please enter id of the manager (Enter '#' to cancel deletion): ", idRegex, true);
+		auto id = input("- Please enter id of the manager (Enter '#' to cancel deletion): ", idRegex, true);
 		if (id == "#") {
 			clearDisplay();
-			std::cout << "Deletion cancelled\n";
+			std::cout << getInCyan("- Deletion cancelled.\n");
 			return;
 		}
 		
@@ -111,7 +111,7 @@ namespace Controller {
 
 			clearDisplay();
 			if (ip == "N" || ip == "n") {
-				std::cout << "\nDeletion cancelled\n";
+				std::cout << getInCyan("- Deletion cancelled.\n");
 				return;
 			}
 			else {
@@ -129,15 +129,15 @@ namespace Controller {
 		auto manager = Manager::getManagerById(stoi(id));
 		if (manager) {
 			if (manager->deleteThis()) {
-				std::cout << getInGreen("Deletion Successfull.") << '\n';
+				std::cout << getInGreen("- Deletion successful.") << '\n';
 			}
 			else {
-				std::cout << getInGreen("Deletion Failed.") << '\n';
+				std::cout << getInGreen("- Deletion failed.") << '\n';
 			}
 
 		}
 		else {
-			std::cout << "No manager exist with id: " << id << "\n";
+			std::cout << getInCyan("- No manager exist with id: ") << id << "\n";
 		}
 
 	};
@@ -157,34 +157,34 @@ namespace Controller {
 		switch (choice) {
 		case 1: {
 
-			queryField = input("Please enter ID: ", idRegex);
+			queryField = input("- Please enter ID: ", idRegex);
 			auto manager = Manager::getManagerById(stoi(queryField));
 
 			clearDisplay();
 			if (manager) {
-				std::cout << "Manager with id: " << getInGreen(queryField) << '\n';
+				std::cout << "- Manager with id: " << getInGreen(queryField) << '\n';
 				manager->display();
 			}
 			else {
-				std::cout << "No manager exist with id: " << queryField << "\n";
+				std::cout << getInCyan("- No manager exist with id: ") << queryField << "\n";
 			}
 			return;
 
 		}
 		case 2: {
-			queryField = input("Please enter fisrt name: ");
+			queryField = input("- Please enter fisrt name: ");
 			auto managersVector = Manager::getMultipleManagers("firstname", queryField);
 			displayVector(managersVector);
 			break;
 		}
 		case 3: {
-			queryField = input("Please enter last name: ");
+			queryField = input("- Please enter last name: ");
 			auto managersVector = Manager::getMultipleManagers("lastname", queryField);
 			displayVector(managersVector);
 			break;
 		}
 		case 4: {
-			queryField = input("Please enter department name: ");
+			queryField = input("- Please enter department name: ");
 			auto managersVector = Manager::getMultipleManagers("department.name", queryField);
 			displayVector(managersVector);
 			break;

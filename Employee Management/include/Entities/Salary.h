@@ -18,11 +18,11 @@ namespace Entity {
         bool update() const;
         bool deleteThis() const;
 
-        bool getUserInput() noexcept;
-        bool getUserInputForUpdate() noexcept;
+        bool populateForInsertion() noexcept;
+        bool populateForUpdation() noexcept;
         void display() const;
 
-        void increment(int percentage);
+        double increment(int percentage);
         double computeSalary() const;
 
         int getId() const { return id; }

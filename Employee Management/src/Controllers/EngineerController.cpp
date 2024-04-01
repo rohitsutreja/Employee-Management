@@ -16,42 +16,43 @@ namespace Controller {
 
 		Engineer engineer;
 
-		if (!engineer.getUserInput())
+		if (!engineer.populateForInsertion())
 		{
 			clearDisplay();
-			std::cout << "Insertion cancelled\n";
+			std::cout << "- Insertion cancelled\n";
 			return;
 		}
 
 		clearDisplay();
 		if (auto duplicateEngineer = Employee::getEmployeeById(engineer.getId()); duplicateEngineer) {
-			std::cout << "This employee id already exists, Please try again with another id.\n";
+			std::cout << getInCyan("- This employee id already exist")<< ", Please try again with another id.\n";
 			return;
 		}
 
 		if (auto department = Department::getDepartmentById(engineer.getDepartmentId()); !department) {
-			std::cout << "This department does not exist, Please try again with valid department id\n";
+			std::cout << getInCyan("- This department does not exist") << ", Please try again with valid department id.\n";
 			return;
 		}
 
 		if (auto manager = Manager::getManagerById(engineer.getManagerId()); engineer.getManagerId() != -1 && !manager) {
-			std::cout << "This manager does not exist, Please try again with valid manager id or without manager\n";
+			std::cout << getInCyan("- This manager does not exist") << ", Please try again with valid manager id or skip it.\n";
 			return;
 		}
 		
 		if (engineer.save()) {
-			std::cout << getInGreen("Insertion Successfull.") << '\n';
+			std::cout << getInGreen("- Insertion successful.") << '\n';
 		}
 		else {
-			std::cout << getInRed("Insertion Failed.") << '\n';
+			std::cout << getInRed("- Insertion failed.") << '\n';
 		};
 		
 	};
+
 	void updateEngineer() {
-		auto id = input("Please enter id of the engineer (Enter '#' to cancel updation): ", idRegex, true);
+		auto id = input("- Please enter id of the engineer (Enter '#' to cancel updation): ", idRegex, true);
 		if (id == "#") {
 			clearDisplay();
-			std::cout << "Updation cancelled\n";
+			std::cout << getInCyan("- Updation cancelled.\n");
 			return;
 		}
 
@@ -62,9 +63,9 @@ namespace Controller {
 			auto oldMid = engineer->getManagerId();
 			auto oldDid = engineer->getDepartmentId();
 
-			if (!engineer->getUserInputForUpdate()) {
+			if (!engineer->populateForUpdation()) {
 				clearDisplay();
-				std::cout << "Updation cancelled\n";
+				std::cout << getInCyan("- Updation cancelled.\n");
 				return;
 			}
 
@@ -75,34 +76,35 @@ namespace Controller {
 
 			if (oldDid != newDid) {
 				if (auto department = Department::getDepartmentById(newDid); !department) {
-					std::cout << "This department does not exist, Please try again with valid department id\n";
+					std::cout << getInCyan("- This department does not exist") << ", Please try again with valid department id.\n";
 					return;
 				}
 			}
 
 			if (oldMid != newMid) {
 				if (auto manager = Manager::getManagerById(newMid); !manager) {
-					std::cout << "This manager does not exist, Please try again with valid manager id\n";
+					std::cout << getInCyan("- This manager does not exist") << ", Please try again with valid manager id.\n";
 					return;
 				}
 			}
 
 			if (engineer->update()) {
-				std::cout << getInGreen("Updation Successfull.") << '\n';
+				std::cout << getInGreen("- Updation successful.") << '\n';
 			}
 			else {
-				std::cout << getInRed("Updation Failed.") << '\n';
+				std::cout << getInRed("- Updation failed.") << '\n';
 			}
 		}
 		else {
-			std::cout << "No engineer exist with id: " << id << "\n";
+			std::cout << getInCyan("- No engineer exist with id: ") << id << "\n";
 		}
 	};
+
 	void deleteEngineer() {
-		auto id = input("Please enter id of the engineer (Enter '#' to cancel deletion): ", idRegex, true);
+		auto id = input("- Please enter id of the engineer (Enter '#' to cancel deletion): ", idRegex, true);
 		if (id == "#") {
 			clearDisplay();
-			std::cout << "Deletion cancelled\n";
+			std::cout << getInCyan("- Deletion cancelled.\n");
 			return;
 		}
 		
@@ -111,17 +113,18 @@ namespace Controller {
 		clearDisplay();
 		if (engineer) {
 			if (engineer->deleteThis()) {
-				std::cout << getInGreen("Deletion Successfull.") << '\n';
+				std::cout << getInGreen("- Deletion successful.") << '\n';
 			}
 			else {
-				std::cout << getInGreen("Deletion Failed.") << '\n';
+				std::cout << getInGreen("- Deletion failed.") << '\n';
 			}
 
 		}
 		else {
-			std::cout << "No engineer exist with id: " << id << "\n";
+			std::cout << getInCyan("- No engineer exist with id: ") << id << "\n";
 		}
 	};
+
 	void viewEngineers() {
 		std::string queryField;
 		auto choice{ 0 };
@@ -139,34 +142,34 @@ namespace Controller {
 		switch (choice) {
 		case 1: {
 
-			queryField = input("Please enter id: ", idRegex);
+			queryField = input("- Please enter id: ", idRegex);
 			auto engineer = Engineer::getEngineerById(stoi(queryField));
 
 			clearDisplay();
 			if (engineer) {
-				std::cout << "Engineer with id: " << getInGreen(queryField) << '\n';
+				std::cout << "- Engineer with id: " << getInGreen(queryField) << '\n';
 				engineer->display();
 			}
 			else {
-				std::cout << "No engineer exist with id: " << queryField << "\n";
+				std::cout << "- No engineer exist with id: " << queryField << "\n";
 			}
 
 			return;
 		}
 		case 2: {
-			queryField = input("Please enter fisrt name: ");
+			queryField = input("- Please enter fisrt name: ");
 			auto engineersVector = Engineer::getMultipleEngineers("firstname", queryField);
 			displayVector(engineersVector);
 			break;
 		}
 		case 3: {
-			queryField = input("Please enter last name: ");
+			queryField = input("- Please enter last name: ");
 			auto engineersVector = Engineer::getMultipleEngineers("lastname", queryField);
 			displayVector(engineersVector);
 			break;
 		}
 		case 4: {
-			queryField = input("Please enter department name: ");
+			queryField = input("- Please enter department name: ");
 			auto engineersVector = Engineer::getMultipleEngineers("department.name", queryField);
 			displayVector(engineersVector);
 			break;
@@ -177,7 +180,7 @@ namespace Controller {
 			break;
 		}
 		case 6: {
-			queryField = input("Please enter programming language: ");
+			queryField = input("- Please enter programming language: ");
 			auto engineersVector = Engineer::getMultipleEngineers("programming_language", queryField);
 			displayVector(engineersVector);
 			break;

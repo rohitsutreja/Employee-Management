@@ -27,8 +27,8 @@ namespace Entity {
         bool update() const;
 
         bool display() const;
-        bool getUserInput() noexcept;
-        bool getUserInputForUpdate() noexcept;
+        bool populateForInsertion() noexcept;
+        bool populateForUpdation() noexcept;
 
         virtual const char* getClassName() const;
 

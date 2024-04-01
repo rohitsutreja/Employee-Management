@@ -7,8 +7,8 @@ namespace Entity {
 	public:
 		Manager() = default;
 
-		bool getUserInput() noexcept;
-		bool getUserInputForUpdate() noexcept;	
+		bool populateForInsertion() noexcept;
+		bool populateForUpdation() noexcept;	
 		void display() const;
 
 		static std::optional<Manager> getManagerById(int id);

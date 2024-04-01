@@ -22,6 +22,10 @@ public:
         return errMsg;
     }
 
+    sqlite3* dbptr() {
+        return db;
+    }
+
     bool open(const char *);
 
     bool createTables();

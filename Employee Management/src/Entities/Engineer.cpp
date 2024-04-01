@@ -143,8 +143,8 @@ namespace Entity {
 		return Employee::deleteThis();
 	}
 
-	bool Engineer::getUserInput() noexcept {
-		if (!Employee::getUserInput()) return false;
+	bool Engineer::populateForInsertion() noexcept {
+		if (!Employee::populateForInsertion()) return false;
 		try {
 			setProgrammingLanguage(inputWithQuit("Enter programming_language name: ", nonEmptyRegex));
 			setSpecialization(inputWithQuit("Enter specialization: ", nonEmptyRegex));
@@ -157,9 +157,9 @@ namespace Entity {
 
 	}
 
-	bool Engineer::getUserInputForUpdate() noexcept {
+	bool Engineer::populateForUpdation() noexcept {
 
-		if (!Employee::getUserInputForUpdate()) return false;
+		if (!Employee::populateForUpdation()) return false;
 
 		try {
 			auto pl{ inputWithQuit("Enter Programming Language: ",nonEmptyRegex, true) };

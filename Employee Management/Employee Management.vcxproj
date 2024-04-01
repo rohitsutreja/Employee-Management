@@ -152,6 +152,7 @@
     <ClCompile Include="src\Entities\Department.cpp" />
     <ClCompile Include="src\Entities\Employee.cpp" />
     <ClCompile Include="src\Entities\Engineer.cpp" />
+    <ClCompile Include="src\Entities\Table.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Entities\Manager.cpp" />
     <ClCompile Include="src\View\Menu.cpp" />

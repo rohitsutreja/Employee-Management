@@ -13,44 +13,44 @@ namespace Controller {
 
 		Employee employee;
 
-		if (!employee.getUserInput()) {
+		if (!employee.populateForInsertion()) {
 			clearDisplay();
-			std::cout << "Insertion cancelled\n";
+			std::cout << getInCyan("- Insertion cancelled.\n");
 			return;
 		};
 
 		clearDisplay();
 		if (auto duplicateEmployee = Employee::getEmployeeById(employee.getId()); duplicateEmployee) {
-			std::cout << "This employee id already exists, Please try again with another id.\n";
+			std::cout << "- This employee id " << getInCyan("already exist") << ", Please try again with another id.\n";
 			return;
 		}
 
 
 		if (auto department = Department::getDepartmentById(employee.getDepartmentId()); !department) {
-			std::cout << "This department does not exist, Please try again with valid department id\n";
+			std::cout << "- This department " <<  getInCyan("does not exist") << ", Please try again with valid department id.\n";
 			return;
 		}
 
 		if (auto manager = Manager::getManagerById(employee.getManagerId());  employee.getManagerId() != -1 && !manager) {
-			std::cout << "This manager does not exist, Please try again with valid manager id or without manager\n";
+			std::cout << "- This manager "<< getInCyan("does not exist") << ", Please try again with valid manager id or without manager.\n";
 			return;
 		}
 
 		
 
 		if (employee.save()) {
-			std::cout << getInGreen("Insertion Successfull.") << '\n';
+			std::cout << getInGreen("- Insertion successful.") << '\n';
 		}
 		else {
-			std::cout << getInRed("Insertion Failed.") << '\n';
+			std::cout << getInRed("- Insertion failed.") << '\n';
 		};
 	}
 	void updateEmployee() {
 
-		auto id = input("Please enter id of the employee (Enter '#' to cancel updation): ", idRegex, true);
+		auto id = input("- Please enter id of the employee (Enter '#' to cancel updation): ", idRegex, true);
 		if (id == "#") {
 			clearDisplay();
-			std::cout << "Updation cancelled\n";
+			std::cout << getInCyan("- Updation cancelled.\n");
 			return;
 		}
 
@@ -64,9 +64,9 @@ namespace Controller {
 			auto oldMid = employee->getManagerId();
 			auto oldDid = employee->getDepartmentId();
 
-			if (!employee->getUserInputForUpdate()) {
+			if (!employee->populateForUpdation()) {
 				clearDisplay();
-				std::cout << "Updation cancelled\n";
+				std::cout << getInCyan("- Updation cancelled.\n");
 				return;
 			};
 
@@ -76,33 +76,33 @@ namespace Controller {
 			clearDisplay();
 			if (oldDid != newDid) {
 				if (auto department = Department::getDepartmentById(employee->getDepartmentId()); !department) {
-					std::cout << "This department does not exist, Please try again with valid department id\n";
+					std::cout << "- This department "<< getInCyan("does not exist") << ", Please try again with valid department id.\n";
 					return;
 				}
 			}
 			if (oldMid != newMid) {
 				if (auto manager = Manager::getManagerById(employee->getManagerId()); !manager) {
-					std::cout << "This manager does not exist, Please try again with valid manager id\n";
+					std::cout << "- This manager " << getInCyan("does not exist") << ", Please try again with valid manager id.\n";
 					return;
 				}
 			}
 
 			if (employee->update()) {
-				std::cout << getInGreen("Updation Successfull.") << '\n';
+				std::cout << getInGreen("- Updation Successfull.") << '\n';
 			}
 			else {
-				std::cout << getInRed("Updation Failed.") << '\n';
+				std::cout << getInRed("- Updation Failed.") << '\n';
 			}
 		}
 		else {
-			std::cout << "No employee exist with id: " << id << "\n";
+			std::cout << getInCyan("- No employee exist with id: ") << id << "\n";
 		}
 	};
 	void deleteEmployee() {
-		auto id = input("Please enter id of the employee (Enter '#' to cancel deletion): ", idRegex, true);
+		auto id = input("- Please enter id of the employee (Enter '#' to cancel deletion): ", idRegex, true);
 		if (id == "#") {
 			clearDisplay();
-			std::cout << "Deletion cancelled\n";
+			std::cout << getInCyan("- Deletion cancelled.\n");
 			return;
 		}
 
@@ -117,7 +117,7 @@ namespace Controller {
 
 			clearDisplay();
 			if (ip == "N" || ip == "n") {
-				std::cout << "Deletion cancelled\n";
+				std::cout << getInCyan("- Deletion cancelled.\n");
 				return;
 			}
 			else {
@@ -136,15 +136,15 @@ namespace Controller {
 
 		if (employee) {
 			if (employee->deleteThis()) {
-				std::cout << getInGreen("Deletion Successfull.") << '\n';
+				std::cout << getInGreen("- Deletion successful.") << '\n';
 			}
 			else {
-				std::cout << getInRed("Deletion Failed.") << '\n';
+				std::cout << getInRed("- Deletion failed.") << '\n';
 			}
 
 		}
 		else {
-			std::cout << "No Employee exist with id: " << id << "\n";
+			std::cout << getInCyan("- No Employee exist with id: ") << id << "\n";
 		}
 	};
 	void viewEmployees() {
@@ -167,16 +167,16 @@ namespace Controller {
 		clearDisplay();
 		switch (choice) {
 		case 1: {
-			queryField = input("Please enter id: ", idRegex);
+			queryField = input("- Please enter id: ", idRegex);
 			auto employee = Employee::getEmployeeById(stoi(queryField));
 
 			clearDisplay();
 			if (employee) {
-				std::cout << "Employee with id: " << queryField << '\n';
+				std::cout << "- Employee with id: " << getInGreen(queryField) << "\n\n";
 				employee->display();
 			}
 			else {
-				std::cout << "No Employee exist with id: " << queryField << "\n";
+				std::cout << getInCyan("- No Employee exist with id: ") << queryField << "\n";
 			}
 			break;
 		}

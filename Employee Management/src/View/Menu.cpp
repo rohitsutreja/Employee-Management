@@ -372,7 +372,7 @@ void runTableMenu()
 			std::cout << "3. View All Tables\n";
 			std::cout << "4. Access a Table\n\n";
 
-			auto choice = stoi(input("Enter a choice: ", std::regex("^[0-4]$")));
+			auto choice = stoi(input("- Enter a choice: ", std::regex("^[0-4]$")));
 
 			if (choice == 0) {
 				break;
@@ -385,14 +385,14 @@ void runTableMenu()
 			
 				if (!t.getUserInputForTable()) {
 					clearDisplay();
-					std::cout << getInRed("Insertion Cancelled.");
+					std::cout << getInCyan("- Creation cancelled.");
 					waitBeforeClear();
 					break;
 				}
 
 				clearDisplay();
-				if (t.save()) std::cout << getInGreen("Creation Successfull.") << '\n';
-				else std::cout << getInRed("Creation Failed") << '\n';
+				if (t.save()) std::cout << getInGreen("Creation successful.") << '\n';
+				else std::cout << getInRed("- Creation failed") << '\n';
 				waitBeforeClear();
 				break;
 			}
@@ -401,11 +401,11 @@ void runTableMenu()
 
 				clearDisplay();
 				if (auto t = Table::getTable(name); t) {
-					if (t->deleteThis()) std::cout << getInGreen("Deletion Successfull.") << '\n';
-					else std::cout << getInRed("Deletion Failed.") << '\n';
+					if (t->deleteThis()) std::cout << getInGreen("Deletion successful.") << '\n';
+					else std::cout << getInRed("Deletion failed.") << '\n';
 				}
 				else {
-					std::cout << "There is no table with given name in database\n";
+					std::cout << getInCyan("There is no table with given name in database\n");
 				}
 				waitBeforeClear();
 				break;
@@ -427,13 +427,13 @@ void runTableMenu()
 					std::cout << "o " << " " << t.getName() << '\n';
 				}
 
-				auto choice = input("\nPlease enter name of the one of the table : ", nameRegex);
+				auto choice = input("\n- Please enter name of the one of the table : ", nameRegex);
 
 				std::optional<Table> table = Table::getTable(choice);;
 
 				if (!table) {
 					clearDisplay();
-					std::cout << "This table does not exists, please enter valid name\n";
+					std::cout << "- This table does not exists, please enter valid name\n";
 					waitBeforeClear();
 					break;
 				}
@@ -458,11 +458,11 @@ void runTableMenu()
 
 						if (table->insertRecord()) {
 							clearDisplay();
-							std::cout << getInGreen("Insertion Successfull.") << '\n';
+							std::cout << getInGreen("Insertion successful.") << '\n';
 						}
 						else {
 							clearDisplay();
-							std::cout << getInRed("Insertion Failed.") << '\n';
+							std::cout << getInRed("Insertion failed.") << '\n';
 						}
 						waitBeforeClear();
 						break;
@@ -470,11 +470,11 @@ void runTableMenu()
 					case 2: {
 						if (table->updateRecord()) {
 							clearDisplay();
-							std::cout << getInGreen("Updation Successfull.") << '\n';
+							std::cout << getInGreen("Updation successful.") << '\n';
 						}
 						else {
 							clearDisplay();
-							std::cout << getInRed("Updation Failed.") << '\n';
+							std::cout << getInRed("Updation failed.") << '\n';
 						}
 						waitBeforeClear();
 						break;
@@ -504,11 +504,11 @@ void runTableMenu()
 					case 4: {
 						if (table->deleteRecord()) {
 							clearDisplay();
-							std::cout << getInGreen("Deletion Successfull.") << '\n';
+							std::cout << getInGreen("Deletion successful.") << '\n';
 						}
 						else {
 							clearDisplay();
-							std::cout << getInRed("Deletion Failed.") << '\n';
+							std::cout << getInRed("Deletion failed.") << '\n';
 						}
 						waitBeforeClear();
 						break;
@@ -533,15 +533,37 @@ void runTableMenu()
 	}
 }
 
+void exportToCSV() {
+	try {
+		clearDisplay();
+		if (Table::writeCSV()) {
+			std::cout << getInGreen("Tables exported successfully\n");
+		}
+		else {
+			std::cout << getInRed("CSV Export failed\n");
+		}
+		waitBeforeClear();
+	}
+	catch(std::exception& e){
+		clearDisplay();
+		MyLogger::error("Error in exporting to csv. - ", e.what());
+		std::cout << getInRed("Unexpected Error. Please try again.") << '\n';
+		waitBeforeClear();
+	}
+	
+	
+}
+
 void runMenu() {
 	int choice{};
 
 	while (1) {
 		displayMainMenu();
 
-		choice = stoi(input("\nPlease select an option (1-7): ", std::regex("^[0-7]$")));
+		choice = stoi(input("\nPlease select an option (1-7): ", std::regex("^[0-8]$")));
 
-		if (choice == 7) {
+		if (choice == 8) {
+			displayThanks();
 			break;
 		}
 
@@ -571,6 +593,11 @@ void runMenu() {
 				clearDisplay();
 				runTableMenu();
 				break;
+			case 7:
+				clearDisplay();
+				exportToCSV();
+				break;
+				
 		}
 	}
 }

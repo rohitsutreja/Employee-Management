@@ -1,0 +1,39 @@
+
+01/04/24 17:08:31
+
+id,firstname,lastname,dob,mobile,email,address,gender,doj,manager_id,department_id;
+
+102,Rohit,Sutreja,19-12-2002,9106479126,rohit@gmail.com,Junagadh,Male,19-12-2021,301,401;
+105,Rohit,Sutreja,19-12-2002,9106479126,rohit@gmail.com,junagadh,Male,19-12-1980,301,401;
+110,rj,s,19-12-2002,9106479126,rohit@gmail.com,,Other,19-12-2002,301,401;
+201,Naineel,Soyantar,19-12-2002,9106479126,rohit@gmail.com,ahmedabad,Male,19-12-2021,NULL,401;
+202,Deep,Dhuvad,19-11-2003,1234567892,deep@gmail.com,surendranaagr,Male,11-11-2021,NULL,401;
+301,Saitama,,19-12-2002,9106347812,saitama@gmail.com,city z,Male,12-09-2002,NULL,401;
+302,Raju,BackEnd Wala,12-12-1980,1234567890,raju@be.com,Ahmedabad,Male,19-12-2005,NULL,402;
+5000,naineel,soyantar,12-09-2002,9023031861,naineelsoyantar@gmail.com,xyz,Male,10-10-2010,301,401;
+
+01/04/24 17:09:37
+
+id,firstname,lastname,dob,mobile,email,address,gender,doj,manager_id,department_id;
+
+102,Rohit,Sutreja,19-12-2002,9106479126,rohit@gmail.com,Junagadh,Male,19-12-2021,301,401;
+105,Rohit,Sutreja,19-12-2002,9106479126,rohit@gmail.com,junagadh,Male,19-12-1980,301,401;
+110,rj,s,19-12-2002,9106479126,rohit@gmail.com,,Other,19-12-2002,301,401;
+201,Naineel,Soyantar,19-12-2002,9106479126,rohit@gmail.com,ahmedabad,Male,19-12-2021,NULL,401;
+202,Deep,Dhuvad,19-11-2003,1234567892,deep@gmail.com,surendranaagr,Male,11-11-2021,NULL,401;
+301,Saitama,,19-12-2002,9106347812,saitama@gmail.com,city z,Male,12-09-2002,NULL,401;
+302,Raju,BackEnd Wala,12-12-1980,1234567890,raju@be.com,Ahmedabad,Male,19-12-2005,NULL,402;
+5000,naineel,soyantar,12-09-2002,9023031861,naineelsoyantar@gmail.com,xyz,Male,10-10-2010,301,401;
+
+01/04/24 17:23:34
+
+id,firstname,lastname,dob,mobile,email,address,gender,doj,manager_id,department_id;
+
+102,Rohit,Sutreja,19-12-2002,9106479126,rohit@gmail.com,Junagadh,Male,19-12-2021,301,401;
+105,Rohit,Sutreja,19-12-2002,9106479126,rohit@gmail.com,junagadh,Male,19-12-1980,301,401;
+110,rj,s,19-12-2002,9106479126,rohit@gmail.com,,Other,19-12-2002,301,401;
+201,Naineel,Soyantar,19-12-2002,9106479126,rohit@gmail.com,ahmedabad,Male,19-12-2021,NULL,401;
+202,Deep,Dhuvad,19-11-2003,1234567892,deep@gmail.com,surendranaagr,Male,11-11-2021,NULL,401;
+301,Saitama,,19-12-2002,9106347812,saitama@gmail.com,city z,Male,12-09-2002,NULL,401;
+302,Raju,BackEnd Wala,12-12-1980,1234567890,raju@be.com,Ahmedabad,Male,19-12-2005,NULL,402;
+5000,naineel,soyantar,12-09-2002,9023031861,naineelsoyantar@gmail.com,xyz,Male,10-10-2010,301,401;

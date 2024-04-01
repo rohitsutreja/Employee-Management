@@ -12,37 +12,37 @@ namespace Controller {
 
 		Department department;
 
-		if (!department.getUserInput()) {
+		if (!department.populateForInsertion()) {
 			clearDisplay();
-			std::cout << "Insertion cancelled\n";
+			std::cout << getInCyan("- Insertion cancelled.\n");
 			return;
 		}
 
 		clearDisplay();
 
 		if (auto duplicateDepartment = Department::getDepartmentById(department.getId()); duplicateDepartment) {
-			std::cout << "This department id already exists, Please try again with another id.\n";
+			std::cout << getInCyan("- This department id already exists") << ", Please try again with another id.\n";
 			return;
 		}
 
 		if (auto manager = Manager::getManagerById(department.getManagerId()); !manager) {
-			std::cout << "This Manager does not exists, please try again valid manager id or skip it.\n";
+			std::cout << getInCyan("- No manager exist with this id") << ", Please retry with valid manager id or skip it.\n";
 			return;
 		}
 
 		if (department.save()) {
-			std::cout << getInGreen("Insertion Successfull.") << '\n';
+			std::cout << getInGreen("- Insertion successful.") << '\n';
 		}
 		else {
-			std::cout << getInRed("Insertion Failed.") << '\n';
+			std::cout << getInRed("- Insertion failed.") << '\n';
 		};
 
 	};
 	void updateDepartment() {
-		auto id = input("Please enter id of the department (Enter '#' to cancel updation): ", idRegex, true);
+		auto id = input("- Please enter id of the department (Enter '#' to cancel updation): ", idRegex, true);
 		if (id == "#") {
 			clearDisplay();
-			std::cout << "Updation cancelled\n";
+			std::cout << getInCyan("- Updation cancelled.\n");
 			return;
 		}
 		
@@ -52,9 +52,9 @@ namespace Controller {
 		if (department) {
 			auto oldMid = department->getManagerId();
 
-			if (!department->getUserInputForUpdate()) {
+			if (!department->populateForUpdation()) {
 				clearDisplay();
-				std::cout << "Updation cancelled\n";
+				std::cout << getInCyan("- Updation cancelled.\n");
 				return;
 			}
 
@@ -63,28 +63,28 @@ namespace Controller {
 			clearDisplay();
 			if (oldMid != newMid) {
 				if (auto manager = Manager::getManagerById(newMid); !manager) {
-					std::cout << "No Manager exists with this id, Please retry with valid manager id\n";
+					std::cout << getInCyan("- No manager exist with this id") <<", Please retry with valid manager id.\n";
 					return;
 				}
 			}
 			if (department->update()) {
-				std::cout << getInGreen("Updation Successfull.") << '\n';
+				std::cout << getInGreen("- Updation successful.") << '\n';
 			}
 			else {
-				std::cout << getInRed("Updation Failed.") << '\n';
+				std::cout << getInRed("- Updation failed.") << '\n';
 			}
 		}
 		else {
-			std::cout << "No department exist with id: " << id << "\n";
+			std::cout << getInCyan("- No department exist with id : ") << id << "\n";
 		}
 
 	};
 	void deleteDepartment() {
 
-		auto id = input("Please enter id of the department (Enter '#' to cancel deletion): ", idRegex, true);
+		auto id = input("- Please enter id of the department (Enter '#' to cancel deletion): ", idRegex, true);
 		if (id == "#") {
 			clearDisplay();
-			std::cout << "deletion cancelled\n";
+			std::cout << getInCyan("- Deletion cancelled.\n");
 			return;
 		}
 		
@@ -95,29 +95,29 @@ namespace Controller {
 		if (department) {
 			auto employyesInDepartment = Employee::getMultipleEmployee("department_id", std::to_string(department->getId()));
 			if (employyesInDepartment.size() != 0) {
-				std::cout << "There are total [" << employyesInDepartment.size() << "] employees in this department.\n\n";
-				std::cout << "If you delete this department, they will be deleted too.\n\n";
-				auto ip = input("Do you still want to delete it? ( Y / N ): ", std::regex{ "^[YNyn]$" });
+				std::cout << "- There are total [" << employyesInDepartment.size() << "] employees in this department.\n\n";
+				std::cout << "- If you delete this department, they will be deleted too.\n\n";
+				auto ip = input("- Do you still want to delete it? ( Y / N ): ", yesNoRegex);
 
 				clearDisplay();
 				if (ip == "N" || ip == "n") {
-					std::cout << "\nDeletion cancelled\n";
+					std::cout << getInCyan("- Deletion cancelled.\n");
 					return;
 				}
 				for (auto e : employyesInDepartment) {
 					e.deleteThis();
 				}
 				if (department->deleteThis()) {
-					std::cout << getInGreen("Deletion Successfull.") << '\n';
+					std::cout << getInGreen("- Deletion successful.") << '\n';
 				}
 				else {
-					std::cout << getInRed("Deletion Failed.") << '\n';
+					std::cout << getInRed("- Deletion failed.") << '\n';
 				}
 
 			}
 		}
 		else {
-			std::cout << "No department exist with id: " << id << "\n";
+			std::cout << getInCyan("- No department exist with id : ") << id << "\n";
 		}
 	}
 	void viewDepartments() {
@@ -139,11 +139,18 @@ namespace Controller {
 
 			clearDisplay();
 			if (department) {
-				std::cout << "Department with id: " << getInGreen(queryField) << "\n";
+				std::cout << "Department with id: " << getInGreen(queryField) << "\n\n";
 				department->display();
+				if (department->getDescription().size() >= 48) {
+					auto choice = input("\n- Do you want to see full description of the department? (Y/N): ", yesNoRegex);
+					if (choice == "Y" || choice == "y") {
+						std::cout << '\n' << "- Description: " << department->getDescription() << '\n';
+						
+					}
+				}
 			}
 			else {
-				std::cout << "No Department exists with id: " + queryField + "\n";
+				std::cout << getInCyan("- No department exists with id: ") + queryField + ".\n";
 			}
 			return;
 		}

@@ -132,7 +132,7 @@ namespace Entity {
         return true;
     }
 
-    bool Department::getUserInput() noexcept {
+    bool Department::populateForInsertion() noexcept {
         try {
             std::cout << "- Insert Department Details\n\n";
             std::cout << "- Enter ':q' at any point to cancel insertion\n\n";
@@ -154,7 +154,7 @@ namespace Entity {
 
     }
 
-    bool Department::getUserInputForUpdate() noexcept {
+    bool Department::populateForUpdation() noexcept {
         try {
             std::cout << "- Update Details of Department with id: " << id << "\n\n";
             std::cout << "- Enter ':q' at any point to cancel updation\n\n";
@@ -200,10 +200,10 @@ namespace Entity {
         }
 
         std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
-        std::cout << "|\033[32m ID\033[0m                         | " << std::setw(48) << std::left << id << " |" << std::endl;
+        std::cout << "|\033[32m ID\033[0m                         | " << std::setw(57) << std::left << getInGreen(std::to_string(id)) << " |" << std::endl;
         std::cout << "| Department Name            | " << std::setw(48) << std::left << name << " |" << std::endl;
         std::cout << "| Manager Name               | " << std::setw(48) << std::left << managerName << " |" << std::endl;
-        std::cout << "| Description                | " << std::setw(48) << std::left << description << " |" << std::endl;
+        std::cout << "| Description                | " << std::setw(48) << std::left << (description.size() < 48 ? description : (description.substr(0, 45)) + "...") << " |" << std::endl;
         std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
     }
 

@@ -137,9 +137,9 @@ namespace Entity {
 		return Employee::deleteThis();
 	}
 	
-	bool Manager::getUserInputForUpdate() noexcept {
+	bool Manager::populateForUpdation() noexcept {
 
-		if (!Employee::getUserInputForUpdate()) return false;
+		if (!Employee::populateForUpdation()) return false;
 
 		try {
 			auto me{ inputWithQuit("Enter Management Experience: ", oneOrTwoDigitRegex , true) };
@@ -158,9 +158,9 @@ namespace Entity {
 
 	}
 
-	bool Manager::getUserInput() noexcept {
+	bool Manager::populateForInsertion() noexcept {
 
-		if (!Employee::getUserInput()) return false;
+		if (!Employee::populateForInsertion()) return false;
 
 		try {
 			setManagementExperience(stoi(inputWithQuit("Enter Management Experience years: ", oneOrTwoDigitRegex)));

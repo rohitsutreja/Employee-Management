@@ -27,24 +27,36 @@ inline void clearDisplay() {
 	system("CLS");
 }
 
-inline void waitBeforeClear() {
-	std::cout << "\nPress Enter to continue...";
-	std::string line;
-	std::getline(std::cin, line);
-}
-
 inline std::string getInGreen(const std::string& str) {
 	return "\033[32m" + str + "\033[0m";
 }
-
 inline std::string getInRed(const std::string& str) {
 	return "\033[31m" + str + "\033[0m";
+}
+inline std::string getInBlue(const std::string& str) {
+	return "\033[34m" + str + "\033[0m";
+}
+inline std::string getInYellow(const std::string& str) {
+	return "\033[33m" + str + "\033[0m";
+}
+inline std::string getInMagenta(const std::string& str) {
+	return "\033[35m" + str + "\033[0m";
+}
+inline std::string getInCyan(const std::string& str) {
+	return "\033[36m" + str + "\033[0m";
+}
+
+
+inline void waitBeforeClear() {
+	std::cout << getInYellow("\n- Press Enter to continue...");
+	std::string line;
+	std::getline(std::cin, line);
 }
 
 template<typename T>
 void displayVector(const std::vector<T>& coll) {
 	clearDisplay();
-	std::cout << "<----------------------------- " << coll.size() << " - Records Found " << " ------------------------------>\n";
+	std::cout << "<----------------------------- " << getInCyan(std::to_string(coll.size()) + " - Records Found ")  << " ------------------------------>\n";
 	for (const auto& e : coll) {
 		e.display();
 		std::cout << '\n';
@@ -62,15 +74,37 @@ inline void displayCRUDMenu(std::string_view entity) {
 
 inline void displayMainMenu() {
 	clearDisplay();
-	std::cout << "\n<--------------------------------------------> EMPLOYEE MANAGEMENT SYSTEM <-------------------------------------------->\n";
+
+	std::cout << getInYellow("\n<---------------------------------------------------------------------------------------------------------------------->\n");
+
+	std::cout<< "                                  " << getInCyan("  __        __   _                            _ \n");
+	std::cout<< "                                  " << getInCyan("  \\ \\      / /__| | ___ ___  _ __ ___   ___  | |\n") ;
+	std::cout<< "                                  " << getInCyan("   \\ \\ /\\ / / _ \\ |/ __/ _ \\| '_ ` _ \\ / _ \\ | |\n");
+	std::cout<< "                                  " << getInCyan("    \\ V  V /  __/ | (_| (_) | | | | | |  __/ |_|\n");
+	std::cout<< "                                  " << getInCyan("     \\_/\\_/ \\___|_|\\___\\___/|_| |_| |_|\\___| (_)\n");
+
+	std::cout << getInCyan("\n<--------------------------------------------> ") << getInYellow("EMPLOYEE MANAGEMENT SYSTEM") << getInCyan(" <-------------------------------------------->\n");
 	
-	std::cout << "\n1. Employee Menu     \n";
+	std::cout << "\n\n1. Employee Menu     \n";
 	std::cout <<   "2. Department Menu   \n";
 	std::cout <<   "3. Engineer Menu     \n";
 	std::cout <<   "4. Manager Menu      \n";
 	std::cout <<   "5. Salary Menu       \n";
 	std::cout <<   "6. General Table Menu\n";
-	std::cout <<   "7. Quit              \n\n";
+	std::cout <<   "7. Export To CSV\n";
+	std::cout <<   "8. Quit              \n\n";
+
+	
+}
+
+inline void displayThanks() {
+	clearDisplay();
+	std::cout << "                                  " << getInYellow("  _______ _                 _     __     __         \n");
+	std::cout << "                                  " << getInYellow(" |__   __| |               | |    \\ \\   / /         \n");
+	std::cout << "                                  " << getInYellow("    | |  | |__   __ _ _ __ | | __  \\ \\_/ ___  _   _ \n");
+	std::cout << "                                  " << getInYellow("    | |  | '_ \\ / _` | '_ \\| |/ /   \\   / _ \\| | | |\n");
+	std::cout << "                                  " << getInYellow("    | |  | | | | (_| | | | |   <     | | (_) | |_| |\n");
+	std::cout << "                                  " << getInYellow("    |_|  |_| |_|\\__,_|_| |_|_|\\_\\    |_|\\___/ \\__,_|\n");
 }
 
 inline std::string getLogTimeString() {
@@ -124,7 +158,6 @@ inline std::string inputWithQuit(std::string_view prompt, std::optional<std::reg
 		}
 
 		std::cout << getInRed("Invalid Input! - ") << "Please enter valid input or " << getInRed("':q'") << " to quit.\n";
-		//std::cout << "\033[31mInValid Input!\033[0m - Please enter valid input or ':q' to quit.\n";
 	}
 }
 

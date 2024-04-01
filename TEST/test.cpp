@@ -176,6 +176,17 @@ TEST_F(SalaryFixture, salaryDelete) {
 	EXPECT_TRUE(s4.deleteThis());
 }
 
+TEST_F(SalaryFixture, salaryCompute){
+	ASSERT_EQ(s1.computeSalary(), 1100000);
+	ASSERT_NE(s1.computeSalary(), 1000000);
+}
+
+TEST_F(SalaryFixture, salaryIncrement) {
+	//Increment base by 10%, which was 1000000.
+	ASSERT_EQ(s1.increment(10), 1100000);
+	ASSERT_NE(s1.increment(10), 1200000);
+}
+
 
 //ENGINEER
 TEST_F(EngineerFixture, engineersave) {

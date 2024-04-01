@@ -124,11 +124,11 @@ namespace Entity {
 		return true;
 	}
 
-	bool Salary::getUserInput() noexcept {
+	bool Salary::populateForInsertion() noexcept {
 		try {
 			setBaseSalary(stof(inputWithQuit("Please enter Base Salary: ", salaryRegex)));
 			setBonus(stof(inputWithQuit("Please enter Bonus: ", salaryRegex)));
-			//setAmount(base_salary + bonus);
+			
 			return true;
 		}
 		catch (...) {
@@ -137,7 +137,7 @@ namespace Entity {
 		}
 	}
 
-	bool Salary::getUserInputForUpdate() noexcept {
+	bool Salary::populateForUpdation() noexcept {
 
 		try {
 			auto base = inputWithQuit("Please enter Base Salary: ", salaryRegex, true);
@@ -146,8 +146,7 @@ namespace Entity {
 			auto bon = inputWithQuit("Please enter Bonus: ", salaryRegex, true);
 			if (base != "#") setBonus(stof(bon));
 
-			//setAmount(base_salary + bonus);
-
+		
 			return true;
 		}
 		catch (...) {
@@ -180,8 +179,9 @@ namespace Entity {
 		std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
 	}
 
-	void Salary::increment(int percentage) {
-		base_salary = base_salary + (base_salary * percentage) / 100;
+	double Salary::increment(int percentage) {
+		 base_salary = base_salary + (base_salary * percentage) / 100;
+		 return base_salary;
 	}
 
 	double Salary::computeSalary() const { return base_salary + bonus; }

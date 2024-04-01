@@ -180,7 +180,7 @@ namespace Entity {
         return true;
     }
 
-    bool Employee::getUserInput() noexcept {
+    bool Employee::populateForInsertion() noexcept {
         try {
             std::cout << "- Insert employee details\n\n";
             std::cout << "- Enter ':q' at any point to cancel insertion\n\n";
@@ -208,7 +208,7 @@ namespace Entity {
 
             salary.setID(id);
 
-            return  salary.getUserInput();
+            return  salary.populateForInsertion();
 
         }
         catch (...) {
@@ -217,7 +217,7 @@ namespace Entity {
         }
     }
 
-    bool Employee::getUserInputForUpdate() noexcept {
+    bool Employee::populateForUpdation() noexcept {
         try {
             std::cout << "- Update details of an employee with id: " << id << "\n\n";
             std::cout << "- Enter ':q' at any point to cancel updation\n\n";
@@ -255,7 +255,7 @@ namespace Entity {
 
             salary.setID(getId());
 
-            return salary.getUserInputForUpdate();
+            return salary.populateForUpdation();
 
         }
         catch (...) {
@@ -268,7 +268,7 @@ namespace Entity {
 
     bool Employee::display() const {
         std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
-        std::cout << "|\033[32m ID\033[0m                         | " << std::setw(48) << std::left << id << " |" << std::endl;
+        std::cout << "|\033[32m ID\033[0m                         | " << std::setw(57) << std::left << getInGreen(std::to_string(id)) << " |" << std::endl;
         std::cout << "| First Name                 | " << std::setw(48) << std::left << firstname << " |" << std::endl;
         std::cout << "| Last Name                  | " << std::setw(48) << std::left << lastname << " |" << std::endl;
         std::cout << "| Date of Birth              | " << std::setw(48) << std::left << dob << " |" << std::endl;
@@ -277,7 +277,7 @@ namespace Entity {
         std::cout << "| Address                    | " << std::setw(48) << std::left << address << " |" << std::endl;
         std::cout << "| Gender                     | " << std::setw(48) << std::left << genderToString(gender) << " |" << std::endl;
         std::cout << "| Date of Joining            | " << std::setw(48) << std::left << doj << " |" << std::endl;
-        std::cout << "| Salary                     | " << std::setw(48) << std::left << salary.computeSalary() << " |" << std::endl;
+        std::cout << "| Salary                     | " << std::setw(48) << std::left << std::fixed<<salary.computeSalary() << " |" << std::endl;
 
 
 
