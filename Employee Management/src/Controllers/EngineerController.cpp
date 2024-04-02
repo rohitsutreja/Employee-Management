@@ -1,7 +1,7 @@
 
-#include "include/Util.h"
-#include "include/Entities/Engineer.h"
-#include "include/Entities/Manager.h"
+#include "../../include/Util.h"
+#include "../../include/Entities/Engineer.h"
+#include "../../include/Entities/Manager.h"
 
 
 using Entity::Engineer;

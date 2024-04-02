@@ -1,5 +1,5 @@
-#include "include/Entities/Manager.h"
-#include "include/Util.h"
+#include "../../include/Entities/Manager.h"
+#include "../../include/Util.h"
 
 using Entity::Employee;
 using Entity::Manager;

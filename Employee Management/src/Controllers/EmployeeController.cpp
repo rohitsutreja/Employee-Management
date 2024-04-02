@@ -1,6 +1,6 @@
-#include "include/Util.h"
-#include "include/Entities/Employee.h"
-#include "include/Entities/Manager.h"
+#include "../../include/Util.h"
+#include "../../include/Entities/Employee.h"
+#include "../../include/Entities/Manager.h"
 
 using Entity::Department;
 using Entity::Employee;

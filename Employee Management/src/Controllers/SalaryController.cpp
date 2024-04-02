@@ -1,6 +1,6 @@
-#include "include/Controllers/SalaryController.h"
-#include "include/Util.h"
-#include "include/Entities/Salary.h"
+#include "../../include/Controllers/SalaryController.h"
+#include "../../include/Util.h"
+#include "../../include/Entities/Salary.h"
 
 
 using Entity::Salary;
