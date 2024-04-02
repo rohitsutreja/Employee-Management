@@ -91,7 +91,7 @@ namespace Entity {
             "'," + (manager_id == -1 ? "NULL" : std::to_string(manager_id)) +
             ",'" + description + "');";
 
-        if (!dbI->executeQuery(insertQuery.c_str(), "A Departement Inserted with ID: " + std::to_string(id) + "\n")) { return false; }
+        if (!dbI->executeQuery(insertQuery.c_str(), "A Departement Inserted with ID: " + std::to_string(id) + ".")) { return false; }
 
         return true;
     }

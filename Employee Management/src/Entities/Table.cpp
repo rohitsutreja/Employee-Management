@@ -88,6 +88,8 @@
 
 		if (!dbI->executeQuery(query.c_str(), "Table Created: " + name)) return false;
 
+		
+
 		return true;
 	};
 
@@ -114,7 +116,7 @@
 		std::cout << "+----------------------------+----------------------------------------+" << std::endl;
 	}
 
-	 std::optional<Table> Table::getTable(std::string name) {
+	std::optional<Table> Table::getTable(std::string name) {
 
 		std::string query = "PRAGMA table_info(" + name + ")";
 
@@ -140,7 +142,7 @@
 
 	}
 
-	 std::vector<Table> Table::getAllTables() {
+	std::vector<Table> Table::getAllTables() {
 		std::vector<Table> tableList;
 
 		auto dbI = DB::getDB();
@@ -351,10 +353,6 @@
 		std::cout << "--> " << count << " - Records found." << std::endl;
 	}
 
-	const std::string& Table::getName()  const {
-		return name;
-	}
-
 	 bool Table::writeCSV() {
 		std::filesystem::path p{ std::filesystem::current_path() / "csv\\" };
 
@@ -427,3 +425,13 @@
 		return false;
 	}
 
+
+	 bool Table::addKeyTypePair(const std::string& field, const std::string& type) {
+		 auto [iter, ok] = keyType.insert({ field,type });
+		 return ok;
+	 }
+
+	 bool Table::addKeyValPair(const std::string& field, const std::string& type) {
+		 auto [iter, ok] = keyVal.insert({ field,type });
+		 return ok;
+	 }

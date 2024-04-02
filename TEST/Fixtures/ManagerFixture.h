@@ -6,6 +6,7 @@
 
 using::Entity::Manager;
 using::Entity::Salary;
+using::Entity::Employee;
 
 class ManagerFixture : public testing::Test {
 protected:

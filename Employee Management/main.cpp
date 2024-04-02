@@ -7,7 +7,6 @@ int main()
 	try {
 		auto dbI = DB::getDB();
 		dbI->open("Rohit.db");
-
 		runMenu();
 	}
 	catch (...) {

@@ -277,7 +277,7 @@ namespace Entity {
         std::cout << "| Address                    | " << std::setw(48) << std::left << address << " |" << std::endl;
         std::cout << "| Gender                     | " << std::setw(48) << std::left << genderToString(gender) << " |" << std::endl;
         std::cout << "| Date of Joining            | " << std::setw(48) << std::left << doj << " |" << std::endl;
-        std::cout << "| Salary                     | " << std::setw(48) << std::left << std::fixed<<salary.computeSalary() << " |" << std::endl;
+        std::cout << "| Salary                     | " << std::setw(48) << std::left << std::fixed << std::setprecision(2)<<salary.computeSalary() << " |" << std::endl;
 
 
 

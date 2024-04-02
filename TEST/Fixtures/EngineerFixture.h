@@ -5,6 +5,7 @@
 
 using::Entity::Engineer;
 using::Entity::Salary;
+using::Entity::Employee;
 
 class EngineerFixture : public testing::Test {
 protected:

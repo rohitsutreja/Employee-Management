@@ -46,7 +46,6 @@ inline std::string getInCyan(const std::string& str) {
 	return "\033[36m" + str + "\033[0m";
 }
 
-
 inline void waitBeforeClear() {
 	std::cout << getInYellow("\n- Press Enter to continue...");
 	std::string line;
@@ -70,6 +69,17 @@ inline void displayCRUDMenu(std::string_view entity) {
 	std::cout << "3. View " << entity << "\n";
 	std::cout << "4. Delete an " << entity << "\n";
 	std::cout << "5. Main menu\n";
+}
+
+inline std::string getLogTimeString() {
+	auto now = std::chrono::system_clock::now();
+	std::time_t time = std::chrono::system_clock::to_time_t(now);
+	std::tm currentTime;
+	localtime_s(&currentTime, &time);
+	char date_buffer[26];
+	std::strftime(date_buffer, sizeof(date_buffer), "%d/%m/%y %H:%M:%S", &currentTime);
+
+	return date_buffer;
 }
 
 inline void displayMainMenu() {
@@ -107,17 +117,6 @@ inline void displayThanks() {
 	std::cout << "                                  " << getInYellow("    |_|  |_| |_|\\__,_|_| |_|_|\\_\\    |_|\\___/ \\__,_|\n");
 }
 
-inline std::string getLogTimeString() {
-	auto now = std::chrono::system_clock::now();
-	std::time_t time = std::chrono::system_clock::to_time_t(now);
-	std::tm currentTime;
-	localtime_s(&currentTime, &time);
-	char date_buffer[26];
-	std::strftime(date_buffer, sizeof(date_buffer), "%d/%m/%y %H:%M:%S", &currentTime);
-
-	return date_buffer;
-}
-
 inline std::string input(std::string_view prompt, std::optional<std::regex> r = universalRegex, bool allowSkip = false) {
 	
 	std::string ip;
@@ -125,7 +124,9 @@ inline std::string input(std::string_view prompt, std::optional<std::regex> r = 
 	while (1) {
 		std::cout << prompt;
 
+		std::cout << "\033[36m"; 
 		std::getline(std::cin, ip);
+		std::cout << "\033[0m";
 
 		if (allowSkip && ip == "#") {
 			return "#"; 

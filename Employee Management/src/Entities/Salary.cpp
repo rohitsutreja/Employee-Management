@@ -1,4 +1,5 @@
 #include "../../include/Entities/Salary.h"
+#include "include/Entities/Salary.h"
 
 
 namespace Entity {
@@ -126,8 +127,8 @@ namespace Entity {
 
 	bool Salary::populateForInsertion() noexcept {
 		try {
-			setBaseSalary(stof(inputWithQuit("Please enter Base Salary: ", salaryRegex)));
-			setBonus(stof(inputWithQuit("Please enter Bonus: ", salaryRegex)));
+			setBaseSalary(stof(inputWithQuit("\nPlease enter Base Salary: ", salaryRegex)));
+			setBonus(stof(inputWithQuit("\nPlease enter Bonus: ", salaryRegex)));
 			
 			return true;
 		}
@@ -140,10 +141,10 @@ namespace Entity {
 	bool Salary::populateForUpdation() noexcept {
 
 		try {
-			auto base = inputWithQuit("Please enter Base Salary: ", salaryRegex, true);
+			auto base = inputWithQuit("\nPlease enter Base Salary: ", salaryRegex, true);
 			if (base != "#") setBaseSalary(stof(base));
 
-			auto bon = inputWithQuit("Please enter Bonus: ", salaryRegex, true);
+			auto bon = inputWithQuit("\nPlease enter Bonus: ", salaryRegex, true);
 			if (base != "#") setBonus(stof(bon));
 
 		
@@ -170,6 +171,7 @@ namespace Entity {
 			return 0;
 			}, &name, "Employee Selected to display salary.");
 
+		std::cout << std::fixed << std::setprecision(2);
 		std::cout << "+----------------------------+--------------------------------------------------+" << std::endl;
 		std::cout << "|\033[32m ID\033[0m                         | " << std::setw(48) << std::left << id << " |" << std::endl;
 		std::cout << "| Name                       | " << std::setw(48) << std::left << name << " |" << std::endl;

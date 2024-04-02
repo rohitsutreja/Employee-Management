@@ -51,9 +51,23 @@ public:
 
 	static bool exportToCsv(const std::string_view& tableName, const std::filesystem::path& path);
 
-	const std::string& getName()  const;
+	bool addKeyTypePair(const std::string& field, const std::string& type);
 
+	bool addKeyValPair(const std::string& field, const std::string& type);
 
+	void setName(const std::string& name) {
+		this->name = name;
+	}
+
+	const std::string& getName()  const {
+		return name;
+	}
+	int getNoOfFields() const {
+		if (keyType.find("id") == std::end(keyType)) {
+			return keyType.size() + 1;
+		}
+		return keyType.size();
+	}
 private:
 	std::string name;
 	std::map<std::string, std::string> keyType;

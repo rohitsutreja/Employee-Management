@@ -53,19 +53,21 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeaderOutputFile />
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>$(SolutionDir)bin-int\x64\Debug\Employee;$(SolutionDir)bin-int\x64\Debug\Manager;$(SolutionDir)bin-int\x64\Debug\Engineer;$(SolutionDir)bin-int\x64\Debug\Department;$(SolutionDir)bin-int\x64\Debug\Salary;$(SolutionDir)bin-int\x64\Debug\DB;$(SolutionDir)bin-int\x64\Debug\sqlite3;$(SolutionDir)bin-int\x64\Debug\log;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)bin-int\x64\Debug\Employee;$(SolutionDir)bin-int\x64\Debug\Manager;$(SolutionDir)bin-int\x64\Debug\Engineer;$(SolutionDir)bin-int\x64\Debug\Department;$(SolutionDir)bin-int\x64\Debug\Salary;$(SolutionDir)bin-int\x64\Debug\DB;$(SolutionDir)bin-int\x64\Debug\sqlite3;$(SolutionDir)bin-int\x64\Debug\log;$(SolutionDir)bin-int\x64\Debug\Table;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -104,18 +106,19 @@
     <ClInclude Include="Fixtures\DepartmentFixture.h" />
     <ClInclude Include="Fixtures\EmployeeFixture.h" />
     <ClInclude Include="Fixtures\EngineerFixture.h" />
+    <ClInclude Include="Fixtures\TableFixture.h" />
     <ClInclude Include="Fixtures\ManagerFixture.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="Fixtures\SalaryFixture.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DepartmentTest.cpp" />
+    <ClCompile Include="src\EmployeeTest.cpp" />
+    <ClCompile Include="src\EngineerTest.cpp" />
+    <ClCompile Include="src\ManagerTest.cpp" />
+    <ClCompile Include="src\SalaryTest.cpp" />
+    <ClCompile Include="src\TableTest.cpp" />
+    <ClCompile Include="src\UtilTest.cpp" />
     <ClCompile Include="test.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Employee Management\Employee Management.vcxproj">
