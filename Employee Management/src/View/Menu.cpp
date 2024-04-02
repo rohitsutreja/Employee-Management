@@ -1,12 +1,12 @@
 #pragma once
 
-#include "include/View/Menu.h"
-#include "include/Controllers/EmployeeController.h"
-#include "include/Controllers/DepartmentController.h"
-#include "include/Controllers/EngineerController.h"
-#include "include/Controllers/ManagerController.h"
-#include "include/Controllers/SalaryController.h"
-#include "include/Entities/Table.h"
+#include "../../include/View/Menu.h"
+#include "../../include/Controllers/EmployeeController.h"
+#include "../../include/Controllers/DepartmentController.h"
+#include "../../include/Controllers/EngineerController.h"
+#include "../../include/Controllers/ManagerController.h"
+#include "../../include/Controllers/SalaryController.h"
+#include "../../include/Entities/Table.h"
 
 
 void runEmployeeMenu() {

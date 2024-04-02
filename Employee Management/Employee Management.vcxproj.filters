@@ -126,5 +126,13 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Rohit.db" />
+    <None Include="csv\Department.csv" />
+    <None Include="csv\Employee.csv" />
+    <None Include="csv\Engineer.csv" />
+    <None Include="csv\Manager.csv" />
+    <None Include="csv\Salary.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="logs\logs.txt" />
   </ItemGroup>
 </Project>

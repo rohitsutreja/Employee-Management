@@ -179,8 +179,16 @@
     <ClInclude Include="sqlite\sqlite3ext.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="csv\Department.csv" />
+    <None Include="csv\Employee.csv" />
+    <None Include="csv\Engineer.csv" />
+    <None Include="csv\Manager.csv" />
+    <None Include="csv\Salary.csv" />
     <None Include="packages.config" />
     <None Include="Rohit.db" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="logs\logs.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

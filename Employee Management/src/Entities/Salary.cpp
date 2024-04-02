@@ -1,6 +1,4 @@
 #include "../../include/Entities/Salary.h"
-#include "include/Entities/Salary.h"
-
 
 namespace Entity {
 
