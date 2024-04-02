@@ -64,9 +64,9 @@ public:
 	}
 	int getNoOfFields() const {
 		if (keyType.find("id") == std::end(keyType)) {
-			return keyType.size() + 1;
+			return static_cast<int>(keyType.size() + 1);
 		}
-		return keyType.size();
+		return static_cast<int>(keyType.size());
 	}
 private:
 	std::string name;
